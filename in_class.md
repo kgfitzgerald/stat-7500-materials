@@ -68,7 +68,7 @@ Links to all lecture slides and in-class practice code will be provided below.
 + [SLIDES: R 04 - Data Wrangling II](/assets/R_slides/04-data-wrangling-2.html)
 + {% include download.html path="assets/in_class_code/week_09.qmd" %}
 + [Flight map image file](/assets/in_class_code/images/flights_map.png)
-+ Data used in the slides can be found in the scientists, students, and trump subfolders at this [GitHub repo](https://github.com/kgfitzgerald/stat-7500/tree/main/assets/R_slides/data)
++ Data used in the slides can be found in the scientists, students, and trump subfolders at this [GitHub repo](https://github.com/kgfitzgerald/stat-7500-f25-archive/tree/main/assets/R_slides/data)
 
 ## Week 10
 
