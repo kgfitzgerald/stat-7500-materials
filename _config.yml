@@ -17,7 +17,7 @@ title: STAT 7500 Statistical Programming
 tagline: Dr. Fitzgerald
 description: Course website for STAT 7500 Statistical Programming taught by Dr. Fitzgerald at Villanova University, Department of Mathematics & Statistics
 author: Kaitlyn Fitzgerald
-baseurl: '/stat-7500' # the subpath of your site, e.g. /blog
+baseurl: '/stat-7500-f25-archive' # the subpath of your site, e.g. /blog
 url: 'https://kgfitzgerald.github.io' # the base hostname & protocol for your site, e.g. http://example.com
 exclude: ["Gemfile", "Gemfile.lock", "LICENSE", "assets/**/*.md"]
 include:
@@ -34,7 +34,7 @@ aux_links:
   Kaitlyn Fitzgerald:
     - 'https://katie-fitzgerald.netlify.app'
   Website code on GitHub:
-    - 'https://github.com/kgfitzgerald/stat-7500'
+    - 'https://github.com/kgfitzgerald/stat-7500-f25-archive'
 footer_content:
 
 # Collections for website data
