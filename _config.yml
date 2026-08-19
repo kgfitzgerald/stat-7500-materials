@@ -1,30 +1,8 @@
-# Site settings
 title: STAT 7500 Statistical Programming
-description: Course materials for STAT 7500 Statistical Programming
-author: Kaitlyn Fitzgerald
-
 url: "https://kgfitzgerald.github.io"
 baseurl: "/stat-7500-materials"
 
-# GitHub Pages / Jekyll
-remote_theme: just-the-docs/just-the-docs@v0.10.1
-
-# Exclude files that should not be published
 exclude:
-  - Gemfile
-  - Gemfile.lock
-  - LICENSE
   - README.md
+  - LICENSE
   - stat-7500-materials.Rproj
-
-# Site settings
-search_enabled: false
-heading_anchors: true
-permalink: pretty
-
-# Link back to repository
-aux_links:
-  Website code on GitHub:
-    - "https://github.com/kgfitzgerald/stat-7500-materials"
-
-footer_content:
