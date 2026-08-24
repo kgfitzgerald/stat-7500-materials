@@ -30,6 +30,62 @@ loans_full_schema <- loans_full_schema |>
   mutate(grade = factor(grade, ordered = TRUE))
 ```
 
+## Mathematical Functions in R
+
+| Operator / Function | Meaning |
+|---------------------|---------|
+| `+, -, *, /`                 | add, subtract, multiply, divide |
+| `^` or `**`         | power |
+| `%%`                | modulo (remainder after division) |
+| `log()`             | natural log |
+| `exp()`             | exponential function |
+| `sqrt()`            | square root |
+| `abs()`             | absolute value |
+| `round(x, n)`       | round to nearest integer (optional `n` = # decimal places) |
+| `floor()`           | round down (lower integer) |
+| `ceiling()`         | round up (higher integer) |
+
++ Note - R will NOT read parentheses as multiplication
+
+## Logical operators in R
+
+| Operator | Meaning |
+|----------|---------|
+| `==`     | equal |
+| `>`      | greater than |
+| `>=`     | greater than or equal to |
+| `<`      | less than |
+| `<=`     | less than or equal to |
+| `&`      | and |
+| `|`     | or |
+| `!=`     | not equal to (`!` is a common prefix for “not”) |
+
+## TRUE/FALSE
+
+In R, when T/F are used in mathematical formulas, T=1 and F=0, so…
+
++ `T + T + F` is 2
++ `sum(c(T,T,F,T))` is 3 (num of T) 
++ `mean(c(T,T,F,T))` is 0.75 (prop of T)
+
+## Your turn!
+
+In RStudio, go to File > New File > R Script OR in your Files quadrant, click the 2nd green "plus" icon and select R Script. In your R Script (.R file), write & execute code to verify:
+
++ 5+5 = 10
++ $5^5$ = 3,125
++ 5-(-5) = 10
++ 1+2*3 = 7 (make sure order of operations works properly)
++ If you round the square root of the $e^{10}$, you get 148
++ If you round the square root of the $e^{10}$, you get 148.4
++ 5+6 > 10, using logical operators
++ The square root of 25 equals 5, using logical operators
++ both of the previous two statements are true, using the “&” logical operator
+
+Once you've finished, download the install_packages.R file from the website and run all the lines to install (most of) the necessary packages for the semester.
+
+
+
 class: middle
 
 # Data basics in R

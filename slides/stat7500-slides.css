@@ -1,0 +1,265 @@
+/*-- scss:rules --*/
+
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Cabin:600,600i&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap");
+
+:root {
+  --dark-blue: #002b36;
+  --light-blue: #A7D5E8;
+  --green: #8fada7;
+  --gray: #A7A7A7;
+  --pink: #E9AFA3;
+  --yellow: #e9d968;
+  --beige: #fdf6e3;
+  --green-faint: #8fada750;
+  --pink-faint: #E9AFA350;
+  --slide-text: #f6f6f6;
+  --slide-background: var(--dark-blue);
+  --slide-width: 1280px;
+  --slide-height: 720px;
+}
+
+.reveal-viewport,
+.reveal {
+  background: var(--slide-background);
+}
+
+.reveal {
+  color: var(--slide-text);
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slides section {
+  box-sizing: border-box;
+  color: var(--slide-text);
+  background: var(--slide-background);
+  padding: 16px 64px;
+  height: 100%;
+}
+
+.reveal .slides section > :first-child {
+  margin-top: 3px;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+  color: var(--light-blue);
+  font-family: Cabin, sans-serif;
+  font-weight: 600;
+  line-height: 1.1;
+  margin: 3px 5px;
+  text-transform: none;
+}
+
+.reveal h1 { font-size: 2em; }
+.reveal h2 { font-size: 1.75em; }
+.reveal h3 { font-size: 1.5em; }
+.reveal h4 { color: var(--light-blue); font-size: 1.25em; }
+
+.reveal p,
+.reveal li {
+  line-height: 1.25;
+}
+
+.reveal ul,
+.reveal ol {
+  margin-top: 0.35em;
+  margin-bottom: 0.35em;
+}
+
+.reveal ul { list-style-type: square; }
+.reveal strong { color: var(--pink); }
+.reveal a,
+.reveal a > code { color: var(--light-blue); text-decoration: none; }
+.reveal code {
+  color: var(--gray);
+  font-family: "Source Code Pro", monospace;
+  font-size: 1em;
+}
+
+.reveal .center { text-align: center; }
+.reveal .right { text-align: right; }
+.reveal .middle {
+  align-items: center;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+}
+.reveal .middle > * { flex: 0 0 auto; }
+
+.reveal .section-divider {
+  background: var(--dark-blue);
+}
+.reveal .section-divider h2 {
+  color: var(--light-blue);
+  font-size: 2em;
+}
+
+.reveal .columns {
+  display: flex;
+  gap: 6%;
+  width: 100%;
+}
+.reveal .columns > .column {
+  box-sizing: border-box;
+  flex: 1 1 0;
+}
+.reveal .columns > .column[style*="50%"] { flex-basis: 47%; }
+.reveal .columns > .column[style*="30%"] { flex-basis: 27%; }
+.reveal .columns > .column[style*="70%"] { flex-basis: 67%; }
+
+.reveal .image-slide {
+  align-items: center;
+  background: #fff;
+  display: flex !important;
+  justify-content: center;
+  padding: 16px 64px;
+}
+.reveal .image-slide h2 { display: none; }
+.reveal .full-slide-image {
+  display: block;
+  height: auto;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  width: 100%;
+}
+.reveal .full-slide-image.image-90 { width: 90%; }
+.reveal .slides section.background-slide {
+  background: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 0;
+}
+.reveal .background-slide h2 { display: none; }
+
+.reveal .title-slide {
+  background: var(--dark-blue);
+  color: var(--light-blue);
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+}
+.reveal .title-slide h1 {
+  color: var(--light-blue);
+  font-family: Raleway, "Source Sans Pro", sans-serif;
+  font-size: 2em;
+  font-weight: 700;
+  text-align: left;
+}
+.reveal .title-slide .quarto-title-author {
+  color: var(--beige);
+  font-size: 1.3em;
+  font-weight: 600;
+  text-align: left;
+}
+
+#title-slide {
+  align-items: flex-start !important;
+  background: var(--dark-blue);
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center !important;
+  text-align: left !important;
+}
+#title-slide h1,
+#title-slide .quarto-title-authors,
+#title-slide .quarto-title-author,
+#title-slide .quarto-title-author-name {
+  text-align: left;
+}
+#title-slide h1 {
+  color: var(--light-blue);
+  font-family: Raleway, "Source Sans Pro", sans-serif;
+  font-size: 2em;
+  font-weight: 700;
+}
+#title-slide .quarto-title-author-name {
+  color: var(--beige);
+  font-size: 1.3em;
+  font-weight: 600;
+}
+#title-slide .quarto-title-subtitle {
+  color: var(--green);
+  font-size: 1.3em;
+  font-weight: 600;
+  text-align: left;
+}
+
+.reveal .slide-footer {
+  display: none;
+}
+
+.reveal .inverse {
+  background: #fff;
+  color: var(--dark-blue);
+}
+.reveal .inverse h1,
+.reveal .inverse h2,
+.reveal .inverse h3,
+.reveal .inverse h4 { color: var(--light-blue); }
+
+/* Xaringan utility classes used across the course decks. */
+.reveal .dark-blue { color: var(--dark-blue); }
+.reveal .light-blue { color: var(--light-blue); }
+.reveal .green { color: var(--green); }
+.reveal .gray { color: var(--gray); }
+.reveal .pink { color: var(--pink); }
+.reveal .yellow { color: var(--yellow); }
+.reveal .beige { color: var(--beige); }
+.reveal .large { font-size: 1.5em; }
+.reveal .larger { font-size: 2.5em; }
+.reveal .midi { font-size: 0.85em; }
+.reveal .small { font-size: 0.7em; }
+.reveal .xsmall { font-size: 0.65em; }
+.reveal .tiny { font-size: 0.5em; }
+.reveal .huge { font-size: 4em; font-weight: 700; }
+.reveal .hand { font-family: "Gochi Hand", cursive; font-size: 1.25em; }
+
+.reveal .question,
+.reveal .your-turn,
+.reveal .tip {
+  box-sizing: border-box;
+  color: white;
+  margin: 6px 0;
+  padding: 3px 10px;
+}
+.reveal .question {
+  background: var(--green-faint);
+  border-left: 5px solid var(--green);
+}
+.reveal .tip {
+  background: var(--pink-faint);
+  border-left: 5px solid var(--pink);
+}
+.reveal .your-turn {
+  border-left: 5px solid var(--light-blue);
+}
+
+.reveal blockquote {
+  border-left: 5px solid var(--yellow);
+  padding-left: 1em;
+}
+.reveal img,
+.reveal video,
+.reveal iframe { max-width: 100%; }
+.reveal .footnote {
+  padding-left: 30px;
+  font-size: 0.9em;
+}
+
+@media print {
+  .reveal .slides section { page-break-after: always; }
+}
