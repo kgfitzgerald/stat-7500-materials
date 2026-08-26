@@ -286,7 +286,7 @@ knitr::include_graphics("img/view-html.png")
 
 ::: {.callout-important}
 
-To submit, you need to upload your lab-01.html file to the Lab 01 assignment on Brightspace. The html file should be located in the same folder on your computer where you placed your .qmd (STAT_4380). 
+To submit, you need to upload your lab-01.html file to the Lab 01 assignment on Brightspace. The html file should be located in the same folder on your computer where you placed your .qmd (STAT_7500). 
 
 :::
 
