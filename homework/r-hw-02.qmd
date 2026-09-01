@@ -1,0 +1,358 @@
+---
+title: "R HW 02 - Working with Data & Data Visualization"
+format:
+  html:
+    css: styles.css
+    grid:
+      margin-width: 350px
+fig-numbering: false
+toc: true
+toc-location: right
+categories:
+  - Data importing
+  - Data inspection
+  - Data visualization
+  - ggplot2
+editor_options:
+  chunk_output_type: console
+callout-icon: false
+---
+
+# Goals
+
+The main goal of this assignment is to practice a reproducible workflow for working with data in R: importing data, checking that R interpreted it appropriately, analyzing relevant variables, and communicating what you learn.
+
+You will...
+
++ Import data from an external file using a relative path
++ Inspect the structure and contents of imported data
++ Use data documentation to identify values that represent missingness
++ Distinguish between how R stores a variable and what the variable means
++ Use vectors, indexing, and summary statistics to investigate change over time
++ Export and verify a prepared data file
++ Create and interpret scatterplots
++ Map variables to aesthetic features of a visualization
++ Compare color and faceting as alternative ways to display a third variable
+
+The individual R commands matter, but the larger goal is to develop a reliable process: understand where the data came from, inspect before analyzing, make purposeful choices, and interpret results in context.
+
+# Getting Started
+
+To get started on this assignment, do the following:
+
+- Open our class [GitHub repo](https://github.com/kgfitzgerald/STAT_7500_templates)
+- Navigate to `R_HW_02.qmd`
+- Click the download icon (hover text should say "Download raw file")
+- Place the downloaded `.qmd` document in your STAT_7500 folder
+- Download `patients.csv` and place it inside the `data` folder in your STAT_7500 project
+- From inside your STAT_7500 RStudio Project, open and render the Quarto document
+
+Your project should be organized approximately like this:
+
+```         
+STAT_7500/
+├── R_HW_02.qmd
+└── data/
+    └── patients.csv
+```
+
+The document you are currently reading contains all the instructions for R HW 02. You will complete the assignment by adding code and text responses to the `R_HW_02.qmd` document in RStudio.
+
+::: column-margin :::
+Keeping the data and analysis files together in an R Project allows you to use a relative file path such as `"data/patients.csv"`. Do not use a file path that begins with a user name or refers to a location specific to your computer.
+:::
+
+## Packages
+
+In this assignment, we will use **tidyverse** for importing and visualizing data and **palmerpenguins** for the `penguins` dataset.
+
+You can run `install.packages("nameofpackage")` in your Console if you do not already have a package installed. Then, load the packages in your Quarto document:
+
+```{r message=FALSE}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+# Data: Patient Health-Awareness Scores
+
+The patient data were assembled from instructional files previously used in the SAS portion of STAT 7500. They should be treated as instructional data rather than as records from a documented research study.
+
+The file contains records for thirty patients who participated in a six-week health-awareness program. Health-awareness surveys were administered before and after the program. Scores range from 0 to 20, with higher scores indicating greater awareness of healthy habits.
+
+The variables in `patients.csv` are:
+
+- `patient_id`: unique patient identification code
+- `gender_code`: gender recorded as `0` for male and `1` for female
+- `baseline_score`: health-awareness score before the program
+- `followup_score`: health-awareness score after the program
+
+The data documentation also tells us that:
+
+- `Not recorded` represents a missing gender value; and
+- `.` represents a missing survey score.
+
+# Exercises
+
+## Importing and inspecting data
+
+::: callout-note
+### Exercise 1
+
+Import `patients.csv` using `read_csv()` and assign the resulting data frame to an object named `patients_raw`.
+
+Use a relative file path. Then, use `glimpse()` to inspect the imported data.
+:::
+
+
+::: column-margin :::
+After importing data, always inspect the result. The absence of an error message does not guarantee that R interpreted every variable as intended.
+:::
+
+::: callout-note
+### Exercise 2
+
++ How many observations and variables are in the data? Use code to support you answer. 
++ What does one row represent?
++ Which variables did R interpret as character variables even though their nonmissing values are numerical codes or scores? Why did this occur?
++ Why is it important to answer these questions before beginning an analysis?
+:::
+
+`r emo::ji("pause_button")` `r emo::ji("right_arrow")` ✅ *This is a good place to pause and Render to make sure there are no errors in your .qmd*
+
+## Identifying missing values during import
+
+Missing data in R are represented by `NA`. However, external files may use many different values to indicate missingness. We should use the data documentation—not guesswork—to determine what those values mean.
+
+::: callout-note
+### Exercise 3
+
+Import `patients.csv` again and assign the result to an object named `patients`.
+
+This time, use the `na` argument in `read_csv()` to identify `"Not recorded"` and `"."` as missing values.
+
+Use `glimpse()` and `summary()` to inspect `patients`, and then respond to the following:
+
++ Which variables changed type and why?
++ Did identifying the missing values change the number of rows or columns? Why or why not?
++ Although `gender_code` is now stored as a numerical variable, should it be interpreted as a quantitative measurement? Explain.
++ What does this example demonstrate about the difference between a variable's storage type and its meaning?
+:::
+
+```{r}
+
+```
+
+::: column-margin :::
+A value such as `.` is not universally a missing value. We treat it as missing here because the data documentation tells us what it represents in this particular file.
+:::
+
+`r emo::ji("pause_button")` `r emo::ji("right_arrow")` ✅ *This is a good place to pause and Render to make sure there are no errors in your .qmd*
+
+## Investigating change over time
+
+The survey was administered to the same patients before and after the program. Therefore, each patient's follow-up score should be compared with that same patient's baseline score.
+
+::: callout-note
+### Exercise 4
+
+Create a vector called `score_change` by subtracting each patient's baseline score from their follow-up score:
+
+```r
+score_change <- patients$followup_score - patients$baseline_score
+```
+
+Then:
+
++ Print `score_change`.
++ Print only the fifth element using `[]` notation.
++ Verify that `score_change` is numerical using `class()`.
++ Use `summary()` to inspect the distribution of the change scores.
++ Use appropriate summary statistic function (e.g. `mean()`) to reproduce the mean, median, minimum, and maximum printed out by `summary()`. Handle missing values appropriately.
++ Explain why `score_change` contains a missing value. Does that missing value represent a patient whose score did not change?
++ In 2–3 sentences, describe what the results suggest about changes in health-awareness scores.
++ Do these summaries alone establish that the program *caused* the observed changes? Explain briefly.
+:::
+
+
+::: column-margin :::
+A positive value of `score_change` indicates that the patient's score increased. A negative value indicates that it decreased. A value of zero indicates no change.
+:::
+
+## Exporting and verifying data
+
+::: callout-note
+### Exercise 5
+
+Use `write_csv()` to export `patients` as `data/patients_clean.csv`.
+
+Then:
+
++ Confirm that `patients_clean.csv` appears inside the `data` folder in your project.
++ Import the exported file and assign it to an object named `patients_check`.
++ Use `dim()` to verify that `patients` and `patients_check` have the same dimensions.
++ Use `glimpse()` to verify that the variables were imported with the expected types.
++ Explain why checking an exported file is a useful part of a reproducible workflow.
+:::
+
+`r emo::ji("pause_button")` `r emo::ji("right_arrow")` ✅ *This is a good place to pause and Render to make sure there are no errors in your .qmd*
+
+# Data Visualization
+
+For the remaining exercises, use the `penguins` data from the **palmerpenguins** package. Each row represents an individual penguin observed in the Palmer Archipelago in Antarctica.
+
+Before constructing a visualization, use `glimpse()` to remind yourself of the dataset's structure.
+
+```{r}
+glimpse(penguins)
+```
+
+::: callout-note
+### Exercise 6
+
+**What is the relationship between flipper length and body mass in penguins from the Palmer Archipelago in Antartica?**
+
+Construct a scatterplot with:
+
++ `flipper_length_mm` on the x-axis; and
++ `body_mass_g` on the y-axis.
+
+Include an informative title and descriptive axis labels with the units of measurement.
+
+Finally, respond to the following:
+
++ What relationship do you observe between flipper length and body mass?
++ Did R produce a warning? If so, what does it mean?
+:::
+
+```{r fig.fullwidth=TRUE}
+
+```
+
+::: column-margin :::
+Recall the basic structure:
+
+```r
+ggplot(
+  data = data_frame,
+  aes(x = x_variable,
+      y = y_variable)
+) +
+  geom_point()
+```
+:::
+
+## Mapping an aesthetic
+
+::: callout-note
+### Exercise 7
+
+Modify your plot from Exercise 6 so that dot color represents penguin species.
+
+Then, respond to the following:
+
++ What additional information does color reveal?
++ Does the overall relationship appear to be explained partly by differences among species? Explain using evidence from the visualization.
++ In your code, was color **mapped** to a variable or **set** to a constant value? How do you know?
+:::
+
+```{r fig.fullwidth=TRUE}
+
+```
+
+## Comparing color and faceting
+
+::: callout-note
+### Exercise 8
+
+Create another version of the scatterplot that uses separate facets for the three penguin species instead of mapping species to color.
+
+Compare the faceted plot with the color-coded plot from Exercise 7.
+
++ What is easier to see in the color-coded plot?
++ What is easier to see in the faceted plot?
++ Which version would you use to communicate the relationship among species, flipper length, and body mass? Briefly justify your choice based on your communication goal.
+:::
+
+```{r fig.fullwidth=TRUE}
+
+```
+
+`r emo::ji("pause_button")` `r emo::ji("right_arrow")` ✅ *This is a good place to pause and Render to make sure there are no errors in your .qmd*
+
+## Mapping versus setting
+
+Consider the following code:
+
+```r
+ggplot(
+  penguins,
+  aes(
+    x = flipper_length_mm,
+    y = body_mass_g,
+    color = "navyblue"
+  )
+) +
+  geom_point()
+```
+
+::: callout-note
+### Exercise 9
+
+Before running the code above, predict what it will produce. Then, copy it into an executable code chunk, run it, and compare the result with your prediction.
+
++ Why does the plot contain a legend?
++ Why are the points not necessarily navy blue?
+
+Correct the code so that all points are navy blue and no color legend is created. Then, modify the corrected plot so that all points:
+
++ are navy blue;
++ are slightly transparent; and
++ have a size larger than the default.
+
+Explain why `color`, `alpha`, and `size` belong inside or outside `aes()` in your final plot. Your explanation should describe the general rule, not only this particular example.
+:::
+
+
+
+`r emo::ji("right_arrow")` ✅ ⬆️ *Yay, you're done! Render one last time and verify that everything is displayed correctly in your R_HW_02.html file. To view the .html, click on the file name in the Files quadrant and select "View in Web Browser". If everything looks good, you're ready to submit!*
+
+# Submit
+
+::: {.callout-important}
+
+To submit, upload your `R_HW_02.html` file to the R HW 02 assignment on Brightspace. The HTML file should be located in the same folder on your computer where you placed the `.qmd` file.
+
+:::
+
+# Grading (10pts)
+
+Homework assignments are opportunities to practice the skills and habits you will use on larger course projects. They are graded holistically rather than point-by-point.
+
+Your homework will be evaluated for:
+
+* **Completion & substantive correctness (8 points):** You have attempted all exercises, your code and results are generally correct, and your written responses appropriately interpret and engage with the data.
+* **Reproducible workflow & presentation (2 points):** Your document renders successfully and your code, output, visualizations, and responses are organized and readable.
+
+Minor mistakes will not be penalized individually. You may also receive feedback about misconceptions or habits to improve even when they do not result in a point deduction. Use this feedback in future homework assignments and projects.
+
+### Homework rubric - 10 points total
+
+#### Completion & substantive correctness — 8 points
+
+| Score | Description |
+|---|---|
+| **8** | Complete and substantively correct. Code and analyses accomplish what was asked, and written responses appropriately interpret the results. Minor imperfections are okay. |
+| **7** | Mostly complete and correct, with one notable error, omission, or misunderstanding. |
+| **6** | Several errors or omissions, but the work demonstrates reasonable understanding of the main ideas. |
+| **4–5** | Significant errors, omissions, or misunderstandings that should be addressed before moving on. |
+| **0–3** | Substantially incomplete, incorrect, or shows limited engagement with the homework. |
+
+#### Reproducible workflow & presentation — 2 points
+
+| Score | Description |
+|---|---|
+| **2** | Document renders successfully; code, output, visualizations, and written responses are reasonably organized and readable. |
+| **1** | Some problems with reproducibility, organization, readability, or presentation. |
+| **0** | Major problems with reproducibility, organization, readability, or presentation. |
+
+**Total: 10 points**

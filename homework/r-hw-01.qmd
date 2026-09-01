@@ -256,7 +256,7 @@ knitr::include_graphics("img/fig-resize-global.png")
 ```
 
 You can also use different figure sizes for different figures.
-To do so, add `#| fig-width: ` and `#| fig-height: ` as two new lines to the top of the code chunk for the figure you want to change. For example, change the figure in Exercise 5 to be 15 x 9.
+To do so, add `#| fig-width: ` and `#| fig-height: ` as two new lines to the top of the code chunk for the figure you want to change. For example, change the figure in Exercise 5 to be 9 x 15.
 
 
 ```{r fig-resize-local, echo = FALSE, fig.width=3}
