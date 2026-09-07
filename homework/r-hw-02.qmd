@@ -320,7 +320,7 @@ Explain why `color`, `alpha`, and `size` belong inside or outside `aes()` in you
 
 ::: {.callout-important}
 
-Unfortunately, Brightspace does not handle .html files well. Before submitting, you will need to convert your .html file to a .zip folder. Locate the file on your computer (not in RStudio), right click, and select "Compress." Then, upload the .zip folder to Brightspace.
+To submit, you need to upload your R_HW_02.html file to the R HW 02 assignment on Brightspace. The html file should be located in the same folder on your computer where you placed your .qmd (STAT_7500). 
 
 :::
 

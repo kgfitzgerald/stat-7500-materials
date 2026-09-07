@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R HW 02 - Working with Data &amp; Data Visualization</title>
+<title>R HW 03 - Data Visualization</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -61,17 +61,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="r-hw-02_files/libs/clipboard/clipboard.min.js"></script>
-<script src="r-hw-02_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="r-hw-02_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="r-hw-02_files/libs/quarto-html/popper.min.js"></script>
-<script src="r-hw-02_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="r-hw-02_files/libs/quarto-html/anchor.min.js"></script>
-<link href="r-hw-02_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="r-hw-02_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="r-hw-02_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="r-hw-02_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="r-hw-02_files/libs/bootstrap/bootstrap-1feb9f095034be8e4d50c8a4aaf610bf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="r-hw-03_files/libs/clipboard/clipboard.min.js"></script>
+<script src="r-hw-03_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="r-hw-03_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="r-hw-03_files/libs/quarto-html/popper.min.js"></script>
+<script src="r-hw-03_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="r-hw-03_files/libs/quarto-html/anchor.min.js"></script>
+<link href="r-hw-03_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="r-hw-03_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="r-hw-03_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="r-hw-03_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="r-hw-03_files/libs/bootstrap/bootstrap-1feb9f095034be8e4d50c8a4aaf610bf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 <link rel="stylesheet" href="styles.css">
@@ -90,24 +90,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#packages" id="toc-packages" class="nav-link" data-scroll-target="#packages">Packages</a></li>
   </ul></li>
-  <li><a href="#data-patient-health-awareness-scores" id="toc-data-patient-health-awareness-scores" class="nav-link" data-scroll-target="#data-patient-health-awareness-scores">Data: Patient Health-Awareness Scores</a></li>
+  <li><a href="#data-2020-american-national-election-study" id="toc-data-2020-american-national-election-study" class="nav-link" data-scroll-target="#data-2020-american-national-election-study">Data: 2020 American National Election Study</a></li>
   <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises">Exercises</a>
   <ul class="collapse">
-  <li><a href="#importing-and-inspecting-data" id="toc-importing-and-inspecting-data" class="nav-link" data-scroll-target="#importing-and-inspecting-data">Importing and inspecting data</a></li>
-  <li><a href="#identifying-missing-values-during-import" id="toc-identifying-missing-values-during-import" class="nav-link" data-scroll-target="#identifying-missing-values-during-import">Identifying missing values during import</a></li>
-  <li><a href="#investigating-change-over-time" id="toc-investigating-change-over-time" class="nav-link" data-scroll-target="#investigating-change-over-time">Investigating change over time</a></li>
-  <li><a href="#exporting-and-verifying-data" id="toc-exporting-and-verifying-data" class="nav-link" data-scroll-target="#exporting-and-verifying-data">Exporting and verifying data</a></li>
-  </ul></li>
-  <li><a href="#data-visualization" id="toc-data-visualization" class="nav-link" data-scroll-target="#data-visualization">Data Visualization</a>
-  <ul class="collapse">
-  <li><a href="#mapping-an-aesthetic" id="toc-mapping-an-aesthetic" class="nav-link" data-scroll-target="#mapping-an-aesthetic">Mapping an aesthetic</a></li>
-  <li><a href="#comparing-color-and-faceting" id="toc-comparing-color-and-faceting" class="nav-link" data-scroll-target="#comparing-color-and-faceting">Comparing color and faceting</a></li>
-  <li><a href="#mapping-versus-setting" id="toc-mapping-versus-setting" class="nav-link" data-scroll-target="#mapping-versus-setting">Mapping versus setting</a></li>
+  <li><a href="#understanding-the-data" id="toc-understanding-the-data" class="nav-link" data-scroll-target="#understanding-the-data">Understanding the data</a></li>
+  <li><a href="#visualizing-one-categorical-variable" id="toc-visualizing-one-categorical-variable" class="nav-link" data-scroll-target="#visualizing-one-categorical-variable">Visualizing one categorical variable</a></li>
+  <li><a href="#comparing-two-categorical-variables" id="toc-comparing-two-categorical-variables" class="nav-link" data-scroll-target="#comparing-two-categorical-variables">Comparing two categorical variables</a></li>
+  <li><a href="#visualizing-one-numerical-variable" id="toc-visualizing-one-numerical-variable" class="nav-link" data-scroll-target="#visualizing-one-numerical-variable">Visualizing one numerical variable</a></li>
+  <li><a href="#comparing-distributions" id="toc-comparing-distributions" class="nav-link" data-scroll-target="#comparing-distributions">Comparing distributions</a></li>
+  <li><a href="#evaluating-a-visualization" id="toc-evaluating-a-visualization" class="nav-link" data-scroll-target="#evaluating-a-visualization">Evaluating a visualization</a></li>
+  <li><a href="#open-exploration" id="toc-open-exploration" class="nav-link" data-scroll-target="#open-exploration">Open exploration</a></li>
+  <li><a href="#synthesis" id="toc-synthesis" class="nav-link" data-scroll-target="#synthesis">Synthesis</a></li>
   </ul></li>
   <li><a href="#submit" id="toc-submit" class="nav-link" data-scroll-target="#submit">Submit</a></li>
-  <li><a href="#grading-10pts" id="toc-grading-10pts" class="nav-link" data-scroll-target="#grading-10pts">Grading (10pts)</a>
+  <li><a href="#grading-10-points" id="toc-grading-10-points" class="nav-link" data-scroll-target="#grading-10-points">Grading (10 points)</a>
   <ul class="collapse">
-  <li><a href="#homework-rubric---10-points-total" id="toc-homework-rubric---10-points-total" class="nav-link" data-scroll-target="#homework-rubric---10-points-total">Homework rubric - 10 points total</a></li>
+  <li><a href="#homework-rubric-10-points-total" id="toc-homework-rubric-10-points-total" class="nav-link" data-scroll-target="#homework-rubric-10-points-total">Homework rubric — 10 points total</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -116,12 +114,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">R HW 02 - Working with Data &amp; Data Visualization</h1>
+<h1 class="title">R HW 03 - Data Visualization</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Data importing</div>
-    <div class="quarto-category">Data inspection</div>
     <div class="quarto-category">Data visualization</div>
     <div class="quarto-category">ggplot2</div>
+    <div class="quarto-category">ANES</div>
   </div>
   </div>
 
@@ -141,72 +138,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="goals" class="level1">
 <h1>Goals</h1>
-<p>The main goal of this assignment is to practice a reproducible workflow for working with data in R: importing data, checking that R interpreted it appropriately, analyzing relevant variables, and communicating what you learn.</p>
+<p>The main goal of this assignment is to practice selecting, constructing, and interpreting visualizations that are appropriate for the variables and research questions being examined.</p>
 <p>You will…</p>
 <ul>
-<li>Import data from an external file using a relative path</li>
-<li>Inspect the structure and contents of imported data</li>
-<li>Use data documentation to identify values that represent missingness</li>
-<li>Distinguish between how R stores a variable and what the variable means</li>
-<li>Use vectors, indexing, and summary statistics to investigate change over time</li>
-<li>Export and verify a prepared data file</li>
-<li>Create and interpret scatterplots</li>
-<li>Map variables to aesthetic features of a visualization</li>
-<li>Compare color and faceting as alternative ways to display a third variable</li>
+<li>Investigate the source and collection of a real-world dataset</li>
+<li>Inspect the structure and dimensions of a dataset</li>
+<li>Visualize categorical and numerical variables</li>
+<li>Compare counts and proportions in bar charts</li>
+<li>Compare distributions using boxplots and ridge plots</li>
+<li>Evaluate whether a visualization is appropriate for a particular question</li>
+<li>Apply principles of effective data visualization</li>
+<li>Interpret visualizations in context and identify limitations</li>
 </ul>
-<p>The individual R commands matter, but the larger goal is to develop a reliable process: understand where the data came from, inspect before analyzing, make purposeful choices, and interpret results in context.</p>
+<p>The individual R commands matter, but the larger goal is to develop a reliable process: begin with a meaningful question, identify the relevant variables and their types, select an appropriate visualization, and interpret what the visualization does—and does not—show.</p>
 </section>
 <section id="getting-started" class="level1 page-columns page-full">
 <h1>Getting Started</h1>
 <p>To get started on this assignment, do the following:</p>
 <ul>
 <li>Open our class <a href="https://github.com/kgfitzgerald/STAT_7500_templates">GitHub repo</a></li>
-<li>Navigate to <code>R_HW_02.qmd</code></li>
+<li>Navigate to <code>R_HW_03.qmd</code></li>
 <li>Click the download icon (hover text should say “Download raw file”)</li>
 <li>Place the downloaded <code>.qmd</code> document in your STAT_7500 folder</li>
-<li>Download <code>patients.csv</code> and place it inside the <code>data</code> folder in your STAT_7500 project</li>
-<li>From inside your STAT_7500 RStudio Project, open and render the Quarto document</li>
+<li>Download <code>anes2020_subset.csv</code> and place it inside the <code>data</code> folder in your STAT_7500 project</li>
+<li>From inside your STAT_7500 project, open and render the Quarto document</li>
 </ul>
 <p>Your project should be organized approximately like this:</p>
 <pre><code>STAT_7500/
-├── R_HW_02.qmd
+├── R_HW_03.qmd
 └── data/
-    └── patients.csv</code></pre>
-<p>The document you are currently reading contains all the instructions for R HW 02. You will complete the assignment by adding code and text responses to the <code>R_HW_02.qmd</code> document in RStudio.</p>
+    └── anes2020_subset.csv</code></pre>
+<p>The document you are currently reading contains all the instructions for R HW 03. You will complete the assignment by adding code and text responses to the <code>R_HW_03.qmd</code> document.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>Keeping the data and analysis files together in an R Project allows you to use a relative file path such as <code>"data/patients.csv"</code>. Do not use a file path that begins with a user name or refers to a location specific to your computer.</p>
+<p>Keeping the data and analysis files together in an R Project allows you to use a relative file path such as <code>"data/anes_2020_subset.csv"</code>. Do not use a file path that begins with a user name or refers to a location specific to your computer.</p>
 </div></div><section id="packages" class="level2">
 <h2 class="anchored" data-anchor-id="packages">Packages</h2>
-<p>In this assignment, we will use <strong>tidyverse</strong> for importing and visualizing data and <strong>palmerpenguins</strong> for the <code>penguins</code> dataset.</p>
+<p>In this assignment, we will use <strong>tidyverse</strong> to work with and visualize the data, <strong>viridis</strong> for accessible color palettes, and <strong>ggridges</strong> to create ridge plots.</p>
 <p>You can run <code>install.packages("nameofpackage")</code> in your Console if you do not already have a package installed. Then, load the packages in your Quarto document:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
-<section id="data-patient-health-awareness-scores" class="level1">
-<h1>Data: Patient Health-Awareness Scores</h1>
-<p>The patient data were assembled from instructional files previously used in the SAS portion of STAT 7500. They should be treated as instructional data rather than as records from a documented research study.</p>
-<p>The file contains records for thirty patients who participated in a six-week health-awareness program. Health-awareness surveys were administered before and after the program. Scores range from 0 to 20, with higher scores indicating greater awareness of healthy habits.</p>
-<p>The variables in <code>patients.csv</code> are:</p>
+<section id="data-2020-american-national-election-study" class="level1">
+<h1>Data: 2020 American National Election Study</h1>
+<p>The data for this homework assignment come from the <a href="https://electionstudies.org/data-center/2020-time-series-study/">2020 American National Election Study</a>.</p>
+<p>Import the data using the code below:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>anes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/anes2020_subset.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The dataset contains the following variables:</p>
 <ul>
-<li><code>patient_id</code>: unique patient identification code</li>
-<li><code>gender_code</code>: gender recorded as <code>0</code> for male and <code>1</code> for female</li>
-<li><code>baseline_score</code>: health-awareness score before the program</li>
-<li><code>followup_score</code>: health-awareness score after the program</li>
-</ul>
-<p>The data documentation also tells us that:</p>
-<ul>
-<li><code>Not recorded</code> represents a missing gender value; and</li>
-<li><code>.</code> represents a missing survey score.</li>
+<li><code>CASEID</code>: a unique identification number for each respondent</li>
+<li><code>hunt_fish</code>: whether the respondent went hunting or fishing in the past year</li>
+<li><code>scientists</code>: a feeling-thermometer rating indicating how warmly the respondent feels toward scientists, ranging from 0 (coolest) to 100 (warmest)</li>
+<li><code>education</code>: an ordinal categorical variable representing the respondent’s highest level of education, ranging from less than high school to a professional degree</li>
+<li><code>ideology</code>: a seven-point self-rating scale ranging from most liberal to most conservative</li>
+<li><code>urbanrural</code>: the type of community in which the respondent lives, with the possible values rural, small town, suburb, and city</li>
 </ul>
 </section>
 <section id="exercises" class="level1 page-columns page-full">
 <h1>Exercises</h1>
-<section id="importing-and-inspecting-data" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="importing-and-inspecting-data">Importing and inspecting data</h2>
+<p>All plots should follow the visualization practices discussed in class. Unless there is a reason to do otherwise, include an informative title, descriptive axis labels, and a clear legend when needed. Make purposeful aesthetic choices that support the question being investigated.</p>
+<p>Your written responses should interpret the visualization in context rather than merely restating what appears on the axes.</p>
+<section id="understanding-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-the-data">Understanding the data</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -217,14 +216,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Import <code>patients.csv</code> using <code>read_csv()</code> and assign the resulting data frame to an object named <code>patients_raw</code>.</p>
-<p>Use a relative file path. Then, use <code>glimpse()</code> to inspect the imported data.</p>
+<p>Use the <a href="https://electionstudies.org/data-center/2020-time-series-study/">ANES website</a> to learn more about the study.</p>
+<p>Briefly describe:</p>
+<ul>
+<li>who collected the data;</li>
+<li>when the data were collected;</li>
+<li>who was surveyed; and</li>
+<li>anything else about the data-collection process that seems relevant or important for interpreting the results.</li>
+</ul>
 </div>
 </div>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>After importing data, always inspect the result. The absence of an error message does not guarantee that R interpreted every variable as intended.</p>
-</div></div><div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
@@ -234,19 +236,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p>Inspect the <code>anes</code> dataset using appropriate R functions.</p>
 <ul>
-<li>How many observations and variables are in the data? Use code to support you answer.</li>
+<li>How many rows are in the dataset?</li>
+<li>How many columns are in the dataset?</li>
 <li>What does one row represent?</li>
-<li>Which variables did R interpret as character variables even though their nonmissing values are numerical codes or scores? Why did this occur?</li>
-<li>Why is it important to answer these questions before beginning an analysis?</li>
 </ul>
+<p>Include code and output to support your response.</p>
 </div>
 </div>
-<p>⏸ ➡️ ✅ <em>This is a good place to pause and Render to make sure there are no errors in your .qmd</em></p>
+<p>⏸ ➡️ ✅ <em>This is a good place to pause and Render to make sure there are no errors in your .qmd.</em></p>
 </section>
-<section id="identifying-missing-values-during-import" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="identifying-missing-values-during-import">Identifying missing values during import</h2>
-<p>Missing data in R are represented by <code>NA</code>. However, external files may use many different values to indicate missingness. We should use the data documentation—not guesswork—to determine what those values mean.</p>
+<section id="visualizing-one-categorical-variable" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-one-categorical-variable">Visualizing one categorical variable</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -257,25 +259,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Import <code>patients.csv</code> again and assign the result to an object named <code>patients</code>.</p>
-<p>This time, use the <code>na</code> argument in <code>read_csv()</code> to identify <code>"Not recorded"</code> and <code>"."</code> as missing values.</p>
-<p>Use <code>glimpse()</code> and <code>summary()</code> to inspect <code>patients</code>, and then respond to the following:</p>
+<p><strong>How do respondents describe their political ideology?</strong></p>
+<p>Create a bar chart displaying respondents’ <code>ideology</code>, with the number of respondents on the y-axis.</p>
+<p>Then, respond to the following:</p>
 <ul>
-<li>Which variables changed type and why?</li>
-<li>Did identifying the missing values change the number of rows or columns? Why or why not?</li>
-<li>Although <code>gender_code</code> is now stored as a numerical variable, should it be interpreted as a quantitative measurement? Explain.</li>
-<li>What does this example demonstrate about the difference between a variable’s storage type and its meaning?</li>
+<li>What is the most common ideology?</li>
+<li>Do respondents tend to be moderate or more ideologically extreme?</li>
+<li>Are there any missing or nonresponse categories that should be considered when interpreting the visualization?</li>
 </ul>
 </div>
 </div>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>A value such as <code>.</code> is not universally a missing value. We treat it as missing here because the data documentation tells us what it represents in this particular file.</p>
-</div></div><p>⏸ ➡️ ✅ <em>This is a good place to pause and Render to make sure there are no errors in your .qmd</em></p>
 </section>
-<section id="investigating-change-over-time" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="investigating-change-over-time">Investigating change over time</h2>
-<p>The survey was administered to the same patients before and after the program. Therefore, each patient’s follow-up score should be compared with that same patient’s baseline score.</p>
+<section id="comparing-two-categorical-variables" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-two-categorical-variables">Comparing two categorical variables</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -286,27 +282,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Create a vector called <code>score_change</code> by subtracting each patient’s baseline score from their follow-up score:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>score_change <span class="ot">&lt;-</span> patients<span class="sc">$</span>followup_score <span class="sc">-</span> patients<span class="sc">$</span>baseline_score</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then:</p>
+<p><strong>Does the type of community in which respondents live differ according to their political ideology?</strong></p>
+<p>Create a filled bar chart with:</p>
 <ul>
-<li>Print <code>score_change</code>.</li>
-<li>Print only the fifth element using <code>[]</code> notation.</li>
-<li>Verify that <code>score_change</code> is numerical using <code>class()</code>.</li>
-<li>Use <code>summary()</code> to inspect the distribution of the change scores.</li>
-<li>Use appropriate summary statistic function (e.g.&nbsp;<code>mean()</code>) to reproduce the mean, median, minimum, and maximum printed out by <code>summary()</code>. Handle missing values appropriately.</li>
-<li>Explain why <code>score_change</code> contains a missing value. Does that missing value represent a patient whose score did not change?</li>
-<li>In 2–3 sentences, describe what the results suggest about changes in health-awareness scores.</li>
-<li>Do these summaries alone establish that the program <em>caused</em> the observed changes? Explain briefly.</li>
+<li>one bar for each level of <code>ideology</code>;</li>
+<li><code>urbanrural</code> mapped to the fill aesthetic; and</li>
+<li>each bar scaled to a total height of 1 so that the segments represent proportions.</li>
+</ul>
+<p>You are encouraged, but not required, to use a <strong>viridis</strong> color palette. Include clear labels for the axes, legend, and plot.</p>
+<p>Then, respond to the following:</p>
+<ul>
+<li>Where do respondents with different political ideologies tend to live?</li>
+<li>Which comparisons are made easier by displaying proportions rather than counts?</li>
+<li>Does the proportion of nonresponses vary substantially by ideology?</li>
 </ul>
 </div>
 </div>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>A positive value of <code>score_change</code> indicates that the patient’s score increased. A negative value indicates that it decreased. A value of zero indicates no change.</p>
-</div></div></section>
-<section id="exporting-and-verifying-data" class="level2">
-<h2 class="anchored" data-anchor-id="exporting-and-verifying-data">Exporting and verifying data</h2>
+<p>⏸ ➡️ ✅ <em>This is a good place to pause and Render to make sure there are no errors in your .qmd.</em></p>
+</section>
+<section id="visualizing-one-numerical-variable" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-one-numerical-variable">Visualizing one numerical variable</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -317,39 +312,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Use <code>write_csv()</code> to export <code>patients</code> as <code>data/patients_clean.csv</code>.</p>
-<p>Then:</p>
+<p><strong>How warmly do respondents feel toward scientists?</strong></p>
+<p>Create a histogram with:</p>
 <ul>
-<li>Confirm that <code>patients_clean.csv</code> appears inside the <code>data</code> folder in your project.</li>
-<li>Import the exported file and assign it to an object named <code>patients_check</code>.</li>
-<li>Use <code>dim()</code> to verify that <code>patients</code> and <code>patients_check</code> have the same dimensions.</li>
-<li>Use <code>glimpse()</code> to verify that the variables were imported with the expected types.</li>
-<li>Explain why checking an exported file is a useful part of a reproducible workflow.</li>
+<li>the feeling-thermometer rating (<code>scientists</code>) on the x-axis; and</li>
+<li>the number of respondents on the y-axis.</li>
 </ul>
+<p>Experiment with the number or width of the bins and select a version that communicates the distribution clearly.</p>
+<p>Describe the distribution, including its shape, peaks, spread, and any unusual features. Explain how your choice of bins affects what is visible.</p>
 </div>
 </div>
-<p>⏸ ➡️ ✅ <em>This is a good place to pause and Render to make sure there are no errors in your .qmd</em></p>
 </section>
-</section>
-<section id="data-visualization" class="level1 page-columns page-full">
-<h1>Data Visualization</h1>
-<p>For the remaining exercises, use the <code>penguins</code> data from the <strong>palmerpenguins</strong> package. Each row represents an individual penguin observed in the Palmer Archipelago in Antarctica.</p>
-<p>Before constructing a visualization, use <code>glimpse()</code> to remind yourself of the dataset’s structure.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(penguins)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 344
-Columns: 8
-$ species           &lt;fct&gt; Adelie, Adelie, Adelie, Adelie, Adelie, Adelie, Adel…
-$ island            &lt;fct&gt; Torgersen, Torgersen, Torgersen, Torgersen, Torgerse…
-$ bill_length_mm    &lt;dbl&gt; 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.9, 39.2, 34.1, …
-$ bill_depth_mm     &lt;dbl&gt; 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.8, 19.6, 18.1, …
-$ flipper_length_mm &lt;int&gt; 181, 186, 195, NA, 193, 190, 181, 195, 193, 190, 186…
-$ body_mass_g       &lt;int&gt; 3750, 3800, 3250, NA, 3450, 3650, 3625, 4675, 3475, …
-$ sex               &lt;fct&gt; male, female, female, NA, female, male, female, male…
-$ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007…</code></pre>
-</div>
-</div>
+<section id="comparing-distributions" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="comparing-distributions">Comparing distributions</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -360,31 +335,21 @@ $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>What is the relationship between flipper length and body mass in penguins from the Palmer Archipelago in Antartica?</strong></p>
-<p>Construct a scatterplot with:</p>
-<ul>
-<li><code>flipper_length_mm</code> on the x-axis; and</li>
-<li><code>body_mass_g</code> on the y-axis.</li>
-</ul>
-<p>Include an informative title and descriptive axis labels with the units of measurement.</p>
-<p>Finally, respond to the following:</p>
-<ul>
-<li>What relationship do you observe between flipper length and body mass?</li>
-<li>Did R produce a warning? If so, what does it mean?</li>
-</ul>
+<p><strong>Does the political ideology of respondents who went hunting or fishing in the past year differ from the ideology of those who did not?</strong></p>
+<p>Create side-by-side boxplots comparing the two groups.</p>
+<p>Begin with the following code, which removes observations with missing values for <code>hunt_fish</code> and creates clearer labels for the two groups:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>anes <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(hunt_fish) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">hunted_fished =</span> <span class="fu">if_else</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      hunt_fish <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Did Not Hunt or Fish"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Hunted or Fished"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Complete the pipeline by adding the code needed to construct and label the boxplots.</p>
 </div>
 </div>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>Recall the basic structure:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_frame,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> x_variable,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> y_variable)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div></div><section id="mapping-an-aesthetic" class="level2">
-<h2 class="anchored" data-anchor-id="mapping-an-aesthetic">Mapping an aesthetic</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -395,19 +360,14 @@ $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Modify your plot from Exercise 6 so that dot color represents penguin species.</p>
-<p>Then, respond to the following:</p>
-<ul>
-<li>What additional information does color reveal?</li>
-<li>Does the overall relationship appear to be explained partly by differences among species? Explain using evidence from the visualization.</li>
-<li>In your code, was color <strong>mapped</strong> to a variable or <strong>set</strong> to a constant value? How do you know?</li>
-</ul>
+<p>Explore the same question as in Exercise 6 using <code>geom_density_ridges()</code> to construct a ridge plot.</p>
+<p>Use the same two groups and make sure the plot is clearly labeled.</p>
 </div>
 </div>
-</section>
-<section id="comparing-color-and-faceting" class="level2">
-<h2 class="anchored" data-anchor-id="comparing-color-and-faceting">Comparing color and faceting</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>You can learn more about ridge plots in the <a href="https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html">Introduction to ggridges</a>.</p>
+</div></div><div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
@@ -417,29 +377,19 @@ $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Create another version of the scatterplot that uses separate facets for the three penguin species instead of mapping species to color.</p>
-<p>Compare the faceted plot with the color-coded plot from Exercise 7.</p>
+<p>Compare the boxplots and ridge plots from Exercises 6 and 7.</p>
 <ul>
-<li>What is easier to see in the color-coded plot?</li>
-<li>What is easier to see in the faceted plot?</li>
-<li>Which version would you use to communicate the relationship among species, flipper length, and body mass? Briefly justify your choice based on your communication goal.</li>
+<li>What do the two visualizations suggest about differences in ideology between the groups?</li>
+<li>What is easier to see in the boxplots?</li>
+<li>What is easier to see in the ridge plots?</li>
+<li>Which visualization would you use to communicate the comparison? Briefly justify your choice.</li>
 </ul>
 </div>
 </div>
-<p>⏸ ➡️ ✅ <em>This is a good place to pause and Render to make sure there are no errors in your .qmd</em></p>
+<p>⏸ ➡️ ✅ <em>This is a good place to pause and Render to make sure there are no errors in your .qmd.</em></p>
 </section>
-<section id="mapping-versus-setting" class="level2">
-<h2 class="anchored" data-anchor-id="mapping-versus-setting">Mapping versus setting</h2>
-<p>Consider the following code:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  penguins,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> flipper_length_mm,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> body_mass_g,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"navyblue"</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="evaluating-a-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="evaluating-a-visualization">Evaluating a visualization</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -450,21 +400,71 @@ $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Before running the code above, predict what it will produce. Then, copy it into an executable code chunk, run it, and compare the result with your prediction.</p>
+<p><strong>Is there a relationship between a respondent’s education level and how they view scientists?</strong></p>
+<p>Create a scatterplot with:</p>
 <ul>
-<li>Why does the plot contain a legend?</li>
-<li>Why are the points not necessarily navy blue?</li>
+<li><code>education</code> on the x-axis;</li>
+<li><code>scientists</code> on the y-axis; and</li>
+<li>a line of best fit created with <code>geom_smooth(method = "lm")</code>.</li>
 </ul>
-<p>Correct the code so that all points are navy blue and no color legend is created. Then, modify the corrected plot so that all points:</p>
+<p>Then, evaluate the resulting visualization:</p>
 <ul>
-<li>are navy blue;</li>
-<li>are slightly transparent; and</li>
-<li>have a size larger than the default.</li>
+<li>Is a scatterplot an especially useful way to display these variables? Why or why not?</li>
+<li>How does the way <code>education</code> is measured affect the appearance and interpretation of the plot?</li>
+<li>Does the fitted linear relationship make sense for these data?</li>
+<li>What alternative visualization might communicate the relationship more effectively?</li>
 </ul>
-<p>Explain why <code>color</code>, <code>alpha</code>, and <code>size</code> belong inside or outside <code>aes()</code> in your final plot. Your explanation should describe the general rule, not only this particular example.</p>
+<p>You do not need to create the alternative visualization unless you would like to explore it.</p>
 </div>
 </div>
-<p>➡️ ✅ ⬆️ <em>Yay, you’re done! Render one last time and verify that everything is displayed correctly in your R_HW_02.html file. To view the .html, click on the file name in the Files quadrant and select “View in Web Browser”. If everything looks good, you’re ready to submit!</em></p>
+</section>
+<section id="open-exploration" class="level2">
+<h2 class="anchored" data-anchor-id="open-exploration">Open exploration</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Exercise 10
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Develop one additional question that can be investigated using the variables in the <code>anes</code> dataset.</p>
+<p>Then:</p>
+<ul>
+<li>Clearly state your question.</li>
+<li>Identify the variables needed to investigate it.</li>
+<li>Create an appropriate visualization.</li>
+<li>Explain why the selected plot fits the variables and question.</li>
+<li>Describe what the visualization reveals.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="synthesis" class="level2">
+<h2 class="anchored" data-anchor-id="synthesis">Synthesis</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Exercise 11
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Write a brief paragraph that synthesizes what you learned from your analyses.</p>
+<p>Your paragraph should address:</p>
+<ul>
+<li>the most important or interesting findings;</li>
+<li>limitations of the data or analyses;</li>
+<li>conclusions that cannot be supported by these visualizations alone; and</li>
+<li>additional data that would help you investigate related questions.</li>
+</ul>
+</div>
+</div>
+<p>➡️ ✅ ⬆️ <em>Yay, you’re done! Render one last time and verify that everything is displayed correctly in your <code>R_HW_03.html</code> file. Open the file in a web browser and inspect the complete document before submitting.</em></p>
 </section>
 </section>
 <section id="submit" class="level1">
@@ -479,23 +479,23 @@ Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>To submit, you need to upload your R_HW_02.html file to the R HW 02 assignment on Brightspace. The html file should be located in the same folder on your computer where you placed your .qmd (STAT_7500).</p>
+<p>To submit, you need to upload your R_HW_03.html file to the R HW 03 assignment on Brightspace. The html file should be located in the same folder on your computer where you placed your .qmd (STAT_7500).</p>
 </div>
 </div>
 </section>
-<section id="grading-10pts" class="level1">
-<h1>Grading (10pts)</h1>
+<section id="grading-10-points" class="level1">
+<h1>Grading (10 points)</h1>
 <p>Homework assignments are opportunities to practice the skills and habits you will use on larger course projects. They are graded holistically rather than point-by-point.</p>
 <p>Your homework will be evaluated for:</p>
 <ul>
-<li><strong>Completion &amp; substantive correctness (8 points):</strong> You have attempted all exercises, your code and results are generally correct, and your written responses appropriately interpret and engage with the data.</li>
-<li><strong>Reproducible workflow &amp; presentation (2 points):</strong> Your document renders successfully and your code, output, visualizations, and responses are organized and readable.</li>
+<li><strong>Completion and substantive correctness (8 points):</strong> You have attempted all exercises, your code and results are generally correct, and your written responses appropriately interpret and engage with the data.</li>
+<li><strong>Reproducible workflow and presentation (2 points):</strong> Your document renders successfully and your code, output, visualizations, and responses are organized and readable.</li>
 </ul>
 <p>Minor mistakes will not be penalized individually. You may also receive feedback about misconceptions or habits to improve even when they do not result in a point deduction. Use this feedback in future homework assignments and projects.</p>
-<section id="homework-rubric---10-points-total" class="level3">
-<h3 class="anchored" data-anchor-id="homework-rubric---10-points-total">Homework rubric - 10 points total</h3>
-<section id="completion-substantive-correctness-8-points" class="level4">
-<h4 class="anchored" data-anchor-id="completion-substantive-correctness-8-points">Completion &amp; substantive correctness — 8 points</h4>
+<section id="homework-rubric-10-points-total" class="level3">
+<h3 class="anchored" data-anchor-id="homework-rubric-10-points-total">Homework rubric — 10 points total</h3>
+<section id="completion-and-substantive-correctness-8-points" class="level4">
+<h4 class="anchored" data-anchor-id="completion-and-substantive-correctness-8-points">Completion and substantive correctness — 8 points</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -531,8 +531,8 @@ Important
 </tbody>
 </table>
 </section>
-<section id="reproducible-workflow-presentation-2-points" class="level4">
-<h4 class="anchored" data-anchor-id="reproducible-workflow-presentation-2-points">Reproducible workflow &amp; presentation — 2 points</h4>
+<section id="reproducible-workflow-and-presentation-2-points" class="level4">
+<h4 class="anchored" data-anchor-id="reproducible-workflow-and-presentation-2-points">Reproducible workflow and presentation — 2 points</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">

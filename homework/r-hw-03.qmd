@@ -1,0 +1,388 @@
+---
+title: "R HW 03 - Data Visualization"
+format:
+  html:
+    css: styles.css
+    grid:
+      margin-width: 350px
+fig-numbering: false
+toc: true
+toc-location: right
+categories:
+  - Data visualization
+  - ggplot2
+  - ANES
+editor_options:
+  chunk_output_type: console
+callout-icon: false
+---
+
+# Goals
+
+The main goal of this assignment is to practice selecting, constructing, and interpreting visualizations that are appropriate for the variables and research questions being examined.
+
+You will...
+
++ Investigate the source and collection of a real-world dataset
++ Inspect the structure and dimensions of a dataset
++ Visualize categorical and numerical variables
++ Compare counts and proportions in bar charts
++ Compare distributions using boxplots and ridge plots
++ Evaluate whether a visualization is appropriate for a particular question
++ Apply principles of effective data visualization
++ Interpret visualizations in context and identify limitations
+
+The individual R commands matter, but the larger goal is to develop a reliable process: begin with a meaningful question, identify the relevant variables and their types, select an appropriate visualization, and interpret what the visualization does—and does not—show.
+
+# Getting Started
+
+To get started on this assignment, do the following:
+
+- Open our class [GitHub repo](https://github.com/kgfitzgerald/STAT_7500_templates)
+- Navigate to `R_HW_03.qmd`
+- Click the download icon (hover text should say "Download raw file")
+- Place the downloaded `.qmd` document in your STAT_7500 folder
+- Download `anes2020_subset.csv` and place it inside the `data` folder in your STAT_7500 project
+- From inside your STAT_7500 project, open and render the Quarto document
+
+Your project should be organized approximately like this:
+
+```         
+STAT_7500/
+├── R_HW_03.qmd
+└── data/
+    └── anes2020_subset.csv
+```
+
+The document you are currently reading contains all the instructions for R HW 03. You will complete the assignment by adding code and text responses to the `R_HW_03.qmd` document.
+
+::: column-margin
+Keeping the data and analysis files together in an R Project allows you to use a relative file path such as `"data/anes_2020_subset.csv"`. Do not use a file path that begins with a user name or refers to a location specific to your computer.
+:::
+
+## Packages
+
+In this assignment, we will use **tidyverse** to work with and visualize the data, **viridis** for accessible color palettes, and **ggridges** to create ridge plots.
+
+You can run `install.packages("nameofpackage")` in your Console if you do not already have a package installed. Then, load the packages in your Quarto document:
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(viridis)
+library(ggridges)
+```
+
+# Data: 2020 American National Election Study
+
+The data for this homework assignment come from the [2020 American National Election Study](https://electionstudies.org/data-center/2020-time-series-study/).
+
+Import the data using the code below:
+
+```{r}
+#| label: import-anes
+#| warning: false
+#| message: false
+
+anes <- read_csv("data/anes2020_subset.csv")
+```
+
+The dataset contains the following variables:
+
+- `CASEID`: a unique identification number for each respondent
+- `hunt_fish`: whether the respondent went hunting or fishing in the past year
+- `scientists`: a feeling-thermometer rating indicating how warmly the respondent feels toward scientists, ranging from 0 (coolest) to 100 (warmest)
+- `education`: an ordinal categorical variable representing the respondent's highest level of education, ranging from less than high school to a professional degree
+- `ideology`: a seven-point self-rating scale ranging from most liberal to most conservative
+- `urbanrural`: the type of community in which the respondent lives, with the possible values rural, small town, suburb, and city
+
+# Exercises
+
+All plots should follow the visualization practices discussed in class. Unless there is a reason to do otherwise, include an informative title, descriptive axis labels, and a clear legend when needed. Make purposeful aesthetic choices that support the question being investigated.
+
+Your written responses should interpret the visualization in context rather than merely restating what appears on the axes.
+
+## Understanding the data
+
+::: callout-note
+### Exercise 1
+
+Use the [ANES website](https://electionstudies.org/data-center/2020-time-series-study/) to learn more about the study.
+
+Briefly describe:
+
++ who collected the data;
++ when the data were collected;
++ who was surveyed; and
++ anything else about the data-collection process that seems relevant or important for interpreting the results.
+:::
+
+::: callout-note
+### Exercise 2
+
+Inspect the `anes` dataset using appropriate R functions.
+
++ How many rows are in the dataset?
++ How many columns are in the dataset?
++ What does one row represent?
+
+Include code and output to support your response.
+:::
+
+```{r}
+#| label: inspect-anes
+
+```
+
+`r emo::ji("pause_button")` `r emo::ji("right_arrow")` ✅ *This is a good place to pause and Render to make sure there are no errors in your .qmd.*
+
+## Visualizing one categorical variable
+
+::: callout-note
+### Exercise 3
+
+**How do respondents describe their political ideology?**
+
+Create a bar chart displaying respondents' `ideology`, with the number of respondents on the y-axis.
+
+Then, respond to the following:
+
++ What is the most common ideology?
++ Do respondents tend to be moderate or more ideologically extreme?
++ Are there any missing or nonresponse categories that should be considered when interpreting the visualization?
+:::
+
+```{r}
+#| label: ideology-bar-chart
+#| fig-fullwidth: true
+
+```
+
+## Comparing two categorical variables
+
+::: callout-note
+### Exercise 4
+
+**Does the type of community in which respondents live differ according to their political ideology?**
+
+Create a filled bar chart with:
+
++ one bar for each level of `ideology`;
++ `urbanrural` mapped to the fill aesthetic; and
++ each bar scaled to a total height of 1 so that the segments represent proportions.
+
+You are encouraged, but not required, to use a **viridis** color palette. Include clear labels for the axes, legend, and plot.
+
+Then, respond to the following:
+
++ Where do respondents with different political ideologies tend to live?
++ Which comparisons are made easier by displaying proportions rather than counts?
++ Does the proportion of nonresponses vary substantially by ideology?
+:::
+
+```{r}
+#| label: ideology-urban-rural
+#| fig-fullwidth: true
+
+```
+
+`r emo::ji("pause_button")` `r emo::ji("right_arrow")` ✅ *This is a good place to pause and Render to make sure there are no errors in your .qmd.*
+
+## Visualizing one numerical variable
+
+::: callout-note
+### Exercise 5
+
+**How warmly do respondents feel toward scientists?**
+
+Create a histogram with:
+
++ the feeling-thermometer rating (`scientists`) on the x-axis; and
++ the number of respondents on the y-axis.
+
+Experiment with the number or width of the bins and select a version that communicates the distribution clearly.
+
+Describe the distribution, including its shape, peaks, spread, and any unusual features. Explain how your choice of bins affects what is visible.
+:::
+
+```{r}
+#| label: scientists-histogram
+#| fig-fullwidth: true
+
+```
+
+## Comparing distributions
+
+::: callout-note
+### Exercise 6
+
+**Does the political ideology of respondents who went hunting or fishing in the past year differ from the ideology of those who did not?**
+
+Create side-by-side boxplots comparing the two groups.
+
+Begin with the following code, which removes observations with missing values for `hunt_fish` and creates clearer labels for the two groups:
+
+```r
+anes |>
+  drop_na(hunt_fish) |>
+  mutate(
+    hunted_fished = if_else(
+      hunt_fish == 0,
+      "Did Not Hunt or Fish",
+      "Hunted or Fished"
+    )
+  ) |>
+```
+
+Complete the pipeline by adding the code needed to construct and label the boxplots.
+:::
+
+```{r}
+#| label: hunting-boxplots
+#| fig-fullwidth: true
+
+```
+
+::: callout-note
+### Exercise 7
+
+Explore the same question as in Exercise 6 using `geom_density_ridges()` to construct a ridge plot.
+
+Use the same two groups and make sure the plot is clearly labeled.
+:::
+
+```{r}
+#| label: hunting-ridge-plots
+#| fig-fullwidth: true
+
+```
+
+::: column-margin
+You can learn more about ridge plots in the [Introduction to ggridges](https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html).
+:::
+
+::: callout-note
+### Exercise 8
+
+Compare the boxplots and ridge plots from Exercises 6 and 7.
+
++ What do the two visualizations suggest about differences in ideology between the groups?
++ What is easier to see in the boxplots?
++ What is easier to see in the ridge plots?
++ Which visualization would you use to communicate the comparison? Briefly justify your choice.
+:::
+
+`r emo::ji("pause_button")` `r emo::ji("right_arrow")` ✅ *This is a good place to pause and Render to make sure there are no errors in your .qmd.*
+
+## Evaluating a visualization
+
+::: callout-note
+### Exercise 9
+
+**Is there a relationship between a respondent's education level and how they view scientists?**
+
+Create a scatterplot with:
+
++ `education` on the x-axis;
++ `scientists` on the y-axis; and
++ a line of best fit created with `geom_smooth(method = "lm")`.
+
+Then, evaluate the resulting visualization:
+
++ Is a scatterplot an especially useful way to display these variables? Why or why not?
++ How does the way `education` is measured affect the appearance and interpretation of the plot?
++ Does the fitted linear relationship make sense for these data?
++ What alternative visualization might communicate the relationship more effectively?
+
+You do not need to create the alternative visualization unless you would like to explore it.
+:::
+
+```{r}
+#| label: education-scientists
+#| fig-fullwidth: true
+
+```
+
+## Open exploration
+
+::: callout-note
+### Exercise 10
+
+Develop one additional question that can be investigated using the variables in the `anes` dataset.
+
+Then:
+
++ Clearly state your question.
++ Identify the variables needed to investigate it.
++ Create an appropriate visualization.
++ Explain why the selected plot fits the variables and question.
++ Describe what the visualization reveals.
+:::
+
+```{r}
+#| label: open-exploration
+#| fig-fullwidth: true
+
+```
+
+## Synthesis
+
+::: callout-note
+### Exercise 11
+
+Write a brief paragraph that synthesizes what you learned from your analyses.
+
+Your paragraph should address:
+
++ the most important or interesting findings;
++ limitations of the data or analyses;
++ conclusions that cannot be supported by these visualizations alone; and
++ additional data that would help you investigate related questions.
+:::
+
+`r emo::ji("right_arrow")` ✅ ⬆️ *Yay, you're done! Render one last time and verify that everything is displayed correctly in your `R_HW_03.html` file. Open the file in a web browser and inspect the complete document before submitting.*
+
+# Submit
+
+::: {.callout-important}
+
+To submit, you need to upload your R_HW_03.html file to the R HW 03 assignment on Brightspace. The html file should be located in the same folder on your computer where you placed your .qmd (STAT_7500). 
+
+:::
+
+# Grading (10 points)
+
+Homework assignments are opportunities to practice the skills and habits you will use on larger course projects. They are graded holistically rather than point-by-point.
+
+Your homework will be evaluated for:
+
+- **Completion and substantive correctness (8 points):** You have attempted all exercises, your code and results are generally correct, and your written responses appropriately interpret and engage with the data.
+- **Reproducible workflow and presentation (2 points):** Your document renders successfully and your code, output, visualizations, and responses are organized and readable.
+
+Minor mistakes will not be penalized individually. You may also receive feedback about misconceptions or habits to improve even when they do not result in a point deduction. Use this feedback in future homework assignments and projects.
+
+### Homework rubric — 10 points total
+
+#### Completion and substantive correctness — 8 points
+
+| Score | Description |
+|---|---|
+| **8** | Complete and substantively correct. Code and analyses accomplish what was asked, and written responses appropriately interpret the results. Minor imperfections are okay. |
+| **7** | Mostly complete and correct, with one notable error, omission, or misunderstanding. |
+| **6** | Several errors or omissions, but the work demonstrates reasonable understanding of the main ideas. |
+| **4–5** | Significant errors, omissions, or misunderstandings that should be addressed before moving on. |
+| **0–3** | Substantially incomplete, incorrect, or shows limited engagement with the homework. |
+
+#### Reproducible workflow and presentation — 2 points
+
+| Score | Description |
+|---|---|
+| **2** | Document renders successfully; code, output, visualizations, and written responses are reasonably organized and readable. |
+| **1** | Some problems with reproducibility, organization, readability, or presentation. |
+| **0** | Major problems with reproducibility, organization, readability, or presentation. |
+
+**Total: 10 points**
+
