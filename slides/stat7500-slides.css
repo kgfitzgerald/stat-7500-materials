@@ -263,3 +263,47 @@
 @media print {
   .reveal .slides section { page-break-after: always; }
 }
+
+/* Code input */
+.reveal div.sourceCode,
+.reveal pre.sourceCode,
+.reveal pre.sourceCode code {
+  background-color: var(--beige) !important;
+}
+
+.reveal pre.sourceCode {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin-bottom: 0.7em;
+  padding: 0.35em 0.6em;
+}
+
+.reveal pre.sourceCode code {
+  color: var(--dark-blue);
+  font-size: 0.8em;
+  line-height: 1.25;
+}
+
+/* R output: text directly on slide background */
+.reveal .cell-output,
+.reveal .cell-output-display,
+.reveal .cell-output-stdout,
+.reveal .cell-output pre,
+.reveal .cell-output pre code {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--slide-text) !important;
+}
+
+.reveal .cell-output pre {
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+
+.reveal .cell-output pre code {
+  font-size: 0.8em;
+  line-height: 1.2;
+}

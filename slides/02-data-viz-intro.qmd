@@ -716,7 +716,8 @@ ggplot(data = penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-0, fig.show = "hide", warning = FALSE}
-ggplot(data = penguins) #<<
+#| code-line-numbers: "1"
+ggplot(data = penguins)
 ```
 :::
 ::: {.column width="50%"}
@@ -735,8 +736,9 @@ ggplot(data = penguins) #<<
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-1, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "2"
 ggplot(data = penguins,
-       mapping = aes(x = bill_depth_mm)) #<<
+       mapping = aes(x = bill_depth_mm))
 ```
 :::
 ::: {.column width="50%"}
@@ -756,9 +758,10 @@ ggplot(data = penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-2, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "3"
 ggplot(data = penguins,
        mapping = aes(x = bill_depth_mm,
-                     y = bill_length_mm)) #<<
+                     y = bill_length_mm))
 ```
 :::
 ::: {.column width="50%"}
@@ -779,10 +782,11 @@ ggplot(data = penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-3, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "4"
 ggplot(data = penguins,
        mapping = aes(x = bill_depth_mm,
                      y = bill_length_mm)) + 
-  geom_point() #<<
+  geom_point() 
 ```
 :::
 ::: {.column width="50%"}
@@ -804,10 +808,11 @@ ggplot(data = penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-4, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "4"
 ggplot(data = penguins,
        mapping = aes(x = bill_depth_mm,
                      y = bill_length_mm,
-                     colour = species)) + #<<
+                     colour = species)) +
   geom_point()
 ```
 :::
@@ -831,12 +836,13 @@ ggplot(data = penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-5, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "6"
 ggplot(data = penguins,
        mapping = aes(x = bill_depth_mm,
                      y = bill_length_mm,
                      colour = species)) +
   geom_point() +
-  labs(title = "Bill depth and length") #<<
+  labs(title = "Bill depth and length")
 ```
 :::
 ::: {.column width="50%"}
@@ -860,13 +866,14 @@ ggplot(data = penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-6, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "7"
 ggplot(data = penguins,
        mapping = aes(x = bill_depth_mm,
                      y = bill_length_mm,
                      colour = species)) +
   geom_point() +
   labs(title = "Bill depth and length",
-       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins") #<<
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins")
 ```
 :::
 ::: {.column width="50%"}
@@ -891,6 +898,7 @@ ggplot(data = penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-7, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "8"
 ggplot(data = penguins,
        mapping = aes(x = bill_depth_mm,
                      y = bill_length_mm,
@@ -898,7 +906,7 @@ ggplot(data = penguins,
   geom_point() +
   labs(title = "Bill depth and length",
        subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
-       x = "Bill depth (mm)", y = "Bill length (mm)") #<<
+       x = "Bill depth (mm)", y = "Bill length (mm)")
 ```
 :::
 ::: {.column width="50%"}
@@ -924,6 +932,7 @@ ggplot(data = penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-8, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "9"
 ggplot(data = penguins,
        mapping = aes(x = bill_depth_mm,
                      y = bill_length_mm,
@@ -932,7 +941,7 @@ ggplot(data = penguins,
   labs(title = "Bill depth and length",
        subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
        x = "Bill depth (mm)", y = "Bill length (mm)",
-       colour = "Species") #<<
+       colour = "Species")
 ```
 :::
 ::: {.column width="50%"}
@@ -959,6 +968,7 @@ ggplot(data = penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-9, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "10"
 ggplot(data = penguins,
        mapping = aes(x = bill_depth_mm,
                      y = bill_length_mm,
@@ -968,7 +978,7 @@ ggplot(data = penguins,
        subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
        x = "Bill depth (mm)", y = "Bill length (mm)",
        colour = "Species",
-       caption = "Source: Palmer Station LTER / palmerpenguins package") #<<
+       caption = "Source: Palmer Station LTER / palmerpenguins package") 
 ```
 :::
 ::: {.column width="50%"}
@@ -996,6 +1006,7 @@ ggplot(data = penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r penguins-10, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "11"
 ggplot(data = penguins,
        mapping = aes(x = bill_depth_mm,
                      y = bill_length_mm,
@@ -1006,7 +1017,7 @@ ggplot(data = penguins,
        x = "Bill depth (mm)", y = "Bill length (mm)",
        colour = "Species",
        caption = "Source: Palmer Station LTER / palmerpenguins package") +
-  scale_colour_viridis_d() #<<
+  scale_colour_viridis_d() 
 ```
 :::
 ::: {.column width="50%"}
@@ -1112,10 +1123,11 @@ Commonly used characteristics of plotting characters that can be **mapped to a s
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r colour, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "4"
 ggplot(penguins,
        aes(x = bill_depth_mm, 
            y = bill_length_mm,
-           colour = species)) + #<<
+           colour = species)) + 
   geom_point() +
   scale_colour_viridis_d()
 ```
@@ -1135,11 +1147,12 @@ Mapped to a different variable than `colour`
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r shape-island, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "5"
 ggplot(penguins,
        aes(x = bill_depth_mm, 
            y = bill_length_mm,
            colour = species,
-           shape = island)) + #<<
+           shape = island)) +
   geom_point() +
   scale_colour_viridis_d()
 ```
@@ -1159,11 +1172,12 @@ Mapped to same variable as `colour`
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r shape-species, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "5"
 ggplot(penguins,
        aes(x = bill_depth_mm, 
            y = bill_length_mm,
            colour = species,
-           shape = species)) + #<<
+           shape = species)) +
   geom_point() +
   scale_colour_viridis_d()
 ```
@@ -1181,12 +1195,13 @@ ggplot(penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r size, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "6"
 ggplot(penguins,
        aes(x = bill_depth_mm, 
            y = bill_length_mm,
            colour = species,
            shape = species,
-           size = body_mass_g)) + #<<
+           size = body_mass_g)) + 
   geom_point() +
   scale_colour_viridis_d()
 ```
@@ -1204,13 +1219,14 @@ ggplot(penguins,
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r alpha, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "7"
 ggplot(penguins,
        aes(x = bill_depth_mm, 
            y = bill_length_mm,
            colour = species,
            shape = species,
            size = body_mass_g,
-           alpha = flipper_length_mm)) + #<<
+           alpha = flipper_length_mm)) + 
   geom_point() +
   scale_colour_viridis_d()
 ```
@@ -1228,11 +1244,12 @@ ggplot(penguins,
 **Mapping**
 
 ```{r warning = FALSE, out.width = "100%"}
+#| code-line-numbers: "4"
 ggplot(penguins,
        aes(x = bill_depth_mm,
            y = bill_length_mm,
-           size = body_mass_g, #<<
-           alpha = flipper_length_mm)) + #<<
+           size = body_mass_g,
+           alpha = flipper_length_mm)) + 
   geom_point()
 ```
 :::
@@ -1240,10 +1257,11 @@ ggplot(penguins,
 **Setting**
 
 ```{r warning = FALSE, out.width = "100%"}
+#| code-line-numbers: "4"
 ggplot(penguins,
        aes(x = bill_depth_mm,
            y = bill_length_mm)) + 
-  geom_point(size = 2, alpha = 0.5) #<<
+  geom_point(size = 2, alpha = 0.5)
 ```
 :::
 :::
@@ -1278,9 +1296,10 @@ ggplot(penguins,
 ### Code
 
 ```{r facet, fig.show = "hide"}
+#| code-line-numbers: "3"
 ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
   geom_point() +
-  facet_grid(species ~ island) #<<
+  facet_grid(species ~ island) 
 ```
 :::
 
@@ -1298,41 +1317,46 @@ But you should always label your plots!
 ---
 
 ```{r warning = FALSE}
+#| code-line-numbers: "3"
 ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
   geom_point() +
-  facet_grid(species ~ sex) #<<
+  facet_grid(species ~ sex)
 ```
 
 ---
 
 ```{r warning = FALSE}
+#| code-line-numbers: "3"
 ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
   geom_point() +
-  facet_grid(sex ~ species) #<<
+  facet_grid(sex ~ species) 
 ```
 
 ---
 
 ```{r warning = FALSE, fig.asp = 0.5}
+#| code-line-numbers: "3"
 ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
   geom_point() +
-  facet_wrap(~ species) #<<
+  facet_wrap(~ species) 
 ```
 
 ---
 
 ```{r warning = FALSE, fig.asp = 0.5}
+#| code-line-numbers: "3"
 ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
   geom_point() +
-  facet_grid(. ~ species) #<<
+  facet_grid(. ~ species) 
 ```
 
 ---
 
 ```{r warning = FALSE}
+#| code-line-numbers: "3"
 ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
   geom_point() +
-  facet_wrap(~ species, ncol = 2) #<<
+  facet_wrap(~ species, ncol = 2)
 ```
 
 ---
@@ -1352,14 +1376,15 @@ ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) +
 ::: {.columns}
 ::: {.column width="30%"}
 ```{r facet-color-legend, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "5,8"
 ggplot(
   penguins, 
   aes(x = bill_depth_mm, 
       y = bill_length_mm, 
-      color = species)) + #<<
+      color = species)) +
   geom_point() +
   facet_grid(species ~ sex) +
-  scale_color_viridis_d() #<<
+  scale_color_viridis_d()
 ```
 :::
 ::: {.column width="70%"}
@@ -1375,6 +1400,7 @@ ggplot(
 ::: {.columns}
 ::: {.column width="30%"}
 ```{r facet-color-no-legend, fig.show = "hide", warning = FALSE}
+#| code-line-numbers: "9"
 ggplot(
   penguins, 
   aes(x = bill_depth_mm, 
@@ -1383,7 +1409,7 @@ ggplot(
   geom_point() +
   facet_grid(species ~ sex) +
   scale_color_viridis_d() +
-  guides(color = FALSE) #<<
+  guides(color = FALSE) 
 ```
 :::
 :::
