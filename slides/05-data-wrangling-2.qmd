@@ -63,7 +63,7 @@ Today you will practice:
 
 
 
-## We... {.section-divider .middle}
+## We... 
 
 **have** multiple data frames
 
@@ -641,7 +641,7 @@ purchases |>
 
 
 
-## We... {.section-divider .middle}
+## We... 
 
 **have** data organized in a way that does not support our analysis
 
@@ -651,30 +651,44 @@ purchases |>
 
 ## Data: Sales
 
-```{r include=FALSE}
+```{r}
+#| include: false
+
 customers <- read_csv("data/sales/customers.csv")
 prices <- read_csv("data/sales/prices.csv")
 ```
 
-
-<br>
-
 ::: {.columns}
+
 ::: {.column width="50%"}
-### **We have...**
-```{r echo=FALSE}
+
+### We have...
+
+```{r}
+#| echo: false
+
 customers
 ```
+
 :::
 
-. . .
-::: {.column width="50%"}
-### **We want...**
-```{r echo=FALSE}
+::: {.column .fragment width="50%"}
+
+### We want...
+
+```{r}
+#| echo: false
+
 customers |>
-  pivot_longer(cols = item_1:item_3, names_to = "item_no", values_to = "item")
+  pivot_longer(
+    cols = item_1:item_3,
+    names_to = "item_no",
+    values_to = "item"
+  )
 ```
+
 :::
+
 :::
 
 
@@ -733,8 +747,7 @@ customers
 ```
 :::
 
-. . .
-::: {.column width="50%"}
+::: {.column .fragment width="50%"}
 ### **longer**
 more rows
 ```{r echo=FALSE}

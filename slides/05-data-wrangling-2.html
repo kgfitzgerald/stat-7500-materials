@@ -224,7 +224,7 @@ Katie Fitzgerald, adapted from datasciencebox.org
 <section id="data-wrangling-joining-multiple-datasets" class="slide level2 section-divider middle">
 <h2>Data Wrangling: Joining multiple datasets</h2>
 </section>
-<section id="we" class="slide level2 section-divider middle">
+<section id="we" class="slide level2">
 <h2>We…</h2>
 <p><strong>have</strong> multiple data frames</p>
 <p><strong>want</strong> to bring them together</p>
@@ -1030,17 +1030,16 @@ Figure&nbsp;1
 </div>
 </div>
 </section>
-<section id="we-1" class="slide level2 section-divider middle">
+<section id="we-1" class="slide level2">
 <h2>We…</h2>
 <p><strong>have</strong> data organized in a way that does not support our analysis</p>
 <p><strong>want</strong> to reorganise the data to carry on with our analysis</p>
 </section>
 <section id="data-sales" class="slide level2">
 <h2>Data: Sales</h2>
-<p><br></p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<h3 id="we-have"><strong>We have…</strong></h3>
+<h3 id="we-have">We have…</h3>
 <div class="cell" data-layout-align="center">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
@@ -1050,7 +1049,9 @@ Figure&nbsp;1
 2           2 milk   toilet paper &lt;NA&gt;  </code></pre>
 </div>
 </div>
-</div><p>. . . ::: {.column width=“50%”} ### <strong>We want…</strong></p><div class="cell" data-layout-align="center">
+</div><div class="column fragment" style="width:50%;">
+<h3 id="we-want">We want…</h3>
+<div class="cell" data-layout-align="center">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   customer_id item_no item        
@@ -1063,8 +1064,7 @@ Figure&nbsp;1
 6           2 item_3  &lt;NA&gt;        </code></pre>
 </div>
 </div>
-</div>
-<p>:::</p>
+</div></div>
 </section>
 <section id="a-grammar-of-data-tidying" class="slide level2">
 <h2>A grammar of data tidying</h2>
@@ -1125,7 +1125,10 @@ Figure&nbsp;1
 2           2 milk   toilet paper &lt;NA&gt;  </code></pre>
 </div>
 </div>
-</div><p>. . . ::: {.column width=“50%”} ### <strong>longer</strong> more rows</p><div class="cell" data-layout-align="center">
+</div><div class="column fragment" style="width:50%;">
+<h3 id="longer"><strong>longer</strong></h3>
+<p>more rows</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   customer_id item_no item        
@@ -1138,8 +1141,7 @@ Figure&nbsp;1
 6           2 item_3  &lt;NA&gt;        </code></pre>
 </div>
 </div>
-</div>
-<p>:::</p>
+</div></div>
 </section>
 <section id="pivot_longer" class="slide level2">
 <h2><code>pivot_longer()</code></h2>
