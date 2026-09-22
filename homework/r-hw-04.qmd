@@ -431,7 +431,7 @@ Recreate the boxplot given in Exercise 9. You can use the following tips:
 
 ```
 
-➡️ ✅ *Render one last time and open `lab-03.html` in a web browser. Check that your code, output, visualizations, and written responses are organized and readable.*
+➡️ ✅ *Render one last time and open `r-hw-04`.html` in a web browser. Check that your code, output, visualizations, and written responses are organized and readable.*
 
 # Submit
 
