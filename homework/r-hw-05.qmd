@@ -1,10 +1,8 @@
 ---
-title: "R HW 05: Data Importing & Cleaning"
-subtitle: "Intro Survey"
+title: "R HW 05 - National Women's Soccer"
 format:
   html:
     css: styles.css
-    embed-resources: true
     grid:
       margin-width: 350px
 fig-numbering: false
@@ -12,8 +10,9 @@ toc: true
 toc-location: right
 categories:
   - Data wrangling
-  - dplyr
-  - Data visualization
+  - Joins
+  - Sports analytics
+  - National Women's Soccer League
 editor_options:
   chunk_output_type: console
 callout-icon: false
@@ -21,197 +20,283 @@ callout-icon: false
 
 # Goals
 
-In this assignment, you will...
+In this assignment, you will:
 
-- Develop proficiency cleaning survey data
-- Consider implications of question types (e.g., multiple choice, select all that apply, open-ended) on data quality and analysis
-- Wrangle data to create desired visualizations
-- Discover interconnections between data cleaning, analysis, and communication strategies
++ Develop proficiency with data-wrangling functions
++ Join multiple datasets from the National Women's Soccer League
++ Use wrangling and visualization to answer questions about team and player performance for the Portland Thorns FC
 
-# Getting started
+::: {.column-margin}
+Joins allow us to combine information from multiple data sources into a single analytical workflow.
+:::
 
-To get started on this assignment, do the following:
+---
 
-- Download `R_HW_05.qmd` and place it in your STAT_7500 folder.
+# Getting Started
 
-You will complete the assignment by adding code and text responses to `R_HW_05.qmd`.
-
++ Download the `.qmd` file for this assignment from our class GitHub repo
 
 # Packages
 
-We will use the **tidyverse** package for this assignment, and you'll need `lubridate` to work with dates. If you wish to use the viridis color palettes, you will need the **viridis** package as well. 
+We will primarily use the **tidyverse** package.
+Additional packages provide color palettes, table formatting,
+ridge plots, and access to NWSL data.
 
-```{r load-package, message = FALSE, warning = FALSE}
+```{r load-packages, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(viridis)
-library(lubridate)
+library(kableExtra)
+library(ggridges)
+library(devtools)
+devtools::install_github("nwslR/nwslR", ref = "v0.0.0.9002")
+library(nwslR)
 ```
 
-# Data 
+# Data: The Portland Thorns FC
 
-The data come from an intro survey I give my Intro Stats students. Emails and names have been removed for anonymity. We'll read in the data from a url:
+For this assignment, you will work with data about the
+[Portland Thorns FC](https://www.nwslsoccer.com/team/portland-thorns-fc/stats),
+a National Women’s Soccer League (NWSL) team.
 
-```{r, message = FALSE, warning = FALSE}
-survey <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSWWS4oNf69Rhx9COxKH445CXPl2xq7FpyabaMFpib8f9bFBFDuznskYfWIi97e8lQYl-q1M6zZ62RR/pub?output=csv")
+In 2021, the Thorns won the:
+
++ NWSL Challenge Cup
++ Women’s International Champions Cup
++ NWSL Shield
+
+The data come from the
+[nwslR package](https://github.com/adror1/nwslR),
+which provides tools to scrape and organize publicly available NWSL data.
+
+The following functions pull different types of data:
+
++ `load_matches()` – match-level data
++ `load_players()` – player-level data
++ `load_teams()` – team information
++ `load_metrics()` – metric definitions
+
+Running the code below will load four datasets into your environment.
+
+```{r}
+matches <- load_matches()
+players <- load_players()
+teams   <- load_teams()
+metrics <- load_metrics()
 ```
 
-The data are currently in the form exactly as provided from a Google Form. You will need to take many necessary cleaning steps to get it in a form that is appropriate for analysis. 
+---
 
 # Exercises
 
+All plots should follow best visualization practices discussed in lecture, including clear titles, labeled axes, and thoughtful aesthetic choices.
+
+All code should follow the
+[tidyverse style guidelines](https://style.tidyverse.org/pipes.html).
+
+```{r, echo = FALSE}
+portland_matches <- matches |> 
+  filter(home_team_id == 8 | away_team_id == 8)
+```
+
+## Data Wrangling
+
+Before beginning the analysis, you will need to wrangle the data to focus only on Portland Thorns matches.
+
 ::: callout-note
 ### Exercise 1
++ Inspect the `teams` data to determine the `external_team_id` for the Portland Thorns.
++ Filter `matches` to keep only games in which Portland played (as the home or away team).
++ Save the result as `portland_matches`.
 
-+ Take a look at the column names.
-
-```{r, eval = FALSE}
-names(survey)
-```
-
-+ Create a vector of new names using `c()` and save this vector as `new_names`. You should choose concise and informative names. 
-
-```{r, eval = FALSE}
-new_names <- c("variable_1", "variable_2", ...)
-```
-
-+ Then use the code `names(survey) <- new_names` to covert the existing column names to the new names. 
-+ Inspect your data to ensure that `survey` now has the desired variable names
+Confirm that the dataset has `r nrow(portland_matches)` observations before proceeding.
 :::
 
+To add team names and abbreviations, we need to join the `teams` data twice:
 
++ once for the home team
++ once for the away team
+
+We want the following new variables:
+
+- `home_team_name`
+- `home_team_abbr`
+- `away_team_name`
+- `away_team_abbr`
+
+The code below creates `home_team_info` and joins it to `portland_matches`.
+
+```{r, eval = FALSE}
+home_team_info <- teams |> 
+  select(home_team_id = external_team_id,
+         home_team_name = team_name,
+         home_team_abbr = team_abbreviation)
+
+portland_matches <- portland_matches |> 
+  left_join(home_team_info)
+```
+
+
+```{r, echo = FALSE}
+away_team_info <- teams |> 
+  select(away_team_id = external_team_id,
+         away_team_name = team_name,
+         away_team_abbr = team_abbreviation)
+
+portland_matches <- portland_matches |> 
+  left_join(away_team_info)
+```
 
 ::: callout-note
 ### Exercise 2
++ Include the code above in your .qmd.
++ Then create an analogous `away_team_info` dataset with an `away_` prefix and join it to `portland_matches`.
 
-+ Using the `glimpse()` function will reveal that many of the variables are stored as characters, including the Timestamp variable. 
-+ Use the function `mdy_hms()` inside a `mutate()` function to convert the timestamp variable to a date. 
-+ Then create a histogram of this new variable. 
-+ What does this reveal about the data?
+Confirm the dimensions are `r nrow(portland_matches)` × 19 before continuing.
 :::
-
 
 ::: callout-note
 ### Exercise 3
+Create three new variables:
 
-Reproduce the following visualization. Note, you will need to re-order the levels of your year variable.
+- `POR_points`
+- `OPP_points`
+- `result` (Win, Loss, or Tie for Portland)
 
-![](img/year.png)
+Use the scaffold below and fill in the blanks.
+
+```{r, eval = FALSE}
+___ <- ___ |> 
+  ___(POR_points = if_else(home_team_abbr == "POR",
+                           home_team_score, away_team_score),
+      OPP_points = if_else(___ ___ ___, ___, ___),
+      result = case_when(POR_points  >  OPP_points ~ "Win",
+                         POR_points  <  OPP_points ~ "Loss",
+                         POR_points == OPP_points ~ "Tie"))
+```
 :::
 
-
-::: column-margin :::
-\
-*Hint: `theme_light()` and the color `navyblue` were used*
-:::
+## Match Analysis
 
 ::: callout-note
 ### Exercise 4
-
-What is the distribution of gender in Intro Stats? 
-
-+ Create an appropriate visualization. 
-+ Make decisions about how to clean up the levels and combine as necessary. A `case_when()` inside a mutate may be useful. 
-+ Comment on the pros and cons of making this a multiple choice vs open-ended question in a survey. 
++ Create a bar chart showing the distribution of `result`.
++ Include clear axis labels and a title.
++ Interpret the results.
 :::
 
 ::: callout-note
 ### Exercise 5
++ Create a visualization examining Portland’s performance by season (wins, losses, and ties).
 
-*"On a scale from 1 to 10, how anxious are you about taking MATH 130 - Intro to Statistics?"*
-
-Create an appropriate visualization or summary table to explore this variable.
++ Describe 2–3 patterns you observe.
 :::
 
 ::: callout-note
 ### Exercise 6
+*Does Portland have a home-field advantage?*
 
-Reproduce the following visualization. Note, you may need to re-order the levels of your variable.
+To investigate this question, 
 
-![](img/stats_relevant_career.png)
-::: 
++ Create a variable indicating whether Portland was the home or away team
++ Make side-by-side boxplots of points scored
++ Create a ridge plot using `geom_density_ridges()`
 
-::: column-margin :::
-\
-*Hint: Set `y = 1` inside your `aes()` function. And add a `theme` layer where `axis.text.y` and `axis.ticks.y` are set equal to `element_blank()`*
+Describe 2–3 observations.
 :::
 
 ::: callout-note
-
 ### Exercise 7
-
-What majors are represented in MATH 130? 
-
-+ Create a visualization to explore this variable. 
-+ Make decisions about how to clean up the levels and combine as necessary. 
-+ A `case_when()` inside a mutate may be useful. Comment on your decisions. 
++ Create a formatted summary table showing the proportion of games won by whether the game was home or away.
++ Do the Thorns perform better at home or away?
 :::
 
-::: column-margin :::
-\
-*Note: ChatGPT/AI can be helpful in providing an initial solution to a tedious task like this, but make sure to review its suggestions and override if necessary - you are the analyst, responsible for analysis decisions!*
-:::
+## Player Stats
 
-::: {.callout-important}
-Select all that apply questions in a survey pose some difficult wrangling tasks. Consider the laptop variable. Suppose we want to explore what percentage of students have each of the three types: Mac laptop, iPad, or PC/Windows laptop.
-
-The following code creates three new variables to indicate if a student has access to each type. Note you will need to adapt this code if you named your variable something other than `laptop.`
+The following code loads match-level player statistics.
+This step may take several minutes. 
 
 ```{r, eval = FALSE}
-survey <- survey |> 
-  mutate(Mac = if_else(grepl("Mac laptop", laptop), "Yes", "No"),
-         iPad = if_else(grepl("iPad", laptop), "Yes", "No"),
-         PC = if_else(grepl("PC/Windows laptop", laptop), 
-                      "Yes", "No"))
+#| eval: false
+safe_load_pms <- purrr::possibly(load_player_match_stats,
+                                 otherwise = data.frame())
+
+player_stats <- purrr::map_df(portland_matches$match_id,
+                              safe_load_pms,
+                              .progress = TRUE)
 ```
-:::
 
+In order to avoid loading the data everytime you render, add `#| eval: false` to the beginning of the above code chunk. After it has loaded, you can save the `player_stats` data by running `saveRDS(player_stats, "data/player_stats.rds")`. Then, include the following code in a new code chunk:
 
-::: column-margin :::
-\
-The `grepl()` function searches for a given string (e.g. "Mac laptop") in a given object (`laptop`). It returns the value `TRUE` if the string is present, and `FALSE` if it is not. Combined with the `if_else()` statement, this results in the new variable having the value "Yes" if the string is found and "No" if it is not. 
-:::
+```{r}
+# Load saved version
+# avoids lengthy re-loading from package on each Render
+player_stats <- readRDS("./data/player_stats.rds")
+```
 
-::: {.callout-note}
+The research questions:
+
++ Which Portland players took the highest **percentage of shots outside the box**?
++ Which Portland players **converted the highest percentage of shots**?
+
+::: callout-note
 ### Exercise 8
+This is one big open-ended exercise to answer the two research questions above. It’s up to you to determine the appropriate wrangling necessary to answer the questions. 
 
-+ Use a `pivot_longer` to pivot the columns `Mac:PC`. 
-+ Consider using `names_to = "laptop_type"` and `values_to = "laptop_access"` to name the new pivoted columns. 
-+ Then, recreate the following visualization.  
+A few tips for getting started:
 
-![](img/laptop.png)
++ Examine `player_stats` using `View()` to determine what each row represents. Are there multiple rows per player? If so, what does each row represent?
++ You’ll only need the`player_id`, `team_id`, `shots_total`, `shots_outside_box`, and `goals` variables to answer these questions
++ Filter the data to only keep Portland players
++ Restrict your analysis to only players that took at least 15 shots across all matches
++ You will eventually need to join in info from the `players` data so that your end result will display the players names and not just their numerical id
+
+**Your final result for each question should be either a nicely formatted table, or a nicely formatted visualization, like the ones below. Use these end results to help you decide what wrangling will help you build up to this information.**
 :::
 
-::: column-margin :::
-\
-See the GIF below as a reminder of how `pivot_longer()` works
-```{r echo = FALSE}
-knitr::include_graphics("img/tidyr-longer-wider.gif")
+```{r, echo = FALSE, message = FALSE}
+summary_data <- player_stats %>% 
+  filter(team_id == 8) %>% 
+  select(player_id, team_id, shots_total, shots_outside_box, goals) %>% 
+  group_by(player_id) %>% 
+  summarize(shots_total = sum(shots_total),
+            shots_outside_box = sum(shots_outside_box, na.rm = TRUE),
+            goals = sum(goals, na.rm = TRUE)) %>%
+  filter(shots_total >= 15) %>% 
+  mutate(prop_outside_box = shots_outside_box/shots_total,
+         prop_goals = goals/shots_total) 
+
+summary_data %>% 
+  arrange(desc(prop_outside_box)) %>% 
+  left_join(players) %>% 
+  slice(1:10) %>% 
+  ggplot(aes(x = prop_outside_box, 
+             y = reorder(player_match_name, prop_outside_box))) +
+  geom_col(fill = "purple") +
+  theme_minimal() +
+  scale_x_continuous(labels = scales::percent) +
+  labs(x = "Percentage of shots taken outside the box",
+       y = "",
+       title = "Portland players with Highest % of shots taken outside the box",
+       subtitle = "Minimum 15 shots")
+
+summary_data %>% 
+  arrange(desc(prop_goals)) %>% 
+  left_join(players) %>% 
+  slice(1:10) %>% 
+  select(player_match_name, shots_total, goals, prop_goals) %>% 
+  kable(format = "html", table.attr = "style='width:50%;'") %>% 
+  kableExtra::kable_styling()
 ```
-:::
 
-::: {.callout-note}
-### BONUS 1
-Create a new variable called `semester` that uses the time variable to designate whether each student was in MATH 130 in a Fall or Spring semester. . Use this new variable to investigate whether students in the Fall or Spring semester were more anxious about MATH 130 on average.  
 
-:::
+---
 
-::: column-margin :::
-\
-*Hint: the function `month()` applied to a date will extract just the month, `year()` will extract the year, etc, which may helpful in determining semester.*
-:::
+## Bonus (2 pts)
 
-::: {.callout-note}
-### BONUS 2
+Propose an additional question you could investigate using these data.
+Provide a visualization or table and briefly interpret the result.
 
-Attempt to recreate this visualization as closely as possible. 
-
-![](img/likert_three.png)
-:::
-
-::: column-margin :::
-\
-*Hint: you will first need to use a `pivot_longer` and then use a `case_when()` to recode the levels of the new variable to be the full statements seen on the y-axis)*. 
-::: 
+---
 
 ➡️ ✅ *Render one last time and open `r-hw-04`.html` in a web browser. Check that your code, output, visualizations, and written responses are organized and readable.*
 
@@ -255,3 +340,4 @@ Minor mistakes will not be penalized individually. You may also receive feedback
 | **0** | Major problems with reproducibility, organization, readability, or presentation. |
 
 **Total: 10 points**
+
