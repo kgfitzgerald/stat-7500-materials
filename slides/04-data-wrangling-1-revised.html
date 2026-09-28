@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="04-data-wrangling-1-revised_files/libs/clipboard/clipboard.min.js"></script>
+<script src="04-data-wrangling-1-revised_files/libs/quarto-html/tabby.min.js"></script>
+<script src="04-data-wrangling-1-revised_files/libs/quarto-html/popper.min.js"></script>
+<script src="04-data-wrangling-1-revised_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="04-data-wrangling-1-revised_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="04-data-wrangling-1-revised_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="04-data-wrangling-1-revised_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
+
+  <meta name="author" content="Katie Fitzgerald, adapted from datasciencebox.org">
+  <title>Data Wrangling I</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="04-data-wrangling-1-revised_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="04-data-wrangling-1-revised_files/libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="04-data-wrangling-1-revised_files/libs/revealjs/dist/theme/quarto-827dae4a8082ef81c4da226e5598e2a2.css">
+  <link href="04-data-wrangling-1-revised_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="04-data-wrangling-1-revised_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="04-data-wrangling-1-revised_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="04-data-wrangling-1-revised_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Data Wrangling I</h1>
+  <p class="subtitle">STAT 7500</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Katie Fitzgerald, adapted from datasciencebox.org
+</div>
+</div>
+</div>
+
+</section>
+<section class="slide level2">
+
+<!--
+INSTRUCTOR GUIDE
+Use alongside the MathLink activity and a separate flights live-coding QMD.
+The six activity slides mark the switch points. They are intentionally
+placeholders, with objectives rather than a second copy of the activity.
+All times below are minutes elapsed since class begins.
+
+0–10: opening quiz, outside this deck.
+10–20: opening through the flights introduction.
+20–38: tactile cycle 1. Use the following verb slides to debrief selected
+       operations as needed; do not lecture through them again afterward.
+38–58: pipe bridge and flights cycle 1, including student practice.
+58–70: tactile cycle 2; use mutate/saving slides during the debrief.
+70–80: break.
+80–95: flights cycle 2.
+95–113: tactile cycle 3 and a short summary/grouping demonstration.
+113–137: flights cycle 3, including student practice.
+137–145: synthesis and exit check.
+145–150: buffer and homework launch.
+
+The slides after “Additional examples and reference” are for independent
+review or targeted use when questions arise, not additional planned lecture.
+The main-deck worked examples are reference material too: select one to
+explain during each bridge, then switch to the flights QMD.
+
+Dependencies: existing stat7500-slides.css and the existing img/ folder;
+R packages tidyverse and nycflights13. The hotel CSV and emo are not needed.
+-->
+</section>
+<section id="thinking-with-data" class="slide level2">
+<h2>Thinking with data</h2>
+<p>By the end of class, you should be able to:</p>
+<ul>
+<li>Translate a question into a sequence of data transformations.</li>
+<li>Predict how an operation changes rows, columns, or their meaning.</li>
+<li>Check whether the result answers the intended question.</li>
+</ul>
+<div class="tip">
+<p>Before running a pipeline: <strong>What should the dimensions be? What should one row of the result represent?</strong></p>
+</div>
+<aside class="notes">
+<p>Opening quiz has already taken 10 minutes. Spend 10 minutes total on the opening slides through the flights introduction. Today’s three cycles are choosing observations, creating variables, and summarizing groups.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="tidy-data" class="slide level2">
+<h2>Tidy data</h2>
+<blockquote>
+<p>Happy families are all alike; every unhappy family is unhappy in its own way.</p>
+<p>Leo Tolstoy</p>
+</blockquote>
+<div class="fragment">
+<blockquote>
+<p>Tidy datasets are all alike; every untidy dataset is untidy in its own way.</p>
+</blockquote>
+</div>
+<div class="columns">
+<div class="column fragment" style="width:50%;">
+<p><strong>Characteristics of tidy data:</strong></p>
+<ul>
+<li>Each variable forms a column.</li>
+<li>Each observation forms a row.</li>
+<li>Each type of observational unit forms a table.</li>
+</ul>
+</div><div class="column fragment" style="width:50%;">
+<p><strong>Characteristics of untidy data:</strong></p>
+<p>!@#$%^&amp;*()</p>
+</div></div>
+</section>
+<section id="what-would-one-row-represent" class="slide level2">
+<h2>What would one row represent?</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/hiv-est-prevalence-15-49.png" class="quarto-figure quarto-figure-center" height="390"></p>
+</figure>
+</div>
+<div class="question">
+<p>What are the variables? What would one row represent in a tidy version?</p>
+</div>
+<div class="footnote">
+<p>Source: <a href="https://www.gapminder.org/data">Gapminder, estimated HIV prevalence among 15–49 year olds</a></p>
+</div>
+<aside class="notes">
+<p>Use this one example in class. Years stored as column headings can be values of a year variable. For country-year observations, columns would include country, year, and prevalence. Explain the structure without teaching pivoting. The other original examples remain in the reference section.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="a-grammar-of-data-wrangling" class="slide level2">
+<h2>A grammar of data wrangling</h2>
+<p><strong>dplyr</strong> provides functions that act as verbs for working with data frames.</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Our goal</th>
+<th>Functions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Choose columns</td>
+<td><code>select()</code></td>
+</tr>
+<tr class="even">
+<td>Choose or order rows</td>
+<td><code>filter()</code>, <code>arrange()</code>, <code>slice()</code></td>
+</tr>
+<tr class="odd">
+<td>Create or change variables</td>
+<td><code>mutate()</code></td>
+</tr>
+<tr class="even">
+<td>Describe groups</td>
+<td><code>group_by()</code>, <code>summarise()</code>, <code>count()</code></td>
+</tr>
+<tr class="odd">
+<td>Identify unique values or combinations</td>
+<td><code>distinct()</code></td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>Orient students to the three cycles. This is a map, not a list to memorize now.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="tactile-activity" class="slide level2 section-divider middle">
+<h2>Tactile activity</h2>
+</section>
+<section id="data-nyc-flights" class="slide level2">
+<h2>Data: NYC flights</h2>
+<p>Each row represents a flight scheduled to depart from <strong>JFK, LGA, or EWR in 2013</strong>.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-label="1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="" aria-label="2"></a><span class="fu">library</span>(nycflights13)</span>
+<span id="cb1-3"><a href="" aria-label="3"></a>flights <span class="ot">&lt;-</span> nycflights13<span class="sc">::</span>flights</span>
+<span id="cb1-4"><a href="" aria-label="4"></a></span>
+<span id="cb1-5"><a href="" aria-label="5"></a><span class="fu">glimpse</span>(flights)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 336,776
+Columns: 19
+$ year           &lt;int&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013…
+$ month          &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ day            &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ dep_time       &lt;int&gt; 517, 533, 542, 544, 554, 554, 555, 557, …
+$ sched_dep_time &lt;int&gt; 515, 529, 540, 545, 600, 558, 600, 600, …
+$ dep_delay      &lt;dbl&gt; 2, 4, 2, -1, -6, -4, -5, -3, -3, -2, -2,…
+$ arr_time       &lt;int&gt; 830, 850, 923, 1004, 812, 740, 913, 709,…
+$ sched_arr_time &lt;int&gt; 819, 830, 850, 1022, 837, 728, 854, 723,…
+$ arr_delay      &lt;dbl&gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8…
+$ carrier        &lt;chr&gt; "UA", "UA", "AA", "B6", "DL", "UA", "B6"…
+$ flight         &lt;int&gt; 1545, 1714, 1141, 725, 461, 1696, 507, 5…
+$ tailnum        &lt;chr&gt; "N14228", "N24211", "N619AA", "N804JB", …
+$ origin         &lt;chr&gt; "EWR", "LGA", "JFK", "JFK", "LGA", "EWR"…
+$ dest           &lt;chr&gt; "IAH", "IAH", "MIA", "BQN", "ATL", "ORD"…
+$ air_time       &lt;dbl&gt; 227, 227, 160, 183, 116, 150, 158, 53, 1…
+$ distance       &lt;dbl&gt; 1400, 1416, 1089, 1576, 762, 719, 1065, …
+$ hour           &lt;dbl&gt; 5, 5, 5, 5, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6…
+$ minute         &lt;dbl&gt; 15, 29, 40, 45, 0, 58, 0, 0, 0, 0, 0, 0,…
+$ time_hour      &lt;dttm&gt; 2013-01-01 05:00:00, 2013-01-01 05:00:0…</code></pre>
+</div>
+</div>
+</section>
+<section id="filter-chooses-rows" class="slide level2">
+<h2><code>filter()</code> chooses rows</h2>
+<p>Keep flights whose destination is LAX:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="" aria-label="2"></a>  <span class="fu">filter</span>(dest <span class="sc">==</span> <span class="st">"LAX"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>R evaluates <code>dest == "LAX"</code> for each row.</li>
+<li><code>filter()</code> keeps rows where the condition is <code>TRUE</code>.</li>
+<li>All columns remain; retained rows keep their relative order.</li>
+<li>A condition that evaluates to <code>NA</code> does not retain that row.</li>
+</ul>
+<div class="tip">
+<p>Use <code>==</code> to test equality. Use <code>=</code> to name an argument or a new column.</p>
+</div>
+</section>
+<section id="combining-conditions" class="slide level2">
+<h2>Combining conditions</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>AND:</strong> both conditions must hold.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="" aria-label="2"></a>  <span class="fu">filter</span>(</span>
+<span id="cb4-3"><a href="" aria-label="3"></a>    dest <span class="sc">==</span> <span class="st">"LAX"</span>,</span>
+<span id="cb4-4"><a href="" aria-label="4"></a>    arr_delay <span class="sc">&lt;</span> <span class="dv">0</span></span>
+<span id="cb4-5"><a href="" aria-label="5"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Within <code>filter()</code>, commas combine conditions with AND.</p>
+</div><div class="column" style="width:50%;">
+<p><strong>OR:</strong> at least one condition must hold.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="" aria-label="2"></a>  <span class="fu">filter</span>(</span>
+<span id="cb5-3"><a href="" aria-label="3"></a>    dep_delay <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">|</span></span>
+<span id="cb5-4"><a href="" aria-label="4"></a>      arr_delay <span class="sc">&lt;</span> <span class="dv">0</span></span>
+<span id="cb5-5"><a href="" aria-label="5"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>A row satisfying both conditions is included once.</p>
+</div></div>
+</section>
+<section id="logical-operators-in-r" class="slide level2">
+<h2>Logical operators in R</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Operator</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>&lt;</code></td>
+<td>Less than</td>
+</tr>
+<tr class="even">
+<td><code>&lt;=</code></td>
+<td>Less than or equal to</td>
+</tr>
+<tr class="odd">
+<td><code>&gt;</code></td>
+<td>Greater than</td>
+</tr>
+<tr class="even">
+<td><code>&gt;=</code></td>
+<td>Greater than or equal to</td>
+</tr>
+<tr class="odd">
+<td><code>==</code></td>
+<td>Equal to</td>
+</tr>
+<tr class="even">
+<td><code>!=</code></td>
+<td>Not equal to</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Expression</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>x &amp; y</code></td>
+<td>Both conditions</td>
+</tr>
+<tr class="even">
+<td><code>x \| y</code></td>
+<td>At least one condition</td>
+</tr>
+<tr class="odd">
+<td><code>!x</code></td>
+<td>Negation of a condition</td>
+</tr>
+<tr class="even">
+<td><code>is.na(x)</code></td>
+<td>Is missing</td>
+</tr>
+<tr class="odd">
+<td><code>!is.na(x)</code></td>
+<td>Is observed</td>
+</tr>
+<tr class="even">
+<td><code>x %in% y</code></td>
+<td>Is among the values in <code>y</code></td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<aside class="notes">
+<p>Reference slide. Introduce the relevant operator at the point of use. The comma-as-AND rule belongs to filter(), not to R functions generally.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="membership-and-combined-logic" class="slide level2">
+<h2>Membership and combined logic</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="" aria-label="2"></a>  <span class="fu">filter</span>(</span>
+<span id="cb6-3"><a href="" aria-label="3"></a>    dest <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"LAX"</span>, <span class="st">"BUR"</span>, <span class="st">"LGB"</span>),</span>
+<span id="cb6-4"><a href="" aria-label="4"></a>    (dep_delay <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">|</span> arr_delay <span class="sc">&lt;</span> <span class="dv">0</span>)</span>
+<span id="cb6-5"><a href="" aria-label="5"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The destination condition <strong>and</strong> the parenthesized condition must hold.</p>
+<!-- -- -->
+<!-- Keep flights to LAX, BUR, or LGB that departed early **or** arrived early -->
+<div class="question">
+<p>Would replacing <code>|</code> with <code>&amp;</code> keep more rows, fewer rows, or possibly the same number?</p>
+</div>
+<div class="fragment">
+<p>Fewer or the same number: both delays must now be negative.</p>
+</div>
+</section>
+<section id="select-chooses-columns" class="slide level2">
+<h2><code>select()</code> chooses columns</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="" aria-label="2"></a>  <span class="fu">select</span>(dep_delay, arr_delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 336,776 × 2
+  dep_delay arr_delay
+      &lt;dbl&gt;     &lt;dbl&gt;
+1         2        11
+2         4        20
+3         2        33
+4        -1       -18
+# ℹ 336,772 more rows</code></pre>
+</div>
+</div>
+<p>All 336776 observations remain, in their original order.</p>
+<div class="tip">
+<p><code>select()</code> changes which variables are available. It does not test their values.</p>
+</div>
+</section>
+<section id="arrange-reorders-rows" class="slide level2">
+<h2><code>arrange()</code> reorders rows</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Ascending:</strong> smallest first.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="" aria-label="2"></a>  <span class="fu">arrange</span>(dep_delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong>Descending:</strong> largest first.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="" aria-label="2"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(dep_delay))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div></div>
+<p>Every observation and column remains. <strong>Entire rows move together.</strong></p>
+<p>For these local data frames, missing values sort last in either direction.</p>
+</section>
+<section id="slice-chooses-row-positions" class="slide level2">
+<h2><code>slice()</code> chooses row positions</h2>
+<p>The first five rows <strong>in the current order</strong>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="" aria-label="2"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The five flights with the largest departure delays:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="" aria-label="2"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(dep_delay)) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="" aria-label="3"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Sorting first determines which observations occupy those positions.</p>
+</section>
+<section id="input-and-output" class="slide level2">
+<h2>Input and output</h2>
+<p>For the data-frame verbs used here:</p>
+<ul>
+<li>The first argument is the data frame.</li>
+<li>Subsequent arguments describe the operation.</li>
+<li>The result is another data frame.</li>
+<li>The original object is unchanged unless we assign a result to it.</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="" aria-label="1"></a><span class="fu">select</span>(flights, dep_delay, arr_delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="question">
+<p>Which object is the input? Which variables will the output contain?</p>
+</div>
+</section>
+<section id="what-is-a-pipe" class="slide level2">
+<h2>What is a pipe?</h2>
+<p><code>|&gt;</code> passes the result on its left to the function on its right. For these calls, it supplies the <strong>first argument</strong>.</p>
+<p>These expressions return the same result:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="" aria-label="1"></a><span class="fu">select</span>(flights, dep_delay, arr_delay)</span>
+<span id="cb14-2"><a href="" aria-label="2"></a></span>
+<span id="cb14-3"><a href="" aria-label="3"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb14-4"><a href="" aria-label="4"></a>  <span class="fu">select</span>(dep_delay, arr_delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Read the pipe as <strong>“and then.”</strong></p>
+<aside class="notes">
+<p>Start the cycle 1 R bridge here if the earlier slides were used during the tactile debrief. Explain one short pipeline, then move into the separate QMD.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="data-wrangling-step-by-step" class="slide level2">
+<h2>Data wrangling, step by step</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="" aria-label="2"></a>  <span class="fu">select</span>(month, day, flight, dep_delay) <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="" aria-label="3"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(dep_delay)) <span class="sc">|&gt;</span></span>
+<span id="cb15-4"><a href="" aria-label="4"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol type="1">
+<li>Start with the flights data.</li>
+<li>Keep four variables.</li>
+<li>Order flights from largest to smallest departure delay.</li>
+<li>Keep the first five rows of that result.</li>
+</ol>
+<div class="fragment">
+<p><strong>Output:</strong> 5 rows and 4 columns. Each row still represents a flight.</p>
+</div>
+</section>
+<section id="live-coding-and-practice-cycle-1" class="slide level2 section-divider middle">
+<h2>Live coding and practice: Cycle 1</h2>
+<div class="your-turn">
+<p><strong>Switch to the flights QMD: choosing and ordering flights</strong></p>
+<p>Predict the output, write a pipeline, then inspect the result.</p>
+<p>Focus: choosing columns, filtering conditions, and the order of operations.</p>
+</div>
+<p>Before running: What should the rows and columns represent?</p>
+<aside class="notes">
+<p>38–58 minutes includes the preceding pipe bridge and this coding block. In the separate QMD: demonstrate a select/arrange/slice pipeline, then have pairs find the largest delays, early arrivals at LAX, and the combined LAX/BUR/LGB condition. Debrief filter-before-slice versus slice-before-filter. Do not repeat every example from the reference slides during this block.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="tactile-activity-cycle-2" class="slide level2 section-divider middle">
+<h2>Tactile activity: Cycle 2</h2>
+<div class="your-turn">
+<p><strong>Switch to MathLink: creating a variable</strong></p>
+<p>Create a new column using values already in each row.</p>
+<p>Focus: <code>mutate()</code> and saving a result.</p>
+</div>
+<p>Does creating a variable change the number of observations?</p>
+<aside class="notes">
+<p>58–70 minutes includes the tactile task and the following short debrief. Use a derived variable such as new_value = red + blue. Record values on paper if the required shapes are unavailable. Contrast creating and replacing a column. Explain that the physical result represents R’s returned output; an unsaved pipeline does not change the original object. Defer ifelse tasks.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="mutate-creates-or-changes-variables" class="slide level2">
+<h2><code>mutate()</code> creates or changes variables</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="" aria-label="2"></a>  <span class="fu">mutate</span>(<span class="at">air_time_hours =</span> air_time <span class="sc">/</span> <span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>Compute a value for each flight using its <code>air_time</code>.</li>
+<li>A new name adds a column; an existing name replaces that column.</li>
+<li>Existing rows remain, in their original order.</li>
+</ul>
+<div class="tip">
+<p>Check the units: minutes divided by 60 gives hours.</p>
+</div>
+</section>
+<section id="new-variables-can-use-earlier-ones" class="slide level2">
+<h2>New variables can use earlier ones</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="" aria-label="2"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb17-3"><a href="" aria-label="3"></a>    <span class="at">air_time_hours =</span> air_time <span class="sc">/</span> <span class="dv">60</span>,</span>
+<span id="cb17-4"><a href="" aria-label="4"></a>    <span class="at">mph =</span> distance <span class="sc">/</span> air_time_hours</span>
+<span id="cb17-5"><a href="" aria-label="5"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>air_time_hours</code> is available to the next calculation in the same call.</p>
+<p><code>mph</code> describes average miles per hour using <strong>time in the air</strong>.</p>
+<div class="question">
+<p>Why would dividing <code>distance</code> by <code>air_time</code> produce a different unit?</p>
+</div>
+</section>
+<section id="saving-the-result" class="slide level2">
+<h2>Saving the result</h2>
+<p>This expression displays a result; it does not add a column to <code>flights</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="" aria-label="2"></a>  <span class="fu">mutate</span>(<span class="at">air_time_hours =</span> air_time <span class="sc">/</span> <span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Assign the result to use it later:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="" aria-label="1"></a>flights_work <span class="ot">&lt;-</span> flights <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="" aria-label="2"></a>  <span class="fu">mutate</span>(<span class="at">air_time_hours =</span> air_time <span class="sc">/</span> <span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>flights</code> retains the original data. <code>flights_work</code> contains the new column.</p>
+</section>
+<section id="logical-variables" class="slide level2">
+<h2>Logical variables</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="" aria-label="2"></a>  <span class="fu">mutate</span>(<span class="at">on_time =</span> arr_delay <span class="sc">&lt;=</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Arrival delay</th>
+<th><code>on_time</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Negative or zero</td>
+<td><code>TRUE</code></td>
+</tr>
+<tr class="even">
+<td>Positive</td>
+<td><code>FALSE</code></td>
+</tr>
+<tr class="odd">
+<td>Missing</td>
+<td><code>NA</code></td>
+</tr>
+</tbody>
+</table>
+<div class="tip">
+<p>Here “on time” means arriving at or before the scheduled arrival time. The definition is part of the analysis.</p>
+</div>
+</section>
+<section id="break" class="slide level2 section-divider middle">
+<h2>Break</h2>
+<p>10 minutes</p>
+<aside class="notes">
+<p>70–80 minutes elapsed. Resume with the flights QMD for cycle 2.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="live-coding-and-practice-cycle-2" class="slide level2 section-divider middle">
+<h2>Live coding and practice: Cycle 2</h2>
+<div class="your-turn">
+<p><strong>Switch to the flights QMD: creating flight variables</strong></p>
+<p>Create <code>air_time_hours</code>, <code>mph</code>, and <code>on_time</code>. Save the result as <code>flights_work</code>.</p>
+</div>
+<p>Inspect the relevant columns. Check one calculation by hand.</p>
+<aside class="notes">
+<p>80–95 minutes. Use the three tasks in the separate QMD. Students should write the logical expression directly, without an ifelse wrapper. Ask what happens for missing air_time or arr_delay. Have students verify row count, new column names, and units. Keep the original flights object available.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="tactile-activity-cycle-3" class="slide level2 section-divider middle">
+<h2>Tactile activity: Cycle 3</h2>
+<div class="your-turn">
+<p><strong>Switch to MathLink: summarizing observations</strong></p>
+<p>Compute an overall summary. Then group the rows and compute a summary for each group.</p>
+<p>Focus: <code>summarise()</code>, <code>group_by()</code>, and <code>count()</code>.</p>
+</div>
+<p>What does one row of the <strong>summary table</strong> represent?</p>
+<aside class="notes">
+<p>95–113 minutes includes the tactile round and a short R demonstration. Reset the blocks. Compute max(red), then group by blue and compute max(red) within each group. Use a grouping column with repeated values. Write the summary table on paper. Count observations in each group to introduce count(). Use the next slides during the debrief, then demonstrate one flight summary.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="summarise-computes-summary-statistics" class="slide level2">
+<h2><code>summarise()</code> computes summary statistics</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="" aria-label="2"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb21-3"><a href="" aria-label="3"></a>    <span class="at">mean_delay =</span> <span class="fu">mean</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb21-4"><a href="" aria-label="4"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  mean_delay
+       &lt;dbl&gt;
+1       12.6</code></pre>
+</div>
+</div>
+<p>For an ungrouped data frame, these summary calculations produce <strong>one row</strong>.</p>
+<p>Give each output column a meaningful name, such as <code>mean_delay</code>.</p>
+<div class="tip">
+<p>The result describes a collection of flights. It no longer contains one row per flight.</p>
+</div>
+</section>
+<section id="missing-values-in-summaries" class="slide level2">
+<h2>Missing values in summaries</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="" aria-label="1"></a><span class="fu">mean</span>(<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="cn">NA</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="" aria-label="1"></a><span class="fu">mean</span>(<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="cn">NA</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7.5</code></pre>
+</div>
+</div>
+<p><code>na.rm = TRUE</code> excludes missing values <strong>from that calculation</strong>. It does not remove rows from the original data frame.</p>
+<div class="question">
+<p>Whose delays contribute to our mean?</p>
+</div>
+<div class="fragment">
+<p>Only flights with observed departure delays. An observed mean does not tell us the missing delays.</p>
+</div>
+</section>
+<section id="group_by-defines-groups" class="slide level2">
+<h2><code>group_by()</code> defines groups</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="" aria-label="2"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb27-3"><a href="" aria-label="3"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb27-4"><a href="" aria-label="4"></a>    <span class="at">mean_delay =</span> <span class="fu">mean</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb27-5"><a href="" aria-label="5"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><code>group_by(month)</code> retains the rows and columns, adding grouping information.</li>
+<li><code>summarise()</code> performs the calculation within each month.</li>
+<li>The result has 12 rows and 2 columns: <code>month</code> and <code>mean_delay</code>.</li>
+</ul>
+<p><strong>One row now represents one month.</strong></p>
+</section>
+<section id="multiple-summary-statistics" class="slide level2">
+<h2>Multiple summary statistics</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a href="" aria-label="2"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb28-3"><a href="" aria-label="3"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb28-4"><a href="" aria-label="4"></a>    <span class="at">mean_delay =</span> <span class="fu">mean</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb28-5"><a href="" aria-label="5"></a>    <span class="at">median_delay =</span> <span class="fu">median</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb28-6"><a href="" aria-label="6"></a>    <span class="at">n_observed =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(dep_delay)),</span>
+<span id="cb28-7"><a href="" aria-label="7"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb28-8"><a href="" aria-label="8"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Each month has a mean, a median, and a count of observed departure delays.</p>
+<p><code>.groups = "drop"</code> returns an ungrouped summary table.</p>
+<aside class="notes">
+<p>Do not make .groups a separate lesson. Explain that it explicitly ends the grouping for later operations. The appendix provides more detail.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="count-creates-a-frequency-table" class="slide level2">
+<h2><code>count()</code> creates a frequency table</h2>
+<p>These give the same counts for the ungrouped <code>flights</code> data:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a href="" aria-label="2"></a>  <span class="fu">group_by</span>(origin) <span class="sc">|&gt;</span></span>
+<span id="cb29-3"><a href="" aria-label="3"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a href="" aria-label="2"></a>  <span class="fu">count</span>(origin)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div></div>
+<p><code>n()</code> counts rows in a group, including rows with missing values in other columns.</p>
+<div class="tip">
+<p><code>n()</code> and <code>sum(!is.na(dep_delay))</code> answer different questions.</p>
+</div>
+</section>
+<section id="live-coding-and-practice-cycle-3" class="slide level2 section-divider middle">
+<h2>Live coding and practice: Cycle 3</h2>
+<div class="your-turn">
+<p><strong>Switch to the flights QMD: comparing months</strong></p>
+<p>How does departure delay vary across months? Does the answer depend on whether we compare means or medians?</p>
+</div>
+<p>Sketch the output table before coding. Explain what each row represents afterward.</p>
+<aside class="notes">
+<p>113–137 minutes. In the separate QMD, compute an overall mean, then monthly means, medians, and observed counts. Sort by mean delay and interpret. If time permits, plot the monthly summaries using familiar ggplot syntax. Keep on-time proportions as follow-up material; the appendix explains both denominators and why filtering too early changes the question.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-changed" class="slide level2">
+<h2>What changed?</h2>
+<p>For the ungrouped data and ordinary uses shown today:</p>
+<div class="midi">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Operation</th>
+<th>Rows</th>
+<th>Columns / meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>select()</code></td>
+<td>Preserved</td>
+<td>Chosen columns</td>
+</tr>
+<tr class="even">
+<td><code>filter()</code></td>
+<td>Qualifying rows</td>
+<td>Columns preserved</td>
+</tr>
+<tr class="odd">
+<td><code>arrange()</code></td>
+<td>Reordered</td>
+<td>Columns preserved</td>
+</tr>
+<tr class="even">
+<td><code>slice()</code></td>
+<td>Chosen positions</td>
+<td>Columns preserved</td>
+</tr>
+<tr class="odd">
+<td><code>mutate()</code></td>
+<td>Preserved</td>
+<td>New or changed variables</td>
+</tr>
+<tr class="even">
+<td><code>group_by()</code></td>
+<td>Preserved</td>
+<td>Grouping information added</td>
+</tr>
+<tr class="odd">
+<td><code>summarise()</code></td>
+<td>One per group</td>
+<td>Group keys and summaries</td>
+</tr>
+<tr class="even">
+<td><code>count()</code></td>
+<td>One per observed combination</td>
+<td>Group keys and frequencies</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="check-the-pipeline" class="slide level2">
+<h2>Check the pipeline</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb31-2"><a href="" aria-label="2"></a>  <span class="fu">select</span>(month, origin) <span class="sc">|&gt;</span></span>
+<span id="cb31-3"><a href="" aria-label="3"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb31-4"><a href="" aria-label="4"></a>  <span class="fu">summarise</span>(<span class="at">mean_delay =</span> <span class="fu">mean</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="question">
+<p>What prevents this pipeline from answering the question?</p>
+</div>
+<div class="fragment">
+<p><code>select()</code> removed <code>dep_delay</code>. Keep it until its last use, or omit that selection.</p>
+</div>
+<aside class="notes">
+<p>137–145 minutes includes this check and the next two slides. Allow thinking time before revealing the explanation. Ask students to propose a repair.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="check-the-final-output" class="slide level2">
+<h2>Check the final output</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a href="" aria-label="2"></a>  <span class="fu">mutate</span>(<span class="at">on_time =</span> arr_delay <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a href="" aria-label="3"></a>  <span class="fu">filter</span>(on_time)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Which statement describes the <strong>final output</strong>?</p>
+<p>A. All original flights, with a new logical column.</p>
+<p>B. Flights with observed arrival delays of zero or less, with <code>on_time</code> retained.</p>
+<p>C. One row reporting the number of on-time flights.</p>
+<div class="fragment">
+<p><strong>B.</strong> <code>mutate()</code> adds the column; <code>filter()</code> then retains qualifying rows.</p>
+</div>
+</section>
+<section id="before-you-trust-the-result" class="slide level2">
+<h2>Before you trust the result</h2>
+<ul>
+<li><strong>Rows:</strong> What does one row represent now?</li>
+<li><strong>Columns:</strong> Are the necessary variables still available?</li>
+<li><strong>Values:</strong> Do units, ranges, and missing values make sense?</li>
+<li><strong>Question:</strong> Did the operation order select the intended observations?</li>
+</ul>
+<div class="question">
+<p>Which check would have helped you catch a mistake today?</p>
+</div>
+<aside class="notes">
+<p>End the planned class content here. Allow five minutes for buffer and the homework launch. The following slides remain available for later study.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="additional-examples-and-reference" class="slide level2 section-divider middle">
+<h2>Additional examples and reference</h2>
+<p>Worked examples and details for review</p>
+<aside class="notes">
+<p>Not an additional lecture block. These slides preserve breadth from the original deck and support independent study and subsequent practice.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="another-tidy-data-example" class="slide level2">
+<h2>Another tidy-data example</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/hyperwar-airplanes-on-hand.png" class="quarto-figure quarto-figure-center" height="400"></p>
+</figure>
+</div>
+<p>What variables appear in headings or labels? Which values are summaries?</p>
+<div class="footnote">
+<p>Source: <a href="https://www.ibiblio.org/hyperwar/AAF/StatDigest/aafsd-3.html">Army Air Forces Statistical Digest, WW II</a></p>
+</div>
+</section>
+<section id="another-tidy-data-example-census-tables" class="slide level2">
+<h2>Another tidy-data example: Census tables</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/us-general-economic-characteristic-acs-2017.png" class="quarto-figure quarto-figure-center" height="400"></p>
+</figure>
+</div>
+<p>How would you separate variable names, estimates, and labels into a data table?</p>
+<div class="footnote">
+<p>Source: US Census Bureau, General Economic Characteristics, ACS 2017.</p>
+</div>
+</section>
+<section id="inspecting-a-data-frame" class="slide level2">
+<h2>Inspecting a data frame</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="" aria-label="1"></a><span class="fu">names</span>(flights)       <span class="co"># column names</span></span>
+<span id="cb33-2"><a href="" aria-label="2"></a></span>
+<span id="cb33-3"><a href="" aria-label="3"></a><span class="fu">glimpse</span>(flights)     <span class="co"># dimensions, types, example values</span></span>
+<span id="cb33-4"><a href="" aria-label="4"></a></span>
+<span id="cb33-5"><a href="" aria-label="5"></a><span class="fu">nrow</span>(flights)        <span class="co"># number of rows</span></span>
+<span id="cb33-6"><a href="" aria-label="6"></a><span class="fu">ncol</span>(flights)        <span class="co"># number of columns</span></span>
+<span id="cb33-7"><a href="" aria-label="7"></a></span>
+<span id="cb33-8"><a href="" aria-label="8"></a>?nycflights13<span class="sc">::</span>flights</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Documentation explains definitions and units that column names alone may not reveal.</p>
+</section>
+<section id="more-ways-to-select" class="slide level2">
+<h2>More ways to <code>select()</code></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Exclude a column:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="" aria-label="2"></a>  <span class="fu">select</span>(<span class="sc">-</span>dep_delay)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Select a consecutive range:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb35-2"><a href="" aria-label="2"></a>  <span class="fu">select</span>(year<span class="sc">:</span>day)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column" style="width:50%;">
+<p>Select by a name pattern:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="" aria-label="2"></a>  <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"delay"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The range <code>year:day</code> follows the <strong>current column order</strong>, including both endpoints.</p>
+</div></div>
+</section>
+<section id="select-helpers" class="slide level2">
+<h2>Select helpers</h2>
+<div class="midi">
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Helper</th>
+<th>Selects columns whose names…</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>starts_with("dep")</code></td>
+<td>Start with <code>dep</code></td>
+</tr>
+<tr class="even">
+<td><code>ends_with("delay")</code></td>
+<td>End with <code>delay</code></td>
+</tr>
+<tr class="odd">
+<td><code>contains("time")</code></td>
+<td>Contain <code>time</code></td>
+</tr>
+<tr class="even">
+<td><code>matches("pattern")</code></td>
+<td>Match a regular expression</td>
+</tr>
+<tr class="odd">
+<td><code>num_range("x", 1:3)</code></td>
+<td>Are <code>x1</code>, <code>x2</code>, or <code>x3</code></td>
+</tr>
+<tr class="even">
+<td><code>all_of(vars)</code></td>
+<td>Appear in the character vector <code>vars</code>; all must exist</td>
+</tr>
+<tr class="odd">
+<td><code>any_of(vars)</code></td>
+<td>Appear in <code>vars</code>; absent names are skipped</td>
+</tr>
+<tr class="even">
+<td><code>everything()</code></td>
+<td>Include all remaining columns</td>
+</tr>
+<tr class="odd">
+<td><code>last_col()</code></td>
+<td>Identify the last column</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="pipelines-and-plot-layers" class="slide level2">
+<h2>Pipelines and plot layers</h2>
+<p>Use <code>|&gt;</code> to pass a data frame into the next operation. Use <code>+</code> to add layers to a ggplot.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a href="" aria-label="2"></a>  <span class="fu">filter</span>(dest <span class="sc">==</span> <span class="st">"LAX"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-3"><a href="" aria-label="3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> dep_delay)) <span class="sc">+</span></span>
+<span id="cb37-4"><a href="" aria-label="4"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">15</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The filtered data become the first argument to <code>ggplot()</code>. <code>geom_histogram()</code> then adds a layer to that plot.</p>
+<div class="tip">
+<p>Swapping <code>|&gt;</code> and <code>+</code> changes what the code means; they are not interchangeable.</p>
+</div>
+</section>
+<section id="pipe-notation-style-and-comments" class="slide level2">
+<h2>Pipe notation, style, and comments</h2>
+<p>You may encounter <code>%&gt;%</code> in older examples. We use <code>|&gt;</code> in this course. Both support the simple data-frame pipelines shown here.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="" aria-label="1"></a><span class="co"># Keep flights to LAX that arrived early</span></span>
+<span id="cb38-2"><a href="" aria-label="2"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb38-3"><a href="" aria-label="3"></a>  <span class="fu">filter</span>(dest <span class="sc">==</span> <span class="st">"LAX"</span>, arr_delay <span class="sc">&lt;</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>Put spaces around operators and after commas.</li>
+<li>Put each pipeline step on a new line, with <code>|&gt;</code> at the end of the preceding line.</li>
+<li>Text after <code>#</code> on a code line is a comment; R does not execute it.</li>
+</ul>
+</section>
+<section id="does-the-order-matter" class="slide level2">
+<h2>Does the order matter?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb39-2"><a href="" aria-label="2"></a>  <span class="fu">filter</span>(dest <span class="sc">==</span> <span class="st">"LAX"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb39-3"><a href="" aria-label="3"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(dep_delay)) <span class="sc">|&gt;</span></span>
+<span id="cb39-4"><a href="" aria-label="4"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Five largest departure delays <strong>among LAX flights</strong>.</p>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb40-2"><a href="" aria-label="2"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(dep_delay)) <span class="sc">|&gt;</span></span>
+<span id="cb40-3"><a href="" aria-label="3"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb40-4"><a href="" aria-label="4"></a>  <span class="fu">filter</span>(dest <span class="sc">==</span> <span class="st">"LAX"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Any LAX flights <strong>among the five largest departure delays overall</strong>.</p>
+</div></div>
+<p>The second pipeline may return fewer than five rows.</p>
+</section>
+<section id="missing-values-and-conditions" class="slide level2">
+<h2>Missing values and conditions</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="" aria-label="1"></a><span class="cn">NA</span> <span class="sc">&lt;=</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="" aria-label="1"></a><span class="fu">is.na</span>(<span class="cn">NA</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Keep flights whose arrival delays are observed:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb45-2"><a href="" aria-label="2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(arr_delay))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Use <code>is.na()</code> to identify missing values. <code>arr_delay == NA</code> cannot test whether a value is missing.</p>
+</section>
+<section id="distinct-finds-unique-combinations" class="slide level2">
+<h2><code>distinct()</code> finds unique combinations</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb46-2"><a href="" aria-label="2"></a>  <span class="fu">distinct</span>(origin) <span class="sc">|&gt;</span></span>
+<span id="cb46-3"><a href="" aria-label="3"></a>  <span class="fu">arrange</span>(origin)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 1
+  origin
+  &lt;chr&gt; 
+1 EWR   
+2 JFK   
+3 LGA   </code></pre>
+</div>
+</div>
+<p>One row per origin airport.</p>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb48-2"><a href="" aria-label="2"></a>  <span class="fu">distinct</span>(origin, dest) <span class="sc">|&gt;</span></span>
+<span id="cb48-3"><a href="" aria-label="3"></a>  <span class="fu">arrange</span>(origin, dest)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>One row per observed origin–destination combination.</p>
+</div></div>
+<p><code>distinct()</code> identifies which combinations occur. <code>count()</code> also reports how often.</p>
+</section>
+<section id="counting-and-sorting" class="slide level2">
+<h2>Counting and sorting</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb49-2"><a href="" aria-label="2"></a>  <span class="fu">count</span>(origin, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  origin      n
+  &lt;chr&gt;   &lt;int&gt;
+1 EWR    120835
+2 JFK    111279
+3 LGA    104662</code></pre>
+</div>
+</div>
+<p><code>sort = TRUE</code> puts the largest frequencies first.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb51-2"><a href="" aria-label="2"></a>  <span class="fu">count</span>(origin) <span class="sc">|&gt;</span></span>
+<span id="cb51-3"><a href="" aria-label="3"></a>  <span class="fu">arrange</span>(n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>arrange(n)</code> puts the smallest frequencies first.</p>
+</section>
+<section id="counting-combinations" class="slide level2">
+<h2>Counting combinations</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb52-2"><a href="" aria-label="2"></a>  <span class="fu">count</span>(origin, dest)</span>
+<span id="cb52-3"><a href="" aria-label="3"></a></span>
+<span id="cb52-4"><a href="" aria-label="4"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb52-5"><a href="" aria-label="5"></a>  <span class="fu">count</span>(dest, origin)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Both count the same origin–destination combinations.</p>
+<p>Changing the argument order changes the column order and default row ordering, <strong>not the frequency associated with each combination</strong>.</p>
+</section>
+<section id="useful-summary-functions" class="slide level2">
+<h2>Useful summary functions</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Calculates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>mean(x)</code></td>
+<td>Arithmetic mean</td>
+</tr>
+<tr class="even">
+<td><code>median(x)</code></td>
+<td>Median</td>
+</tr>
+<tr class="odd">
+<td><code>min(x)</code>, <code>max(x)</code></td>
+<td>Smallest and largest values</td>
+</tr>
+<tr class="even">
+<td><code>sd(x)</code></td>
+<td>Sample standard deviation</td>
+</tr>
+<tr class="odd">
+<td><code>sum(x)</code></td>
+<td>Sum</td>
+</tr>
+<tr class="even">
+<td><code>quantile(x, probs = 0.25)</code></td>
+<td>First quartile</td>
+</tr>
+<tr class="odd">
+<td><code>n()</code></td>
+<td>Number of rows in the current group</td>
+</tr>
+</tbody>
+</table>
+<p>The functions taking <code>x</code> above accept <code>na.rm = TRUE</code>. <code>n()</code> counts rows and does not take a variable or <code>na.rm</code> argument.</p>
+</section>
+<section id="mutate-versus-summarise" class="slide level2">
+<h2><code>mutate()</code> versus <code>summarise()</code></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb53-2"><a href="" aria-label="2"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb53-3"><a href="" aria-label="3"></a>    <span class="at">delay_hours =</span> dep_delay <span class="sc">/</span> <span class="dv">60</span></span>
+<span id="cb53-4"><a href="" aria-label="4"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>A value for each flight.</p>
+<p>Rows still represent flights.</p>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb54-2"><a href="" aria-label="2"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb54-3"><a href="" aria-label="3"></a>    <span class="at">mean_delay =</span> <span class="fu">mean</span>(</span>
+<span id="cb54-4"><a href="" aria-label="4"></a>      dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb54-5"><a href="" aria-label="5"></a>    )</span>
+<span id="cb54-6"><a href="" aria-label="6"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>A summary across flights.</p>
+<p>One row describes the collection.</p>
+</div></div>
+</section>
+<section id="grouping-persists-until-it-is-removed" class="slide level2">
+<h2>Grouping persists until it is removed</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb55-2"><a href="" aria-label="2"></a>  <span class="fu">group_by</span>(month, origin) <span class="sc">|&gt;</span></span>
+<span id="cb55-3"><a href="" aria-label="3"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb55-4"><a href="" aria-label="4"></a>    <span class="at">mean_delay =</span> <span class="fu">mean</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb55-5"><a href="" aria-label="5"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb55-6"><a href="" aria-label="6"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>One row represents a month–origin combination.</p>
+<ul>
+<li>With these summaries, omitting <code>.groups</code> drops the last grouping level; earlier levels can remain.</li>
+<li><code>.groups = "drop"</code> removes all grouping from the result.</li>
+<li><code>ungroup()</code> removes grouping from an existing grouped data frame.</li>
+</ul>
+</section>
+<section id="proportions-need-a-denominator" class="slide level2">
+<h2>Proportions need a denominator</h2>
+<p>Define the question before calculating an on-time proportion:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Denominator</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Flights with observed arrival delays</td>
+<td>Fraction on time among flights with known arrival outcomes</td>
+</tr>
+<tr class="even">
+<td>All scheduled flights</td>
+<td>Fraction of scheduled flights known to have arrived on time</td>
+</tr>
+</tbody>
+</table>
+<p>These can differ when arrival delays are missing.</p>
+<div class="tip">
+<p>Missing arrival information is not evidence of either an on-time or a late arrival.</p>
+</div>
+</section>
+<section id="on-time-proportions-among-observed-arrivals" class="slide level2">
+<h2>On-time proportions among observed arrivals</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb56-2"><a href="" aria-label="2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(arr_delay)) <span class="sc">|&gt;</span></span>
+<span id="cb56-3"><a href="" aria-label="3"></a>  <span class="fu">mutate</span>(<span class="at">on_time =</span> arr_delay <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb56-4"><a href="" aria-label="4"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb56-5"><a href="" aria-label="5"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb56-6"><a href="" aria-label="6"></a>    <span class="at">n_observed =</span> <span class="fu">n</span>(),</span>
+<span id="cb56-7"><a href="" aria-label="7"></a>    <span class="at">n_on_time =</span> <span class="fu">sum</span>(on_time),</span>
+<span id="cb56-8"><a href="" aria-label="8"></a>    <span class="at">prop_on_time =</span> n_on_time <span class="sc">/</span> n_observed,</span>
+<span id="cb56-9"><a href="" aria-label="9"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb56-10"><a href="" aria-label="10"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The denominator is the number of flights with observed arrival delay <strong>in that month</strong>.</p>
+<div class="tip">
+<p>Filtering to <code>on_time</code> before counting the denominator would remove the late flights.</p>
+</div>
+</section>
+<section id="overall-versus-within-group-proportions" class="slide level2">
+<h2>Overall versus within-group proportions</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Among all flights:</strong></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb57-2"><a href="" aria-label="2"></a>  <span class="fu">count</span>(origin, dest) <span class="sc">|&gt;</span></span>
+<span id="cb57-3"><a href="" aria-label="3"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The proportions sum to 1 across the whole table.</p>
+</div><div class="column" style="width:50%;">
+<p><strong>Within each origin:</strong></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="" aria-label="1"></a>flights <span class="sc">|&gt;</span></span>
+<span id="cb58-2"><a href="" aria-label="2"></a>  <span class="fu">count</span>(origin, dest) <span class="sc">|&gt;</span></span>
+<span id="cb58-3"><a href="" aria-label="3"></a>  <span class="fu">group_by</span>(origin) <span class="sc">|&gt;</span></span>
+<span id="cb58-4"><a href="" aria-label="4"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) <span class="sc">|&gt;</span></span>
+<span id="cb58-5"><a href="" aria-label="5"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The proportions sum to 1 separately for each origin.</p>
+</div></div>
+</section>
+<section id="a-complete-monthly-summary" class="slide level2">
+<h2>A complete monthly summary</h2>
+<div class="midi">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="" aria-label="1"></a>monthly_delays <span class="ot">&lt;-</span> flights <span class="sc">|&gt;</span></span>
+<span id="cb59-2"><a href="" aria-label="2"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb59-3"><a href="" aria-label="3"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb59-4"><a href="" aria-label="4"></a>    <span class="at">n_scheduled =</span> <span class="fu">n</span>(),</span>
+<span id="cb59-5"><a href="" aria-label="5"></a>    <span class="at">n_observed =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(dep_delay)),</span>
+<span id="cb59-6"><a href="" aria-label="6"></a>    <span class="at">mean_delay =</span> <span class="fu">mean</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb59-7"><a href="" aria-label="7"></a>    <span class="at">median_delay =</span> <span class="fu">median</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb59-8"><a href="" aria-label="8"></a>    <span class="at">max_delay =</span> <span class="fu">max</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb59-9"><a href="" aria-label="9"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb59-10"><a href="" aria-label="10"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb59-11"><a href="" aria-label="11"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_delay))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<p>Each row represents a month. The delay summaries use all observed departure delays in that month, regardless of whether the flight arrived on time.</p>
+</section>
+<section id="a-pipeline-can-run-and-still-answer-the-wrong-question" class="slide level2">
+<h2>A pipeline can run and still answer the wrong question</h2>
+<p>A successful run tells us that R could carry out the instructions.</p>
+<p>It does not establish that we:</p>
+<ul>
+<li>Selected the intended observations.</li>
+<li>Used the intended units or definition.</li>
+<li>Chose the right grouping or denominator.</li>
+<li>Interpreted missing values appropriately.</li>
+</ul>
+<div class="tip">
+<p>Explain the output in the language of the original question.</p>
+</div>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="04-data-wrangling-1-revised_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="04-data-wrangling-1-revised_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="04-data-wrangling-1-revised_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="04-data-wrangling-1-revised_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="04-data-wrangling-1-revised_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="04-data-wrangling-1-revised_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="04-data-wrangling-1-revised_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="04-data-wrangling-1-revised_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="04-data-wrangling-1-revised_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="04-data-wrangling-1-revised_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: false,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
