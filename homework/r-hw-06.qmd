@@ -1,5 +1,5 @@
 ---
-title: "Lab 05 - Pivot & Proportions Practice"
+title: "R HW 06 - Pivot & Proportions Practice"
 format:
   html:
     css: styles.css
@@ -18,7 +18,7 @@ callout-icon: false
 
 # Goals
 
-In this lab, you will 
+In this assignment, you will 
 
 + practice reshaping data using `pivot_longer()` and `pivot_wider()` 
 + compute marginal and conditional proportions from count data, and 
@@ -182,24 +182,46 @@ For each exercise below,
 Adapt your code from Exercise 5 to instead display your proportions as a 6x3 data frame where the first column lists the opinion category, and the 2nd and 3rd columns give the proportions for the `18-44` and `45+` age categories, respectively.
 :::
 
-# Submission
 
-Before submitting your `.html` (as .zip file)
+➡️ ✅ *Render one last time and open `r-hw-04`.html` in a web browser. Check that your code, output, visualizations, and written responses are organized and readable.*
 
-- [ ] Check code readability
-- [ ] Suppress warnings/messages
-- [ ] Label exercises clearly
-- [ ] Ensure tables are cleanly formatted
+# Submit
 
-# Grading (50 pts)
+::: {.callout-important}
 
-| Component   | Points |
-|------------|--------|
-| Exercise 1 | 7 |
-| Exercise 2 | 7 |
-| Exercise 3 | 7 |
-| Exercise 4 | 7 |
-| Exercise 5 | 7 |
-| Exercise 6 | 7 |
-| Reflection | 3 |
-| Neatness & Organization | 5| 
+To submit, you need to upload your R_HW_06.html file to the R HW 06 assignment on Brightspace. The html file should be located in the same folder on your computer where you placed your .qmd (STAT_7500). 
+
+:::
+
+# Grading (10 points)
+
+Homework assignments are opportunities to practice the skills and habits you will use on larger course projects. They are graded holistically rather than point-by-point.
+
+Your homework will be evaluated for:
+
+- **Completion and substantive correctness (8 points):** You have attempted all exercises, your code and results are generally correct, and your written responses appropriately interpret and engage with the data.
+- **Reproducible workflow and presentation (2 points):** Your document renders successfully and your code, output, visualizations, and responses are organized and readable.
+
+Minor mistakes will not be penalized individually. You may also receive feedback about misconceptions or habits to improve even when they do not result in a point deduction. Use this feedback in future homework assignments and projects.
+
+### Homework rubric — 10 points total
+
+#### Completion and substantive correctness — 8 points
+
+| Score | Description |
+|---|---|
+| **8** | Complete and substantively correct. Code and analyses accomplish what was asked, and written responses appropriately interpret the results. Minor imperfections are okay. |
+| **7** | Mostly complete and correct, with one notable error, omission, or misunderstanding. |
+| **6** | Several errors or omissions, but the work demonstrates reasonable understanding of the main ideas. |
+| **4–5** | Significant errors, omissions, or misunderstandings that should be addressed before moving on. |
+| **0–3** | Substantially incomplete, incorrect, or shows limited engagement with the homework. |
+
+#### Reproducible workflow and presentation — 2 points
+
+| Score | Description |
+|---|---|
+| **2** | Document renders successfully; code, output, visualizations, and written responses are reasonably organized and readable. |
+| **1** | Some problems with reproducibility, organization, readability, or presentation. |
+| **0** | Major problems with reproducibility, organization, readability, or presentation. |
+
+**Total: 10 points**
