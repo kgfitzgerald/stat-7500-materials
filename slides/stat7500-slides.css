@@ -320,3 +320,32 @@
 .reveal .slides section#title-slide.present {
   display: flex !important;
 }
+
+/* Searchable DT tables on dark slides */
+.reveal .datatables,
+.reveal .datatables .dataTables_wrapper,
+.reveal .datatables label,
+.reveal .datatables .dataTables_info {
+  color: #f2f2f2 !important;
+}
+
+.reveal .datatables table.dataTable th,
+.reveal .datatables table.dataTable td {
+  color: #f2f2f2 !important;
+  background-color: #252a34 !important;
+  border-color: #596170 !important;
+}
+
+/* Search box and page-length menu */
+.reveal .datatables input,
+.reveal .datatables select {
+  color: #f2f2f2 !important;
+  background-color: #353c48 !important;
+  border: 1px solid #8993a3 !important;
+}
+
+/* Pagination buttons */
+.reveal .datatables .dataTables_paginate .paginate_button {
+  color: #f2f2f2 !important;
+  background: #353c48 !important;
+}
