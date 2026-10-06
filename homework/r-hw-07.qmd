@@ -1,5 +1,5 @@
 ---
-title: "R HW 05: Data Importing & Cleaning"
+title: "R HW 07: Data Importing & Cleaning"
 subtitle: "Intro Survey"
 format:
   html:
@@ -32,9 +32,9 @@ In this assignment, you will...
 
 To get started on this assignment, do the following:
 
-- Download `R_HW_05.qmd` and place it in your STAT_7500 folder.
+- Download `R_HW_07.qmd` and place it in your STAT_7500 folder.
 
-You will complete the assignment by adding code and text responses to `R_HW_05.qmd`.
+You will complete the assignment by adding code and text responses to `R_HW_07.qmd`.
 
 
 # Packages
@@ -219,7 +219,7 @@ Attempt to recreate this visualization as closely as possible.
 
 ::: {.callout-important}
 
-To submit, you need to upload your R_HW_04.html file to the R HW 04 assignment on Brightspace. The html file should be located in the same folder on your computer where you placed your .qmd (STAT_7500). 
+To submit, you need to upload your R_HW_07.html file to the R HW 07 assignment on Brightspace. The html file should be located in the same folder on your computer where you placed your .qmd (STAT_7500). 
 
 :::
 
