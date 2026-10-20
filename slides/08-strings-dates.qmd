@@ -226,7 +226,7 @@ last %in% c("a", "e", "i", "o", "u")
 
 ## Your turn: State Names
 
-*Exercise 1 in `week_12.qmd`*
+*Exercise 1 in `week_08.qmd`*
 
 Run each line and add a comment describing what it does.
 
