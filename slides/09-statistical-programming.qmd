@@ -1,0 +1,1225 @@
+---
+title: "Statistical Programming"
+subtitle: "STAT 7500"
+author: "Katie Fitzgerald, adapted from Michael Posner & Paul Bernhardt"
+format:
+  revealjs:
+    theme: stat7500-slides.css
+    width: 1280
+    height: 720
+    margin: 0
+    slide-number: false
+    progress: false
+    toc: false
+    center: false
+    transition: none
+    background-transition: none
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r setup, include=FALSE}
+options(
+  htmltools.dir.version = FALSE,
+  dplyr.print_min = 6,
+  dplyr.print_max = 6,
+  tibble.width = 65,
+  width = 65
+)
+knitr::opts_chunk$set(
+  fig.width = 8,
+  fig.asp = 0.5,
+  out.width = "70%",
+  fig.align = "center",
+  dpi = 300
+)
+library(tidyverse)
+library(scales)
+library(knitr)
+```
+
+```{r make-files, include=FALSE}
+# Creates the "one file per year" folder used in the iteration section.
+dir.create("data/tx-housing", showWarnings = FALSE, recursive = TRUE)
+for (yr in 2012:2015) {
+  txhousing |>
+    filter(year == yr) |>
+    write_csv(paste0("data/tx-housing/txhousing_", yr, ".csv"))
+}
+```
+
+<!-- Uses only datasets that ship with the tidyverse (txhousing, mpg,
+diamonds) plus stat7500-slides.css. The hidden make-files chunk writes
+four small CSVs to data/tx-housing/ for the iteration section.
+Base R (replicate, sample, apply-family) is shown alongside purrr because
+students will see it in older materials and colleagues' code. -->
+
+
+## Don't repeat yourself {.section-divider .middle}
+
+---
+
+## A familiar request
+
+Your manager wants monthly sales, dollar volume, and median price for Texas cities, **standardized** so they can share one chart.
+
+```{r}
+tx_std <- txhousing |>
+  mutate(
+    sales  = (sales - mean(sales, na.rm = TRUE)) /
+      sd(sales, na.rm = TRUE),
+    volume = (volume - mean(volume, na.rm = TRUE)) /
+      sd(sales, na.rm = TRUE),
+    median = (median - mean(median, na.rm = TRUE)) /
+      sd(median, na.rm = TRUE)
+  )
+```
+
+::: {.question}
+This code runs without an error or warning. Is it correct?
+:::
+
+---
+
+## Copy, paste, ... bug
+
+```{r eval=FALSE}
+    volume = (volume - mean(volume, na.rm = TRUE)) /
+      sd(sales, na.rm = TRUE),
+```
+
+- One edited line was missed while copying and pasting.
+- R cannot catch it: dividing by the wrong standard deviation is valid code.
+- The more copies you make, the more places a mistake can hide.
+
+. . .
+
+**Rule of thumb:** once you have copied a block of code twice, write a function.
+
+---
+
+## This week: three kinds of repetition
+
+| Repeat... | Tool | Example |
+|:--|:--|:--|
+| The same **steps** on new inputs | Functions | Standardize any column |
+| The same function over **many things** | Iteration | Read 12 monthly files |
+| A **random process** many times | Simulation | How often is a flight overbooked? |
+
+We will also use **sampling**, the random building block, and finish with a short look at the **bootstrap**.
+
+---
+
+## Functions {.section-divider .middle}
+
+---
+
+## Anatomy of a function
+
+```{r}
+standardize <- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+```
+
+- **Name:** `standardize`. Use a verb that says what it does.
+- **Arguments:** `x`. These are the inputs that change from use to use.
+- **Body:** the code inside `{ }`.
+- The **last value computed** is returned.
+
+---
+
+## Test it where you know the answer
+
+```{r}
+standardize(c(1, 2, 3, 4, 5))
+standardize(c(10, 20, NA, 40))
+```
+
+. . .
+
+Before trusting a function on 8,000 rows, check it on 5 values you can verify by hand.
+
+- Is the middle value 0?
+- Did the `NA` stay `NA`, without breaking the other values?
+
+---
+
+## Use it inside `mutate()`
+
+```{r}
+txhousing |>
+  mutate(
+    sales  = standardize(sales),
+    volume = standardize(volume),
+    median = standardize(median)
+  ) |>
+  select(city, date, sales, volume, median)
+```
+
+Less code. More importantly, the formula is written **once**.
+
+---
+
+## Let `across()` do the repeating
+
+```{r}
+txhousing |>
+  mutate(across(c(sales, volume, median), standardize)) |>
+  select(city, date, sales, volume, median)
+```
+
+`across()` applies **one function** to **many columns**.
+
+::: {.question}
+Austin and Abilene have very different markets. How would you standardize **within** each city instead?
+:::
+
+::: {.notes}
+Answer: add group_by(city) before mutate(). Grouped mutate already
+iterates over groups, which sets up the iteration section.
+:::
+
+---
+
+## Arguments with defaults
+
+Flag unusual values with the 1.5 × IQR rule (the boxplot rule):
+
+```{r}
+is_outlier <- function(x, k = 1.5) {
+  q <- quantile(x, c(0.25, 0.75), na.rm = TRUE)
+  iqr <- q[2] - q[1]
+  x < q[1] - k * iqr | x > q[2] + k * iqr
+}
+```
+
+. . .
+
+```{r}
+diamonds |>
+  summarise(
+    n_mild    = sum(is_outlier(price)),          # uses k = 1.5
+    n_extreme = sum(is_outlier(price, k = 3))    # overrides default
+  )
+```
+
+---
+
+## Using a function as a filter
+
+`is_outlier()` returns `TRUE`/`FALSE`, so it works anywhere a condition does.
+
+```{r}
+diamonds |>
+  filter(is_outlier(price, k = 3)) |>
+  count(cut)
+```
+
+A reusable rule makes it easy to apply **the same definition** of "unusual" in every report.
+
+---
+
+## Fail loudly: check your inputs
+
+Remember `number_of_cats`, stored as character? Make your function refuse bad input.
+
+```{r error=TRUE}
+standardize <- function(x) {
+  if (!is.numeric(x)) {
+    stop("`x` must be numeric, not ", class(x)[1], ".")
+  }
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+
+standardize(c("1", "2", "two"))
+```
+
+A clear error now is better than a quiet `NA` three steps later.
+
+---
+
+## Functions that use column names
+
+Suppose you often compute a grouped mean. A first attempt:
+
+```{r error=TRUE}
+group_mean <- function(df, group_var, var) {
+  df |>
+    group_by(group_var) |>
+    summarise(mean = mean(var, na.rm = TRUE))
+}
+
+group_mean(mpg, class, hwy)
+```
+
+`group_by()` looks for a column literally named `group_var`.
+
+---
+
+## Embrace with <code>{{ }}</code>
+
+Wrapping an argument in <code>{{ }}</code> tells tidyverse functions to use the column **the user supplied**.
+
+```{r}
+group_mean <- function(df, group_var, var) {
+  df |>
+    group_by({{ group_var }}) |>
+    summarise(mean = mean({{ var }}, na.rm = TRUE), n = n())
+}
+
+group_mean(mpg, class, hwy)
+```
+
+---
+
+## The same idea works for plots {.nostretch}
+
+```{r out.width="55%"}
+hist_of <- function(df, var, binwidth = NULL) {
+  ggplot(df, aes(x = {{ var }})) +
+    geom_histogram(binwidth = binwidth, color = "white")
+}
+
+hist_of(diamonds, carat, binwidth = 0.1)
+```
+
+---
+
+## When is a function worth it?
+
+- You have copied a block of code **two or more** times.
+- A rule needs to be applied **consistently**, such as an outlier, a cleaning, or a fiscal-year rule.
+- You want to **name** a step so the pipeline reads like a description.
+
+Keep functions small: one job, a clear name, and tested on a tiny example.
+
+---
+
+## Your turn: A missing-data audit
+
+*5 minutes · Practice 1 in the companion document*
+
+a. Write `prop_missing(x)` that returns the **proportion** of values in `x` that are `NA`.
+b. Test it on `c(1, NA, 3, NA)`. What should you get?
+c. Use it with `summarise(across(everything(), prop_missing))` on `txhousing`.
+
+d. Which variables would you ask questions about before you analyzed them? What would you ask the person who sent you the data?
+
+**Bonus:** add a `digits` argument, defaulting to `2`, that rounds the result.
+
+::: {.notes}
+Hint if stuck: is.na() returns TRUE/FALSE, and the mean of a logical
+vector is the proportion TRUE. Solution follows on the next slide.
+:::
+
+---
+
+## Practice 1: One solution
+
+```{r}
+prop_missing <- function(x, digits = 2) {
+  round(mean(is.na(x)), digits)
+}
+prop_missing(c(1, NA, 3, NA))
+
+txhousing |>
+  summarise(across(everything(), prop_missing)) |>
+  pivot_longer(everything(), names_to = "variable",
+               values_to = "prop_missing")
+```
+
+---
+
+## Iteration {.section-divider .middle}
+
+---
+
+## You have already been iterating
+
+| You wrote | R repeated it over |
+|:--|:--|
+| `mutate(across(c(sales, volume), standardize))` | columns |
+| `group_by(city) |> summarise(...)` | groups |
+
+. . .
+
+Some jobs don't fit inside a data frame:
+
+- Reading **many files** or Excel sheets
+- Saving **one plot per** region, product, or client
+- Running a **simulation** thousands of times
+
+---
+
+## Scenario: one file per year
+
+A partner sends a new CSV every year, with the same columns each time.
+
+```{r}
+files <- list.files("data/tx-housing", full.names = TRUE)
+files
+```
+
+```{r}
+read_csv(files[1]) |> glimpse()
+```
+
+---
+
+## A `for` loop
+
+```{r}
+tx_list <- list()                        # 1. empty list to hold each year's data
+
+for (i in 1:length(files)) {             # 2. i = 1, 2, 3, 4 (one per file)
+  tx_list[[i]] <- read_csv(files[i])     # 3. read the i-th file, store it in slot i
+}
+
+length(tx_list)                          # 4 data frames, one per year
+```
+
+Every loop needs three things: an **output** container, a **sequence** to step through, and a **body** to run each time.
+
+---
+
+## Combine the pieces
+
+```{r}
+tx_all <- bind_rows(tx_list)
+tx_all
+tx_all |> count(year)
+```
+
+---
+
+## `map()`: the loop, packaged
+
+The **purrr** package (part of the tidyverse) replaces the loop bookkeeping with one function:
+
+```{r}
+tx_list <- map(files, read_csv)
+```
+
+`map(.x, .f)` applies `.f` to each element of `.x` and returns a **list**:
+
+```{r eval=FALSE}
+map(c(a, b, c), f)   # gives   list(f(a), f(b), f(c))
+```
+
+No container to set up and no index `i` to keep track of.
+
+---
+
+## Read and stack in one pipeline
+
+```{r}
+tx_all <- files |>
+  map(read_csv) |>       # read each file into a list
+  bind_rows()            # stack them into one data frame
+
+tx_all |> count(year)
+```
+
+When the 2016 file arrives, this code doesn't change: `list.files()` picks it up automatically.
+
+---
+
+## Shortcuts and generalizations
+
+For CSVs with the same columns, **readr** can read and stack them in one step:
+
+```{r eval=FALSE}
+read_csv(files)
+```
+
+The `map()` pattern works for **anything**. For example, every sheet in an Excel workbook:
+
+```{r eval=FALSE}
+path   <- "data/regional-budgets.xlsx"
+sheets <- readxl::excel_sheets(path)     # "East" "North" "South" ...
+
+budgets <- sheets |>
+  map(\(s) readxl::read_excel(path, sheet = s)) |> #\(s) is shortcut for function(s)
+  bind_rows()
+```
+
+---
+
+## Anonymous functions: `\(x)`
+
+When a function is only needed once, write it in place:
+
+```{r}
+map(1:3, \(x) x^2)
+```
+
+- `\(x) x^2` is shorthand for `function(x) x^2`.
+- Use it when you need to pass extra arguments, as in `\(s) read_excel(path, sheet = s)`.
+
+---
+
+## `map` variants return vectors
+
+```{r}
+mpg |>
+  select(displ, cty, hwy) |>
+  map_dbl(mean)
+
+map_chr(files, basename)
+```
+
+| Function | Returns |
+|:--|:--|
+| `map()` | a list |
+| `map_dbl()`, `map_int()`, `map_chr()`, `map_lgl()` | a vector of that type |
+
+---
+
+## You'll also see base R versions
+
+Older course materials and many colleagues use the **apply family**. They do the same jobs.
+
+| Job | purrr | base R |
+|:--|:--|:--|
+| Apply to each element, get a list | `map(x, f)` | `lapply(x, f)` |
+| Apply to each element, get a vector | `map_dbl(x, f)` | `sapply(x, f)` |
+| Apply to each row or column of a matrix | — | `apply(m, 1 or 2, f)` |
+| Repeat a random expression `n` times | `map(1:n, \(i) ...)` | `replicate(n, expr)` |
+
+We will use `replicate()` for simulation; it is short and clear.
+
+---
+
+## Scenario: one plot per city
+
+First, a function that makes **one** plot:
+
+```{r out.width="50%"}
+city_plot <- function(city_name) {
+  txhousing |>
+    filter(city == city_name) |>
+    ggplot(aes(x = date, y = median)) +
+    geom_line() +
+    scale_y_continuous(labels = label_dollar()) +
+    labs(title = city_name, x = NULL, y = "Median sale price")
+}
+city_plot("Austin")
+```
+
+---
+
+## Then iterate: save them all
+
+```{r eval=FALSE}
+cities <- c("Austin", "Dallas", "Houston", "San Antonio")
+
+walk(cities,                                   # for each city in cities...
+  \(city) ggsave(                              # ...given one city name, save a plot:
+    filename = paste0("img/median-price-", city, ".png"),  # e.g. "img/median-price-Austin.png"
+    plot     = city_plot(city),                # the plot for that city
+    width = 6, height = 4                      # size in inches
+  ))
+```
+
+- `walk()` is `map()` for side effects: we want the files, not a returned value.
+- Next quarter's update means re-running a few lines, not editing 4 (or 40) copies.
+
+```{r, eval = FALSE}
+for (i in 1:length(cities)) {
+  ggsave(
+    filename = paste0("img/median-price-", cities[i], ".png"),
+    plot     = city_plot(cities[i]),
+    width = 6, height = 4
+  )
+}
+```
+
+
+---
+
+## Your turn: A new file every year
+
+*8 minutes · Practice 2 in the companion document*
+
+A partner sends a CSV of Texas housing data every year. You have 2011–2014.
+
+1. Read all four files by **copying and pasting** `read_csv()`, then stack them with `bind_rows()`.
+2. Do the same with **`map()`** in one pipeline. Do you get the same counts?
+3. Run the chunk that adds a **2015** file, then re-run both versions. Which one picks it up without edits?
+4. Using the combined data, find the city with the **most total sales** in each year.
+
+::: {.notes}
+The comparison is map() vs. copy-paste, not map() vs. group_by().
+In step 3 the map() version absorbs the new file; the copy-paste version
+needs three edits. Step 4 uses group_by() + summarise() + slice_max().
+2015 totals are smaller because txhousing ends in July 2015.
+:::
+
+---
+
+## Practice 2: One solution
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+**Copy-paste:** one line per file
+
+```{r eval=FALSE}
+tx_2011 <- read_csv(files[1])
+tx_2012 <- read_csv(files[2])
+tx_2013 <- read_csv(files[3])
+tx_2014 <- read_csv(files[4])
+
+tx_copy <- bind_rows(tx_2011, tx_2012,
+                     tx_2013, tx_2014)
+```
+
+:::
+
+::: {.column width="50%"}
+
+**`map()`:** the same for 4 files or 40
+
+```{r eval=FALSE}
+tx_all <- files |>
+  map(read_csv) |>
+  bind_rows()
+```
+
+:::
+
+:::
+
+```{r eval=FALSE}
+tx_all |>
+  group_by(year, city) |>
+  summarise(total_sales = sum(sales, na.rm = TRUE)) |>
+  slice_max(total_sales, n = 1)
+```
+
+Use iteration to **get the data into one data frame**, then use the tools you already know.
+---
+
+## Sampling {.section-divider .middle}
+
+---
+
+## Random samples at work
+
+- Pull 50 invoices for an **audit**
+- Choose records for manual **quality review**
+- **Randomly assign** customers to a new email vs. the current one
+- Split data into **training** and **test** sets
+- Build **simulations** (next section)
+
+---
+
+## `sample()` for vectors
+
+```{r}
+reviewers <- c("Ana", "Ben", "Cal", "Dee", "Eli", "Fay")
+
+sample(reviewers, 2)                   # pick 2, no repeats
+sample(reviewers)                      # random order
+sample(1:6, 10, replace = TRUE)        # roll a die 10 times
+```
+
+Default is **without replacement**. Use `replace = TRUE` when the same value can be drawn again.
+
+---
+
+## Unequal probabilities
+
+Use `prob =` when outcomes are not equally likely:
+
+```{r}
+sample(c("bronze", "silver", "gold"), size = 12,
+       replace = TRUE, prob = c(0.6, 0.3, 0.1))
+```
+
+Useful for building realistic fake data: for example, 60% of customers are bronze-tier.
+
+---
+
+## Reproducibility: `set.seed()`
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+sample(1:100, 3)
+sample(1:100, 3)
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+set.seed(7500)
+sample(1:100, 3)
+set.seed(7500)
+sample(1:100, 3)
+```
+
+:::
+
+:::
+
+- A seed makes "random" results **repeatable**, for you, a grader, or an auditor.
+- Set it **once** at the top of an analysis or simulation.
+
+---
+
+## `slice_sample()` for data frames
+
+```{r}
+set.seed(7500)
+diamonds |>
+  slice_sample(n = 5)
+```
+
+Use `n =` for a number of rows or `prop =` for a fraction of rows.
+
+---
+
+## Stratified samples
+
+A simple random sample may include very few rows from small groups. Sample **within** groups to guarantee each is represented:
+
+```{r}
+set.seed(7500)
+diamonds |>
+  group_by(cut) |>
+  slice_sample(n = 3) |>
+  ungroup() |>
+  count(cut)
+```
+
+---
+
+## Random assignment (A/B test)
+
+200 customers; half get a new email design.
+
+```{r}
+set.seed(7500)
+customers <- tibble(customer_id = 1:200) |>
+  mutate(group = sample(rep(c("control", "new_email"),
+                            length.out = n())))
+customers |> count(group)
+```
+
+`rep()` builds 100 of each label, and `sample()` shuffles them. This gives **exactly** equal groups. What would `sample(c("control", "new_email"), 200, replace = TRUE)` give?
+
+---
+
+## Train / test split
+
+```{r}
+set.seed(7500)
+mpg_id <- mpg |> mutate(id = row_number())
+
+train <- mpg_id |> slice_sample(prop = 0.8)
+test  <- mpg_id |> anti_join(train, by = "id")
+
+c(train = nrow(train), test = nrow(test))
+```
+
+`anti_join()` from our joins week keeps the rows **not** chosen for training.
+
+---
+
+## Your turn: A quality audit
+
+*5 minutes · Practice 3 in the companion document*
+
+Using `diamonds`:
+
+1. Set a seed and draw a 1% sample. Compare its mean `price` to the full data.
+2. Draw a stratified sample with **10 diamonds per `color`**. Verify with `count()`.
+3. Re-run step 1 **without** the seed a few times. What changes, and by roughly how much?
+
+::: {.notes}
+Step 3 previews sampling variability, which the simulation and bootstrap
+sections build on. Ask a few students to report their sample means.
+:::
+
+---
+
+## Distributions {.section-divider .middle}
+
+---
+
+## Four functions for every distribution
+
+| Prefix | Gives you | Workplace question |
+|:--|:--|:--|
+| `p` | P(X ≤ x) | "What fraction of deliveries take over 4.5 days?" |
+| `q` | the value with a given probability below it | "What delivery time can we promise 95% of customers?" |
+| `d` | density, or P(X = x) for counts | "What's the chance of exactly 2 no-shows?" |
+| `r` | random draws | "Give me 1,000 fake delivery times" |
+
+Suffixes: `norm`, `binom`, `pois`, `unif`, `exp`, `t`, ...
+
+---
+
+## Scenario: delivery times
+
+Delivery times are roughly Normal with mean 3 days and SD 0.8 days.
+
+```{r}
+# What fraction take longer than 4.5 days?
+pnorm(4.5, mean = 3, sd = 0.8, lower.tail = FALSE)
+
+# What delivery window can we promise 95% of customers?
+qnorm(0.95, mean = 3, sd = 0.8)
+
+# Five simulated deliveries
+rnorm(5, mean = 3, sd = 0.8)
+```
+
+---
+
+## Scenario: counts
+
+```{r}
+# Clinic books 20 appointments; each no-show rate is 10%.
+# P(4 or more no-shows)?
+pbinom(3, size = 20, prob = 0.1, lower.tail = FALSE)
+
+# Help desk averages 12 tickets per hour.
+# P(more than 18 in an hour)?
+ppois(18, lambda = 12, lower.tail = FALSE)
+```
+
+Watch the boundary: `lower.tail = FALSE` gives P(X **>** x), so "4 or more" uses `3`.
+
+---
+
+## Plot a distribution with tools you know {.nostretch}
+
+```{r out.width="55%"}
+tibble(no_shows = 0:8) |>
+  mutate(prob = dbinom(no_shows, size = 20, prob = 0.1)) |>
+  ggplot(aes(x = no_shows, y = prob)) +
+  geom_col() +
+  labs(x = "No-shows out of 20", y = "Probability")
+```
+
+---
+
+## Fake data: start before the real data arrive
+
+```{r}
+set.seed(7500)
+fake_survey <- tibble(
+  id     = 1:500,
+  region = sample(c("North", "South", "East", "West"), 500, replace = TRUE),
+  age    = round(rnorm(500, mean = 42, sd = 12)),
+  visits = rpois(500, lambda = 3),
+  bought = rbinom(500, size = 1, prob = 0.2)
+)
+fake_survey
+```
+
+---
+
+## Why fake data is useful
+
+- Write and debug your cleaning, summaries, and plots **now**. Swap in real data later.
+- Share a reproducible example when asking for help, **without sharing confidential data**.
+- You know the truth, so you can check whether your code recovers it.
+
+::: {.question}
+What about `fake_survey` is unrealistic? *(Hint: look at `age`.)*
+:::
+
+::: {.notes}
+rnorm() is unbounded, so some ages may be very young or even negative.
+Fixes: pmax()/pmin() to clamp, or sample from a realistic range.
+:::
+
+---
+
+## Simulation {.section-divider .middle}
+
+---
+
+## Why simulate?
+
+Sometimes the math is hard, or its assumptions don't match reality. Instead:
+
+1. Write a **function** that runs the random process **once**
+2. **Repeat** it many times: `replicate()` or `map()`
+3. **Summarize** the results: a proportion, mean, or plot
+
+This uses all three ideas from today: functions, sampling, and iteration.
+
+---
+
+## Scenario: overbooking
+
+A flight has **100 seats**. Historically **95%** of ticketed passengers show up. The airline sells **105** tickets. How often does someone get bumped?
+
+. . .
+
+Step 1: one flight as a function
+
+```{r}
+one_flight <- function(tickets = 105, seats = 100, p_show = 0.95) {
+  showed_up <- rbinom(1, size = tickets, prob = p_show)
+  showed_up > seats          # TRUE if someone is bumped
+}
+
+one_flight()
+```
+
+---
+
+## Steps 2 and 3: repeat and summarize
+
+```{r}
+set.seed(7500)
+bumped <- replicate(10000, one_flight())
+mean(bumped)
+```
+
+. . .
+
+Here the math is available, so we can check it:
+
+```{r}
+pbinom(100, size = 105, prob = 0.95, lower.tail = FALSE)
+```
+
+The simulation agrees with the exact answer. Now we can trust it on harder versions.
+
+---
+
+## How many tickets should we sell?
+
+::: {.panel-tabset}
+### Plot
+
+```{r echo=FALSE, out.width="70%"}
+set.seed(7500)
+tibble(tickets = 100:110) |>
+  mutate(p_bump = map_dbl(tickets,
+           \(t) mean(replicate(10000, one_flight(tickets = t))))) |>
+  ggplot(aes(x = tickets, y = p_bump)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.05, linetype = "dashed") +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "Tickets sold", y = "P(someone bumped)")
+```
+
+### Code
+
+```{r eval=FALSE}
+set.seed(7500)
+tibble(tickets = 100:110) |>
+  mutate(p_bump = map_dbl(tickets,
+           \(t) mean(replicate(10000, one_flight(tickets = t))))) |>
+  ggplot(aes(x = tickets, y = p_bump)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.05, linetype = "dashed") +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "Tickets sold", y = "P(someone bumped)")
+```
+:::
+
+---
+
+## Where simulation shines: reality is messier
+
+On holiday flights (20% of flights), nearly everyone shows up. On other flights, fewer do. **The average show rate is still 95%.**
+
+```{r}
+one_flight_v2 <- function(tickets = 105, seats = 100) {
+  holiday   <- runif(1) < 0.20
+  p_show    <- if_else(holiday, 0.99, 0.94)
+  showed_up <- rbinom(1, size = tickets, prob = p_show)
+  showed_up > seats
+}
+```
+
+Two new lines. The rest of the workflow is unchanged.
+
+---
+
+## Same average, different risk
+
+::: {.panel-tabset}
+### Plot
+
+```{r echo=FALSE, out.width="70%"}
+set.seed(7500)
+tibble(tickets = 100:110) |>
+  mutate(
+    simple  = map_dbl(tickets, \(t) mean(replicate(10000, one_flight(t)))),
+    holiday = map_dbl(tickets, \(t) mean(replicate(10000, one_flight_v2(t))))
+  ) |>
+  pivot_longer(-tickets, names_to = "model", values_to = "p_bump") |>
+  ggplot(aes(x = tickets, y = p_bump, color = model)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.05, linetype = "dashed") +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "Tickets sold", y = "P(someone bumped)", color = NULL)
+```
+
+### Code
+
+```{r eval=FALSE}
+set.seed(7500)
+tibble(tickets = 100:110) |>
+  mutate(
+    simple  = map_dbl(tickets, \(t) mean(replicate(10000, one_flight(t)))),
+    holiday = map_dbl(tickets, \(t) mean(replicate(10000, one_flight_v2(t))))
+  ) |>
+  pivot_longer(-tickets, names_to = "model", values_to = "p_bump") |>
+  ggplot(aes(x = tickets, y = p_bump, color = model)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.05, linetype = "dashed") +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "Tickets sold", y = "P(someone bumped)", color = NULL)
+```
+:::
+
+::: {.notes}
+Exact values: under the simple model, 102 tickets keeps risk near 3.4%.
+Under the holiday model, 101 tickets is already about 7%, so the 5%
+policy drops to 100. Variability in the show rate, not just its average,
+drives risk. Note pivot_longer() from the reshaping week.
+:::
+
+---
+
+## Scenario: can I trust my confidence interval?
+
+Customer purchase amounts are **right-skewed**: most are small and a few are large. You have **n = 20** purchases and report `t.test(x)$conf.int`.
+
+```{r out.width="50%", echo=FALSE}
+set.seed(7500)
+tibble(amount = rlnorm(5000, meanlog = 3, sdlog = 1.2)) |>
+  ggplot(aes(x = amount)) +
+  geom_histogram(binwidth = 10, color = "white") +
+  scale_x_continuous(labels = label_dollar(), limits = c(0, 400)) +
+  labs(x = "Purchase amount", y = NULL,
+       title = "Simulated population of purchases")
+```
+
+Does a "95%" interval really capture the true mean 95% of the time?
+
+---
+
+## Simulate the method, not just the data
+
+```{r}
+true_mean <- exp(3 + 1.2^2 / 2)    # mean of this lognormal population
+
+ci_covers <- function(n) {
+  x  <- rlnorm(n, meanlog = 3, sdlog = 1.2)   # one sample of size n
+  ci <- t.test(x)$conf.int                    # the method we'd use
+  ci[1] <= true_mean & true_mean <= ci[2]     # did it work?
+}
+
+set.seed(7500)
+mean(replicate(10000, ci_covers(n = 20)))
+```
+
+---
+
+## How large does n need to be?
+
+::: {.panel-tabset}
+### Plot
+
+```{r echo=FALSE, out.width="70%"}
+set.seed(7500)
+tibble(n = c(10, 20, 50, 100, 250, 1000)) |>
+  mutate(coverage = map_dbl(n, \(size) mean(replicate(5000, ci_covers(size))))) |>
+  ggplot(aes(x = n, y = coverage)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.95, linetype = "dashed") +
+  scale_x_log10() +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "Sample size (log scale)", y = "Actual coverage of a '95%' CI")
+```
+
+### Code
+
+```{r eval=FALSE}
+set.seed(7500)
+tibble(n = c(10, 20, 50, 100, 250, 1000)) |>
+  mutate(coverage = map_dbl(n, \(size) mean(replicate(5000, ci_covers(size))))) |>
+  ggplot(aes(x = n, y = coverage)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.95, linetype = "dashed") +
+  scale_x_log10() +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "Sample size (log scale)", y = "Actual coverage of a '95%' CI")
+```
+:::
+
+::: {.notes}
+Expected: roughly 82% coverage at n = 20, still under 95% at n = 1000.
+"n > 30" is not a universal rule; it depends on how skewed the data are.
+This is the colleague decks' CLT/gamma example, framed as "should I trust
+my report?"
+:::
+
+---
+
+## Your turn: How many muffins?
+
+*8 minutes · Practice 4 in the companion document*
+
+A coffee shop sells an average of **40 muffins a day**. Daily demand is Poisson. They bake a fixed number each morning.
+
+1. Write `sold_out(baked)` that simulates **one day** and returns `TRUE` if demand exceeds `baked`.
+2. Estimate P(sell out) when baking 45, using 10,000 simulated days. Check with `ppois()`.
+3. Use `map_dbl()` to estimate P(sell out) for baking 40–55. What is the **smallest** batch that sells out on at most 5% of days? Plot it.
+
+**Bonus:** Saturdays (1 day in 7) average 60. Update your function. Does the answer change?
+
+::: {.notes}
+Exact answers: P(demand > 45) ≈ 0.19; smallest batch with ≤ 5% sell-out
+is 51 (≈ 3.9%). The bonus mirrors the holiday overbooking example.
+:::
+
+---
+
+## Practice 4: One solution
+
+```{r}
+sold_out <- function(baked, avg = 40) {
+  rpois(1, lambda = avg) > baked
+}
+
+set.seed(7500)
+mean(replicate(10000, sold_out(45)))
+ppois(45, lambda = 40, lower.tail = FALSE)
+```
+
+```{r eval=FALSE}
+tibble(baked = 40:55) |>
+  mutate(p_sell_out = map_dbl(baked, \(b) mean(replicate(10000, sold_out(b))))) |>
+  filter(p_sell_out <= 0.05) |>
+  slice_min(baked)
+```
+
+---
+
+## Bootstrap {.section-divider .middle}
+
+---
+
+## A question without a formula
+
+You audited a random sample of **150 sales** and need to report the **median** price, with a margin of error.
+
+- `t.test()` gives intervals for **means**, assuming the conditions hold.
+- There is no simple textbook formula for the uncertainty of a **median**, or a 90th percentile, or a ratio...
+
+. . .
+
+**Bootstrap idea:** your sample is the best picture of the population you have. Resample **from it, with replacement**, recompute the statistic, and repeat. The spread of those results estimates the sampling variability.
+
+---
+
+## Bootstrap in four lines
+
+```{r}
+set.seed(7500)
+audit <- diamonds |> slice_sample(n = 150)        # the sample we have
+
+one_boot <- function(x) median(sample(x, replace = TRUE))
+boot_medians <- replicate(5000, one_boot(audit$price))
+
+quantile(boot_medians, c(0.025, 0.975))           # 95% percentile interval
+```
+
+Same recipe as before: a function for one resample, repeated, then summarized.
+
+---
+
+## Look at the bootstrap distribution {.nostretch}
+
+```{r out.width="55%"}
+ci <- quantile(boot_medians, c(0.025, 0.975))
+
+ggplot(tibble(median = boot_medians), aes(x = median)) +
+  geom_histogram(bins = 30, color = "white") +
+  geom_vline(xintercept = ci, color = "#E9AFA3", linewidth = 1) +
+  scale_x_continuous(labels = label_dollar())
+```
+
+::: {.question}
+Here we have the full `diamonds` data. Does the interval capture `median(diamonds$price)`?
+:::
+
+---
+
+## Any statistic, same recipe
+
+Change one line to bootstrap a different statistic:
+
+```{r eval=FALSE}
+# 90th percentile price
+one_boot <- function(x) quantile(sample(x, replace = TRUE), 0.9)
+```
+
+**Cautions**
+
+- The bootstrap can't fix a **biased** sample; it only measures random variability.
+- It works poorly for **extremes** like the max, and for very **small** samples.
+- For full-featured bootstrap methods, see the **boot** or **infer** packages.
+
+---
+
+## Your turn: Bootstrap the 90th percentile
+
+*4 minutes · Practice 5 in the companion document*
+
+Using `audit`:
+
+1. Build a 95% bootstrap interval for the **90th percentile** of `price`.
+2. Is it wider or narrower than the interval for the median? Why might that be?
+
+::: {.notes}
+Expect a wider interval: there are fewer observations in the upper
+tail of a right-skewed variable, so the 90th percentile is less stable.
+:::
+
+---
+
+## Wrap-up {.section-divider .middle}
+
+---
+
+## Which tool, when?
+
+| Situation | Reach for |
+|:--|:--|
+| Same calculation on several columns | a function + `across()` |
+| Same summary for each group | `group_by()` + `summarise()` |
+| Many files, sheets, or plots | `map()`, `list_rbind()`, `walk()` |
+| Choose rows at random | `slice_sample()` + `set.seed()` |
+| Probability under a standard model | `p`/`q`/`d` functions |
+| Probability under a **messy** model | simulate: function + `replicate()` |
+| Uncertainty with **no formula** | bootstrap |
+
+
+
