@@ -729,7 +729,16 @@ $ date      &lt;dbl&gt; 2012.000, 2012.083, 2012.167, 2012.250, 2012.…</code><
 <span id="cb43-3"><a href="" aria-label="3"></a></span>
 <span id="cb43-4"><a href="" aria-label="4"></a>budgets <span class="ot">&lt;-</span> sheets <span class="sc">|&gt;</span></span>
 <span id="cb43-5"><a href="" aria-label="5"></a>  <span class="fu">map</span>(\(s) readxl<span class="sc">::</span><span class="fu">read_excel</span>(path, <span class="at">sheet =</span> s)) <span class="sc">|&gt;</span> <span class="co">#\(s) is shortcut for function(s)</span></span>
-<span id="cb43-6"><a href="" aria-label="6"></a>  <span class="fu">bind_rows</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb43-6"><a href="" aria-label="6"></a>  <span class="fu">bind_rows</span>()</span>
+<span id="cb43-7"><a href="" aria-label="7"></a></span>
+<span id="cb43-8"><a href="" aria-label="8"></a><span class="co"># alternative version 1</span></span>
+<span id="cb43-9"><a href="" aria-label="9"></a>sheets <span class="sc">|&gt;</span> <span class="fu">map</span>(readxl<span class="sc">::</span>read_excel, <span class="at">path =</span> path) <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>()</span>
+<span id="cb43-10"><a href="" aria-label="10"></a></span>
+<span id="cb43-11"><a href="" aria-label="11"></a><span class="co"># alternative version 2</span></span>
+<span id="cb43-12"><a href="" aria-label="12"></a>sheets <span class="sc">|&gt;</span></span>
+<span id="cb43-13"><a href="" aria-label="13"></a>  <span class="fu">set_names</span>() <span class="sc">|&gt;</span></span>
+<span id="cb43-14"><a href="" aria-label="14"></a>  <span class="fu">map</span>(\(s) readxl<span class="sc">::</span><span class="fu">read_excel</span>(path, <span class="at">sheet =</span> s)) <span class="sc">|&gt;</span></span>
+<span id="cb43-15"><a href="" aria-label="15"></a>  <span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"sheet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="anonymous-functions-x" class="slide level2">
@@ -951,15 +960,15 @@ $ date      &lt;dbl&gt; 2012.000, 2012.083, 2012.167, 2012.250, 2012.…</code><
 <span id="cb56-2"><a href="" aria-label="2"></a></span>
 <span id="cb56-3"><a href="" aria-label="3"></a><span class="fu">sample</span>(reviewers, <span class="dv">2</span>)                   <span class="co"># pick 2, no repeats</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Cal" "Dee"</code></pre>
+<pre><code>[1] "Ana" "Cal"</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="" aria-label="1"></a><span class="fu">sample</span>(reviewers)                      <span class="co"># random order</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Ben" "Dee" "Ana" "Cal" "Eli" "Fay"</code></pre>
+<pre><code>[1] "Ben" "Fay" "Cal" "Eli" "Ana" "Dee"</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="" aria-label="1"></a><span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="dv">10</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)        <span class="co"># roll a die 10 times</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 3 2 2 6 2 3 5 1 4 4</code></pre>
+<pre><code> [1] 1 2 5 4 3 3 4 5 4 3</code></pre>
 </div>
 </div>
 <p>Default is <strong>without replacement</strong>. Use <code>replace = TRUE</code> when the same value can be drawn again.</p>
@@ -971,8 +980,8 @@ $ date      &lt;dbl&gt; 2012.000, 2012.083, 2012.167, 2012.250, 2012.…</code><
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="" aria-label="1"></a><span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"bronze"</span>, <span class="st">"silver"</span>, <span class="st">"gold"</span>), <span class="at">size =</span> <span class="dv">12</span>,</span>
 <span id="cb62-2"><a href="" aria-label="2"></a>       <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] "bronze" "bronze" "silver" "silver" "bronze" "bronze"
- [7] "bronze" "silver" "bronze" "bronze" "gold"   "silver"</code></pre>
+<pre><code> [1] "bronze" "bronze" "bronze" "bronze" "silver" "bronze"
+ [7] "gold"   "bronze" "silver" "bronze" "bronze" "gold"  </code></pre>
 </div>
 </div>
 <p>Useful for building realistic fake data: for example, 60% of customers are bronze-tier.</p>
@@ -984,11 +993,11 @@ $ date      &lt;dbl&gt; 2012.000, 2012.083, 2012.167, 2012.250, 2012.…</code><
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="" aria-label="1"></a><span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 28 77 11</code></pre>
+<pre><code>[1] 32 66 56</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="" aria-label="1"></a><span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1]  1 60 24</code></pre>
+<pre><code>[1] 25 78 30</code></pre>
 </div>
 </div>
 </div><div class="column" style="width:50%;">

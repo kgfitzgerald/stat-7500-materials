@@ -1,0 +1,2542 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="10-python-foundations_files/libs/clipboard/clipboard.min.js"></script>
+<script src="10-python-foundations_files/libs/quarto-html/tabby.min.js"></script>
+<script src="10-python-foundations_files/libs/quarto-html/popper.min.js"></script>
+<script src="10-python-foundations_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="10-python-foundations_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="10-python-foundations_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="10-python-foundations_files/libs/quarto-html/quarto-syntax-highlighting-bb62276ab45c84d9efd712f51ff97b5a.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
+
+  <meta name="author" content="Dr.&nbsp;Katie Fitzgerald, with Claude :)">
+  <title>Python Foundations</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="10-python-foundations_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="10-python-foundations_files/libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #24292e;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #24292e; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #6a737d; } /* Annotation */
+    code span.at { color: #d73a49; } /* Attribute */
+    code span.bn { color: #005cc5; } /* BaseN */
+    code span.bu { color: #d73a49; } /* BuiltIn */
+    code span.cf { color: #d73a49; } /* ControlFlow */
+    code span.ch { color: #032f62; } /* Char */
+    code span.cn { color: #005cc5; } /* Constant */
+    code span.co { color: #6a737d; } /* Comment */
+    code span.cv { color: #6a737d; } /* CommentVar */
+    code span.do { color: #6a737d; } /* Documentation */
+    code span.dt { color: #d73a49; } /* DataType */
+    code span.dv { color: #005cc5; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
+    code span.fl { color: #005cc5; } /* Float */
+    code span.fu { color: #6f42c1; } /* Function */
+    code span.im { color: #032f62; } /* Import */
+    code span.in { color: #6a737d; } /* Information */
+    code span.kw { color: #d73a49; } /* Keyword */
+    code span.op { color: #24292e; } /* Operator */
+    code span.ot { color: #6f42c1; } /* Other */
+    code span.pp { color: #d73a49; } /* Preprocessor */
+    code span.re { color: #6a737d; } /* RegionMarker */
+    code span.sc { color: #005cc5; } /* SpecialChar */
+    code span.ss { color: #032f62; } /* SpecialString */
+    code span.st { color: #032f62; } /* String */
+    code span.va { color: #e36209; } /* Variable */
+    code span.vs { color: #032f62; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="10-python-foundations_files/libs/revealjs/dist/theme/quarto-2740581606dc327e82f18f789b69d8a0.css">
+  <link rel="stylesheet" href="stat7500-slides.css">
+  <link rel="stylesheet" href="python-extra.css">
+  <link href="10-python-foundations_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="10-python-foundations_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="10-python-foundations_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="10-python-foundations_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+  
+  <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Python Foundations</h1>
+  <p class="subtitle">Same thinking, new syntax</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Dr.&nbsp;Katie Fitzgerald, with Claude :)
+</div>
+</div>
+</div>
+
+</section>
+<section id="this-week-is-a-recorded-lecture" class="slide level2">
+<h2>This week is a recorded lecture</h2>
+<p><strong>Before you continue:</strong> install Python and Positron (<strong>Steps 1–2</strong> of the Python Setup instructions on Brightspace), then download <code>week_10_practice.qmd</code> from the GitHub repo and put it in your <code>STAT_7500</code> folder. We’ll do the rest of the setup together.</p>
+<p>You’ll see three kinds of prompts in this video:</p>
+<div class="pause">
+<p><strong>⏸ Pause &amp; predict.</strong> Pause the video. Write down what you think the code returns. <em>Then</em> un-pause.</p>
+</div>
+<div class="tip">
+<p><strong>Demo.</strong> I write code, you type along in the matching section of the practice file.</p>
+</div>
+<div class="your-turn">
+<p><strong>Your turn.</strong> Pause the video, try the task, then un-pause for my solution.</p>
+</div>
+<aside class="notes">
+<p>Recording tip: say “pause now” out loud and leave 2-3 seconds of silence before advancing the fragment with the answer.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-learn-a-second-language" class="slide level2">
+<h2>Why learn a second language?</h2>
+<ul>
+<li>In the workplace, you’ll see both. Many teams are Python-first; many statisticians are R-first.</li>
+<li><strong>R</strong> was built by statisticians for data analysis. <strong>Python</strong> is a general-purpose language that grew a data science toolkit.</li>
+<li>Neither is “better.” Being able to <em>read</em> both makes you a better collaborator.</li>
+</ul>
+<div class="fragment">
+<div class="question">
+<p><strong>The theme of the next five weeks: same thinking, new syntax.</strong> You already know how to import, wrangle, visualize, and simulate. Now you’ll learn a second dialect for the same ideas.</p>
+</div>
+</div>
+</section>
+<section id="the-python-unit" class="slide level2">
+<h2>The Python unit</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Week</th>
+<th>Python topic</th>
+<th>Builds on R week…</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>10</strong></td>
+<td><strong>Foundations</strong></td>
+<td>1 (basics), 9 (functions, sampling, simulation)</td>
+</tr>
+<tr class="even">
+<td>11</td>
+<td>Data wrangling I</td>
+<td>4–5 (isolating, piping, deriving)</td>
+</tr>
+<tr class="odd">
+<td>12</td>
+<td>Data wrangling II</td>
+<td>6–7 (combining, tidy data)</td>
+</tr>
+<tr class="even">
+<td>13</td>
+<td>Data visualization</td>
+<td>2–3 (ggplot2)</td>
+</tr>
+<tr class="odd">
+<td>14</td>
+<td>Working with external data</td>
+<td>2 (importing)</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>Most people who “know pandas” learned it as a bag of tricks. You’ll learn it as <strong>the same grammar you already know.</strong></p>
+</div>
+</section>
+<section id="todays-plan" class="slide level2 scrollable">
+<h2>Today’s plan</h2>
+<ol type="1">
+<li>Running Python (Positron, Quarto, imports)</li>
+<li>Values and types</li>
+<li>Containers and indexing</li>
+<li>Names and mutability</li>
+<li>NumPy: vectors, Python-style</li>
+<li>Functions, loops, and comprehensions</li>
+<li>Randomness and simulation (Week 9, again!)</li>
+</ol>
+<aside class="notes">
+<p>Roughly 80-90 minutes of video. Sections 1-4 = first half; 5-7 = second half. Consider recording each section as its own clip.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section>
+<section id="running-python" class="title-slide slide level1 section-divider middle center">
+<h1>Running Python</h1>
+
+</section>
+<section id="python-and-positron" class="slide level2">
+<h2>Python and Positron</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><strong>Python</strong> is the language (the engine)</li>
+<li><strong>Positron</strong> is an IDE (the dashboard), made by Posit, the company behind RStudio</li>
+<li>Positron runs R <em>and</em> Python, and renders Quarto, so your workflow barely changes</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>Positron tour</strong></p>
+<ul>
+<li>Interpreter picker (top right): choose Python</li>
+<li>Console, Variables pane, Plots pane</li>
+<li>Same <code>STAT_7500</code> folder as before</li>
+</ul>
+</div></div>
+<div class="tip">
+<p>Install problems? See the <strong>Backup plan</strong> at the bottom of the Python Setup instructions (Brightspace) so you can keep following along, and come to student hours. Don’t let setup block you.</p>
+</div>
+<aside class="notes">
+<p>Live tour in the recording: open the STAT_7500 folder, switch interpreter to Python, run 1 + 1 in the console, show Variables pane.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="python-in-quarto" class="slide level2">
+<h2>Python in Quarto</h2>
+<p>Same <code>.qmd</code> files. Two changes:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>YAML</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Week 10 practice"</span></span>
+<span id="cb1-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> html</span></span>
+<span id="cb1-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">jupyter</span><span class="kw">:</span><span class="at"> python3</span></span>
+<span id="cb1-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:50%;">
+<p><strong>Chunks</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb2-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div></div>
+<div class="fragment">
+<p>Same rule as Week 1: <strong>rendering starts a fresh Python session</strong>, separate from your Console. It runs the document top to bottom and can only use what the document itself creates. A variable you made in the Console (or in the Variables pane) doesn’t exist when you render.</p>
+</div>
+</section>
+<section id="packages-install-once-import-every-time" class="slide level2">
+<h2>Packages: install once, import every time</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>R</th>
+<th>Python</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Install (once, not in your document)</td>
+<td><code>install.packages("dplyr")</code></td>
+<td><code>%pip install pandas</code> (Python console)</td>
+</tr>
+<tr class="even">
+<td>Load (every document)</td>
+<td><code>library(dplyr)</code></td>
+<td><code>import pandas as pd</code></td>
+</tr>
+<tr class="odd">
+<td>Use a function</td>
+<td><code>filter(...)</code></td>
+<td><code>pd.read_csv(...)</code></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<div id="ac7e5ece" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np         <span class="co"># "np" is an alias, by universal convention</span></span>
+<span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a>np.sqrt(<span class="dv">16</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>np.float64(4.0)</code></pre>
+</div>
+</div>
+<p>Python makes you say <strong>where</strong> each function comes from: <code>np.sqrt</code>, not just <code>sqrt</code>. Like writing <code>dplyr::filter()</code> every time.</p>
+</div>
+</section>
+<section id="installing-packages-use-pip" class="slide level2">
+<h2>Installing packages: use <code>%pip</code></h2>
+<p>Your computer may have <strong>more than one Python</strong>. Installing into the wrong one is the most common setup problem.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Best: the Positron Python console</strong> (or a Jupyter cell)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>pip install pandas matplotlib</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>%pip</code> always installs into the Python that is running your code.</p>
+</div><div class="column" style="width:50%;">
+<p><strong>Alternative: the Terminal</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Mac</span></span>
+<span id="cb6-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install pandas</span>
+<span id="cb6-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows</span></span>
+<span id="cb6-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> <span class="at">-m</span> pip install pandas</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Plain <code>pip</code> is often <code>command not found</code> on a Mac.</p>
+</div></div>
+<div class="tip">
+<p><strong>After installing, restart the kernel</strong> (in Positron: the circular-arrow ↻ button in the Console, “Restart Session”). The running Python won’t reliably see new or updated packages until you do. Like restarting R after updating a package.</p>
+<p>Never put <code>%pip install</code> in your <code>.qmd</code>. Like <code>install.packages()</code>, you install once, in the console, not every time you render.</p>
+</div>
+</section>
+<section id="your-turn-install-this-weeks-packages" class="slide level2">
+<h2>Your turn: install this week’s packages</h2>
+<div class="your-turn">
+<p><strong>Pause the video.</strong> In the Positron <strong>Python console</strong> (not the Terminal), run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>pip install numpy pandas matplotlib jupyter</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>It may take a few minutes. When it finishes, <strong>restart the session</strong> (↻ in the Console), then un-pause.</p>
+</div>
+<p><code>jupyter</code> is what lets Quarto run Python code when you render. Errors? See the <strong>Troubleshooting</strong> table in the Python Setup instructions.</p>
+</section>
+<section id="functions-vs.-methods" class="slide level2">
+<h2>Functions vs.&nbsp;methods</h2>
+<p>R mostly uses <strong>functions</strong>: <code>verb(object)</code>. Python uses both functions <em>and</em> <strong>methods</strong>: <code>object.verb()</code>.</p>
+<div id="75cce38d" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="" aria-hidden="true" tabindex="-1"></a>word <span class="op">=</span> <span class="st">"villanova"</span></span>
+<span id="cb8-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(word)          <span class="co"># function: verb(object)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>9</code></pre>
+</div>
+</div>
+<div id="78a61d33" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="" aria-hidden="true" tabindex="-1"></a>word.upper()       <span class="co"># method: object.verb()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>'VILLANOVA'</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p>Read <code>object.verb()</code> like a pipe: <em>take <code>word</code>, then make it uppercase.</em> That’s exactly how pandas chains will read next week.</p>
+</div>
+</section>
+<section id="getting-help" class="slide level2">
+<h2>Getting help</h2>
+<div id="83ddcf1f" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">help</span>(np.sqrt)      <span class="co"># works anywhere: use this one</span></span>
+<span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a>np.sqrt?           <span class="co"># IPython/Jupyter shortcut; errors in plain Python</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Hover over a function name in Positron to see its documentation, too.</p>
+<div class="tip">
+<p>Search tip: include the package <strong>and version</strong>, e.g.&nbsp;“pandas 3 groupby”. Python libraries change, and old StackOverflow answers (and AI tools trained on them) can be out of date.</p>
+</div>
+</section>
+<section id="demo-1-check-your-setup" class="slide level2">
+<h2>Demo 1: Check your setup</h2>
+<p><strong>Practice file, Demo 1.</strong> Run this chunk. Every line should run without an error.</p>
+<div id="96a1972a" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib</span>
+<span id="cb13-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Python    "</span>, sys.version.split()[<span class="dv">0</span>])</span>
+<span id="cb13-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NumPy     "</span>, np.__version__)</span>
+<span id="cb13-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"pandas    "</span>, pd.__version__)</span>
+<span id="cb13-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"matplotlib"</span>, matplotlib.__version__)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Python     3.14.6
+NumPy      2.5.1
+pandas     3.0.5
+matplotlib 3.11.1</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>pandas should be 3.x. If a student sees ModuleNotFoundError, they should run %pip install <name> in the Positron Python console (not in the document), then restart the Python session. If it installed but still isn’t found, check the interpreter picker: Positron may be using a different Python.</name></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="values-and-types" class="title-slide slide level1 section-divider middle center">
+<h1>Values and types</h1>
+
+</section>
+<section id="assignment-and-naming" class="slide level2">
+<h2>Assignment and naming</h2>
+<div id="04dfd94d" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="" aria-hidden="true" tabindex="-1"></a>n_penguins <span class="op">=</span> <span class="dv">344</span>        <span class="co"># = instead of &lt;-</span></span>
+<span id="cb15-2"><a href="" aria-hidden="true" tabindex="-1"></a>species <span class="op">=</span> <span class="st">"Adelie"</span>      <span class="co"># single or double quotes both work</span></span>
+<span id="cb15-3"><a href="" aria-hidden="true" tabindex="-1"></a>n_penguins</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>344</code></pre>
+</div>
+</div>
+<ul>
+<li>Python is case-sensitive: <code>Species</code> and <code>species</code> are different names</li>
+<li>Use <code>snake_case</code>. A dot in a name means something else in Python: <code>my.data</code> means “the <code>data</code> attribute of <code>my</code>”</li>
+<li>In a chunk, only the <strong>last</strong> line prints automatically (more on the next slide)</li>
+</ul>
+</section>
+<section id="printx-vs.-just-x" class="slide level2">
+<h2><code>print(x)</code> vs.&nbsp;just <code>x</code></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Only the last line shows itself</strong></p>
+<div id="e93d598e" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="" aria-hidden="true" tabindex="-1"></a>a_num <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb17-2"><a href="" aria-hidden="true" tabindex="-1"></a>a_num          <span class="co"># not shown!</span></span>
+<span id="cb17-3"><a href="" aria-hidden="true" tabindex="-1"></a>a_word <span class="op">=</span> <span class="st">"Adelie"</span></span>
+<span id="cb17-4"><a href="" aria-hidden="true" tabindex="-1"></a>a_word         <span class="co"># shown: last line</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>'Adelie'</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><code>print()</code> shows anything, anywhere</strong></p>
+<div id="bd196ffe" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a_num)</span>
+<span id="cb19-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a_word)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5
+Adelie</code></pre>
+</div>
+</div>
+</div></div>
+<p>R prints <em>every</em> bare line in a chunk. Python only shows the <strong>last</strong> one.</p>
+<div class="fragment">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Bare name (last line)</th>
+<th><code>print()</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Looks like</td>
+<td>text shown in quotes: <code>'Adelie'</code></td>
+<td>plain: <code>Adelie</code></td>
+</tr>
+<tr class="even">
+<td>Works inside loops, functions, <code>.py</code> scripts</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Best for</td>
+<td>a quick look; DataFrames (next week: a nice table)</td>
+<td>several outputs, clean output</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="basic-types" class="slide level2">
+<h2>Basic types</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>R</th>
+<th>Python</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>numeric (integer)</td>
+<td><code>int</code></td>
+<td><code>344</code></td>
+</tr>
+<tr class="even">
+<td>numeric (double)</td>
+<td><code>float</code></td>
+<td><code>3.75</code></td>
+</tr>
+<tr class="odd">
+<td>character</td>
+<td><code>str</code></td>
+<td><code>"Adelie"</code></td>
+</tr>
+<tr class="even">
+<td>logical</td>
+<td><code>bool</code></td>
+<td><code>True</code>, <code>False</code> <em>(capitalized!)</em></td>
+</tr>
+<tr class="odd">
+<td><code>NULL</code></td>
+<td><code>None</code></td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<div id="62c4d1fe" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(<span class="fl">3.75</span>), <span class="bu">type</span>(<span class="st">"Adelie"</span>), <span class="bu">type</span>(<span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>(float, str, bool)</code></pre>
+</div>
+</div>
+<p><code>type()</code> is Python’s <code>class()</code>. Separate several values with commas and Python shows them together in parentheses: a handy way to see a few things at once.</p>
+</section>
+<section id="pause-predict-arithmetic" class="slide level2">
+<h2>⏸ Pause &amp; predict: arithmetic</h2>
+<div class="pause">
+<p>What does each line return? Pause and write down your guesses.</p>
+</div>
+<div id="4983f769" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="dv">7</span> <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb23-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="op">**</span> <span class="dv">3</span></span>
+<span id="cb23-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="op">^</span> <span class="dv">3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<div id="1e48608e" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="dv">7</span> <span class="op">/</span> <span class="dv">2</span>, <span class="dv">2</span> <span class="op">**</span> <span class="dv">3</span>, <span class="dv">2</span> <span class="op">^</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3.5 8 1</code></pre>
+</div>
+</div>
+<ul>
+<li><strong>Powers use <code>**</code>.</strong> <code>2 ^ 3</code> is a <em>bitwise</em> operation that runs without error and gives the wrong answer. (Remember Week 9: code that runs is not necessarily correct.)</li>
+</ul>
+</div>
+</section>
+<section id="strings-and-f-strings" class="slide level2">
+<h2>Strings and f-strings</h2>
+<div id="ba19ea81" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="" aria-hidden="true" tabindex="-1"></a>species <span class="op">=</span> <span class="st">"Adelie"</span></span>
+<span id="cb26-2"><a href="" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">152</span></span>
+<span id="cb26-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ss">f"There are </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>species<span class="sc">}</span><span class="ss"> penguins."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>'There are 152 Adelie penguins.'</code></pre>
+</div>
+</div>
+<p>An <strong>f-string</strong> (note the <code>f</code> before the quote) fills in <code>{ }</code> with values, like <code>glue()</code> or <code>paste0()</code>.</p>
+<div id="79f6528d" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="" aria-hidden="true" tabindex="-1"></a>mean_mass <span class="op">=</span> <span class="fl">4201.754386</span>               <span class="co"># imagine this was computed from data</span></span>
+<span id="cb28-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ss">f"Mean mass: </span><span class="sc">{</span>mean_mass<span class="sc">:.1f}</span><span class="ss"> g"</span>        <span class="co"># :.1f = round to 1 decimal place</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>'Mean mass: 4201.8 g'</code></pre>
+</div>
+</div>
+</section>
+<section id="logic-words-not-symbols" class="slide level2">
+<h2>Logic: words, not symbols</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>R</th>
+<th>Python</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>TRUE</code>, <code>FALSE</code></td>
+<td><code>True</code>, <code>False</code></td>
+</tr>
+<tr class="even">
+<td><code>&amp;&amp;</code>, <code>||</code>, <code>!</code></td>
+<td><code>and</code>, <code>or</code>, <code>not</code></td>
+</tr>
+<tr class="odd">
+<td><code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;=</code></td>
+<td>same</td>
+</tr>
+</tbody>
+</table>
+<div id="fd9f101e" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="" aria-hidden="true" tabindex="-1"></a>mass <span class="op">=</span> <span class="dv">4500</span></span>
+<span id="cb30-2"><a href="" aria-hidden="true" tabindex="-1"></a>mass <span class="op">&gt;</span> <span class="dv">4000</span> <span class="kw">and</span> species <span class="op">==</span> <span class="st">"Adelie"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>True</code></pre>
+</div>
+</div>
+<div class="tip">
+<p><code>and</code>/<code>or</code> compare <strong>single</strong> True/False values. Next week, comparing whole columns will need <code>&amp;</code> and <code>|</code> instead. File that away.</p>
+</div>
+</section>
+<section id="converting-types" class="slide level2">
+<h2>Converting types</h2>
+<div id="9bcd07df" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">int</span>(<span class="st">"3"</span>) <span class="op">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>4</code></pre>
+</div>
+</div>
+<div id="00e99bbe" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">int</span>(<span class="st">"three"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[15]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> int(<span class="ansi-yellow-fg">"three"</span>)
+
+<span class="ansi-red-fg">ValueError</span>: invalid literal for int() with base 10: 'three'</pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Remember <code>number_of_cats</code> stored as character? Same problem, same fix: convert explicitly, and expect an error when a value can’t be converted. Python <strong>errors loudly</strong> where R often gives a quiet <code>NA</code> with a warning.</p>
+</div>
+</section></section>
+<section>
+<section id="containers-and-indexing" class="title-slide slide level1 section-divider middle center">
+<h1>Containers and indexing</h1>
+
+</section>
+<section id="this-week-is-the-base-r-of-python" class="slide level2">
+<h2>This week is the “base R” of Python</h2>
+<p>Plain Python has no tidyverse, so this week we’re back to square brackets. <strong>Next week, pandas method chains bring back the tidyverse feel.</strong></p>
+<p>You’ve used base R indexing more recently than you might think:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="" aria-hidden="true" tabindex="-1"></a>iqr <span class="ot">&lt;-</span> q[<span class="dv">2</span>] <span class="sc">-</span> q[<span class="dv">1</span>]                       <span class="co"># Week 9, is_outlier(): 2nd and 1st quantiles</span></span>
+<span id="cb35-2"><a href="" aria-hidden="true" tabindex="-1"></a>tx_list[[i]] <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(files[i])       <span class="co"># Week 9, the for loop: i-th file</span></span>
+<span id="cb35-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(mpg<span class="sc">$</span>hwy)                            <span class="co"># all semester: a column by name</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<p>Python uses the same ideas, with brackets for all of them. And the brackets you learn today are exactly how you’ll grab columns and filter rows in pandas next week.</p>
+</div>
+</section>
+<section id="containers-a-rough-map-from-r" class="slide level2">
+<h2>Containers: a rough map from R</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>R</th>
+<th>Python</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>c(1, 2, 3)</code></td>
+<td><code>[1, 2, 3]</code> (list)</td>
+<td>Lists can mix types. <em>Not</em> a vector (more soon)</td>
+</tr>
+<tr class="even">
+<td><code>c(1, 2, 3)</code></td>
+<td><code>np.array([1, 2, 3])</code></td>
+<td>This is the real vector</td>
+</tr>
+<tr class="odd">
+<td><code>list(a = 1, b = "x")</code></td>
+<td><code>{"a": 1, "b": "x"}</code> (dict)</td>
+<td>Look things up by name</td>
+</tr>
+<tr class="even">
+<td>tibble / data.frame</td>
+<td><code>pd.DataFrame</code></td>
+<td>Next week!</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="lists" class="slide level2">
+<h2>Lists</h2>
+<div id="bb6be067" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="" aria-hidden="true" tabindex="-1"></a>temps <span class="op">=</span> [<span class="dv">55</span>, <span class="dv">61</span>, <span class="dv">58</span>, <span class="dv">70</span>, <span class="dv">64</span>]</span>
+<span id="cb36-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(temps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>5</code></pre>
+</div>
+</div>
+<div id="f81d7bc9" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="" aria-hidden="true" tabindex="-1"></a>temps.append(<span class="dv">67</span>)         <span class="co"># a method that changes temps in place</span></span>
+<span id="cb38-2"><a href="" aria-hidden="true" tabindex="-1"></a>temps</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>[55, 61, 58, 70, 64, 67]</code></pre>
+</div>
+</div>
+<div id="590334ea" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="" aria-hidden="true" tabindex="-1"></a>mixed <span class="op">=</span> [<span class="dv">1</span>, <span class="st">"two"</span>, <span class="fl">3.0</span>, <span class="va">True</span>]   <span class="co"># allowed, but usually a bad idea for data</span></span>
+<span id="cb40-2"><a href="" aria-hidden="true" tabindex="-1"></a>mixed</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>[1, 'two', 3.0, True]</code></pre>
+</div>
+</div>
+</section>
+<section id="python-counts-from-0" class="slide level2">
+<h2>Python counts from 0</h2>
+<table class="idx caption-top">
+<tbody>
+<tr class="pos odd">
+<td class="lab">index</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr class="vals even">
+<td class="lab">x</td>
+<td>10</td>
+<td>20</td>
+<td>30</td>
+<td>40</td>
+<td>50</td>
+</tr>
+<tr class="neg odd">
+<td class="lab">negative index</td>
+<td>-5</td>
+<td>-4</td>
+<td>-3</td>
+<td>-2</td>
+<td>-1</td>
+</tr>
+</tbody>
+</table>
+<div id="9bda0a5a" class="cell" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>]</span>
+<span id="cb42-2"><a href="" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">0</span>], x[<span class="dv">1</span>], x[<span class="op">-</span><span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>(10, 20, 50)</code></pre>
+</div>
+</div>
+<ul>
+<li><code>x[0]</code> is the <strong>first</strong> element (R: <code>x[1]</code>)</li>
+<li>Negative indices count from the end: <code>x[-1]</code> is the last element</li>
+<li>In R, <code>x[-1]</code> means “drop the first element.” Same symbols, very different meaning!</li>
+</ul>
+</section>
+<section id="slicing-start-is-in-stop-is-out" class="slide level2">
+<h2>Slicing: start is in, stop is out</h2>
+<p><code>x[start:stop]</code> takes elements from <code>start</code> up to <strong>but not including</strong> <code>stop</code>.</p>
+<div id="d086e2b2" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>]</span>
+<span id="cb44-2"><a href="" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">1</span>:<span class="dv">3</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>[20, 30]</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p>Think of the slice numbers as <strong>fence posts between elements</strong>:</p>
+<table class="idx caption-top">
+<tbody>
+<tr class="pos odd">
+<td>0</td>
+<td></td>
+<td>1</td>
+<td></td>
+<td>2</td>
+<td></td>
+<td>3</td>
+<td></td>
+<td>4</td>
+<td></td>
+<td>5</td>
+</tr>
+<tr class="vals even">
+<td style="background: transparent; border: none"></td>
+<td>10</td>
+<td style="background: transparent; border: none"></td>
+<td>20</td>
+<td style="background: transparent; border: none"></td>
+<td>30</td>
+<td style="background: transparent; border: none"></td>
+<td>40</td>
+<td style="background: transparent; border: none"></td>
+<td>50</td>
+<td style="background: transparent; border: none"></td>
+</tr>
+</tbody>
+</table>
+<p><code>x[1:3]</code> takes everything between post 1 and post 3: <code>[20, 30]</code>. And <code>x[a:b]</code> always has <code>b - a</code> elements.</p>
+</div>
+</section>
+<section id="slicing-shortcuts" class="slide level2">
+<h2>Slicing shortcuts</h2>
+<div id="ffd5fea5" class="cell" data-execution_count="23">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>]</span>
+<span id="cb46-2"><a href="" aria-hidden="true" tabindex="-1"></a>x[:<span class="dv">2</span>]      <span class="co"># first 2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>[10, 20]</code></pre>
+</div>
+</div>
+<div id="82b6db12" class="cell" data-execution_count="24">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">2</span>:]      <span class="co"># everything from index 2 on</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>[30, 40, 50]</code></pre>
+</div>
+</div>
+<div id="378242d7" class="cell" data-execution_count="25">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="" aria-hidden="true" tabindex="-1"></a>x[<span class="op">-</span><span class="dv">2</span>:]     <span class="co"># last 2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>[40, 50]</code></pre>
+</div>
+</div>
+</section>
+<section id="slicing-with-a-step-good-to-know" class="slide level2">
+<h2>Slicing with a step (good to know)</h2>
+<p><strong>The core you’ll use constantly:</strong> <code>x[0]</code>, <code>x[-1]</code>, <code>x[:n]</code>, <code>x[-n:]</code>. This slide is a bonus.</p>
+<p>The full form is <strong><code>x[start:stop:step]</code></strong>. Leave any part blank to use its default (beginning, end, step of 1).</p>
+<div id="db85d37f" class="cell" data-execution_count="26">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="" aria-hidden="true" tabindex="-1"></a>x[::<span class="dv">2</span>]      <span class="co"># every 2nd element, starting at index 0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>[10, 30, 50]</code></pre>
+</div>
+</div>
+<div id="f1300bb4" class="cell" data-execution_count="27">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">1</span>::<span class="dv">2</span>]     <span class="co"># every 2nd element, starting at index 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>[20, 40]</code></pre>
+</div>
+</div>
+<div id="dfaa32a8" class="cell" data-execution_count="28">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="" aria-hidden="true" tabindex="-1"></a>x[::<span class="op">-</span><span class="dv">1</span>]     <span class="co"># step of -1: reversed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<pre><code>[50, 40, 30, 20, 10]</code></pre>
+</div>
+</div>
+<p>R equivalent of <code>x[1::2]</code>: <code>x[seq(2, length(x), by = 2)]</code></p>
+</section>
+<section id="pause-predict-indexing" class="slide level2">
+<h2>⏸ Pause &amp; predict: indexing</h2>
+<div class="pause">
+<p><code>x = [10, 20, 30, 40, 50]</code>. What does each return?</p>
+</div>
+<div id="b5b1f481" class="cell" data-execution_count="29">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">3</span>]</span>
+<span id="cb58-2"><a href="" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">1</span>:<span class="dv">4</span>]</span>
+<span id="cb58-3"><a href="" aria-hidden="true" tabindex="-1"></a>x[:<span class="dv">2</span>] <span class="op">+</span> x[<span class="op">-</span><span class="dv">2</span>:]</span>
+<span id="cb58-4"><a href="" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<div id="a852a3af" class="cell" data-execution_count="30">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x[<span class="dv">3</span>], x[<span class="dv">1</span>:<span class="dv">4</span>], x[:<span class="dv">2</span>] <span class="op">+</span> x[<span class="op">-</span><span class="dv">2</span>:])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>40 [20, 30, 40] [10, 20, 40, 50]</code></pre>
+</div>
+</div>
+<div id="d6a74b39" class="cell" data-execution_count="31">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">IndexError</span>                                Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[28]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> x[<span class="ansi-green-fg">5</span>]
+
+<span class="ansi-red-fg">IndexError</span>: list index out of range</pre>
+</div>
+</div>
+</div>
+<p><code>+</code> <strong>joins</strong> lists. And asking for an index that doesn’t exist is an <strong>error</strong> (R would quietly return <code>NA</code>).</p>
+</div>
+</section>
+<section id="strings-are-sequences-too" class="slide level2">
+<h2>Strings are sequences, too</h2>
+<div id="96f0be5d" class="cell" data-execution_count="32">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="" aria-hidden="true" tabindex="-1"></a>school <span class="op">=</span> <span class="st">"Villanova"</span></span>
+<span id="cb62-2"><a href="" aria-hidden="true" tabindex="-1"></a>school[<span class="dv">0</span>], school[:<span class="dv">4</span>], school[<span class="op">-</span><span class="dv">4</span>:]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<pre><code>('V', 'Vill', 'nova')</code></pre>
+</div>
+</div>
+<p>Same indexing rules for lists, strings, and (next week) rows of a DataFrame.</p>
+</section>
+<section id="your-turn-slicing" class="slide level2 scrollable">
+<h2>Your turn: slicing</h2>
+<div class="your-turn">
+<p><strong>Pause the video. Practice file, Your turn 1</strong> (about 3 minutes).</p>
+<div id="6518678d" class="cell" data-execution_count="33">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="" aria-hidden="true" tabindex="-1"></a>months <span class="op">=</span> [<span class="st">"Jan"</span>, <span class="st">"Feb"</span>, <span class="st">"Mar"</span>, <span class="st">"Apr"</span>, <span class="st">"May"</span>, <span class="st">"Jun"</span>,</span>
+<span id="cb64-2"><a href="" aria-hidden="true" tabindex="-1"></a>          <span class="st">"Jul"</span>, <span class="st">"Aug"</span>, <span class="st">"Sep"</span>, <span class="st">"Oct"</span>, <span class="st">"Nov"</span>, <span class="st">"Dec"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol type="1">
+<li>Get <code>"Mar"</code>.</li>
+<li>Get the last three months.</li>
+<li>Get the fall semester, <code>"Aug"</code> through <code>"Dec"</code>.</li>
+<li>Get every third month starting with <code>"Jan"</code>.</li>
+</ol>
+<p><strong>Stretch:</strong> get every other month starting with <code>"Feb"</code>, then every other month going <em>backwards</em> from <code>"Dec"</code>. <strong>Experienced:</strong> predict <code>months[-3:-1]</code> and <code>months[10:100]</code> before running.</p>
+</div>
+</section>
+<section id="your-turn-1-one-solution" class="slide level2">
+<h2>Your turn 1: one solution</h2>
+<div id="92fed859" class="cell" data-execution_count="34">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="" aria-hidden="true" tabindex="-1"></a>months[<span class="dv">2</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<pre><code>'Mar'</code></pre>
+</div>
+</div>
+<div id="66c7b90f" class="cell" data-execution_count="35">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="" aria-hidden="true" tabindex="-1"></a>months[<span class="op">-</span><span class="dv">3</span>:]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<pre><code>['Oct', 'Nov', 'Dec']</code></pre>
+</div>
+</div>
+<div id="35414d30" class="cell" data-execution_count="36">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="" aria-hidden="true" tabindex="-1"></a>months[<span class="dv">7</span>:<span class="dv">12</span>]      <span class="co"># or months[7:]; Aug is index 7</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="33">
+<pre><code>['Aug', 'Sep', 'Oct', 'Nov', 'Dec']</code></pre>
+</div>
+</div>
+<div id="6bbc0f7b" class="cell" data-execution_count="37">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="" aria-hidden="true" tabindex="-1"></a>months[::<span class="dv">3</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="34">
+<pre><code>['Jan', 'Apr', 'Jul', 'Oct']</code></pre>
+</div>
+</div>
+<p>Stretch: <code>months[1::2]</code> and <code>months[::-2]</code>. Experienced: <code>months[-3:-1]</code> gives <code>['Oct', 'Nov']</code> (stop excluded), and <code>months[10:100]</code> gives <code>['Nov', 'Dec']</code>: slices past the end don’t error, single indices do.</p>
+</section>
+<section id="dictionaries-look-up-by-name" class="slide level2">
+<h2>Dictionaries: look up by name</h2>
+<p>A <strong>dict</strong> holds <code>key: value</code> pairs. The closest R analog is a named list.</p>
+<p>A dict of equal-length lists is a common way to hold <strong>columns of data</strong> (remember <code>scores</code> from R HW 06?):</p>
+<div id="52579bb3" class="cell" data-execution_count="38">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> {<span class="st">"student"</span>: [<span class="st">"S1"</span>, <span class="st">"S2"</span>, <span class="st">"S3"</span>, <span class="st">"S4"</span>],</span>
+<span id="cb73-2"><a href="" aria-hidden="true" tabindex="-1"></a>          <span class="st">"math"</span>:    [<span class="dv">90</span>, <span class="dv">85</span>, <span class="dv">88</span>, <span class="dv">95</span>],</span>
+<span id="cb73-3"><a href="" aria-hidden="true" tabindex="-1"></a>          <span class="st">"english"</span>: [<span class="dv">92</span>, <span class="dv">80</span>, <span class="dv">85</span>, <span class="dv">74</span>]}</span>
+<span id="cb73-4"><a href="" aria-hidden="true" tabindex="-1"></a>scores[<span class="st">"math"</span>]                   <span class="co"># look up a "column" by name</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="35">
+<pre><code>[90, 85, 88, 95]</code></pre>
+</div>
+</div>
+<div id="115f87a1" class="cell" data-execution_count="39">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="" aria-hidden="true" tabindex="-1"></a>scores[<span class="st">"math"</span>][<span class="dv">0</span>]                <span class="co"># first student's math score</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="36">
+<pre><code>90</code></pre>
+</div>
+</div>
+</section>
+<section id="changing-a-dict" class="slide level2">
+<h2>Changing a dict</h2>
+<div id="40fb6a32" class="cell" data-execution_count="40">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="" aria-hidden="true" tabindex="-1"></a>scores[<span class="st">"math"</span>] <span class="op">=</span> [<span class="dv">91</span>, <span class="dv">85</span>, <span class="dv">88</span>, <span class="dv">95</span>]          <span class="co"># key exists → replace its value</span></span>
+<span id="cb77-2"><a href="" aria-hidden="true" tabindex="-1"></a>scores[<span class="st">"science"</span>] <span class="op">=</span> [<span class="dv">78</span>, <span class="dv">91</span>, <span class="dv">83</span>, <span class="dv">88</span>]       <span class="co"># key is new → add a key-value pair</span></span>
+<span id="cb77-3"><a href="" aria-hidden="true" tabindex="-1"></a>scores.keys()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="37">
+<pre><code>dict_keys(['student', 'math', 'english', 'science'])</code></pre>
+</div>
+</div>
+<div id="1042e697" class="cell" data-execution_count="41">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="" aria-hidden="true" tabindex="-1"></a>scores[<span class="st">"history"</span>]                          <span class="co"># this key doesn't exist</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">KeyError</span>                                  Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[38]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> scores[<span class="ansi-yellow-fg">"history"</span>]                          <span style="font-style:italic;color:rgb(95,135,135)"># this key doesn't exist</span>
+
+<span class="ansi-red-fg">KeyError</span>: 'history'</pre>
+</div>
+</div>
+</div>
+<p>A missing key is an <strong>error</strong> (R’s <code>my_list$history</code> quietly returns <code>NULL</code>).</p>
+</section>
+<section id="same-idea-three-dialects" class="slide level2">
+<h2>Same idea, three dialects</h2>
+<pre class="text"><code># Get a column
+scores$math                    # R (base)
+scores["math"]                 # Python, today
+df["math"]                     # pandas, next week
+
+# Replace or add a column
+scores$science &lt;- c(...)       # R (base)
+scores["science"] = [...]      # Python, today
+df["science"] = [...]          # pandas, next week</code></pre>
+<p>Today’s dict brackets are next week’s DataFrame brackets.</p>
+</section>
+<section id="demo-2-from-dict-to-dataframe" class="slide level2">
+<h2>Demo 2: from dict to DataFrame</h2>
+<p><strong>Practice file, Demo 2.</strong> Follow along.</p>
+<div id="414a7f7c" class="cell" data-execution_count="42">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb81-2"><a href="" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(scores)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="39">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+
+<table class="dataframe caption-top" data-border="1">
+<thead>
+<tr class="header" style="text-align: right;">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">student</th>
+<th data-quarto-table-cell-role="th">math</th>
+<th data-quarto-table-cell-role="th">english</th>
+<th data-quarto-table-cell-role="th">science</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>S1</td>
+<td>91</td>
+<td>92</td>
+<td>78</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>S2</td>
+<td>85</td>
+<td>80</td>
+<td>91</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>S3</td>
+<td>88</td>
+<td>85</td>
+<td>83</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>S4</td>
+<td>95</td>
+<td>74</td>
+<td>88</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Each key became a column name; each list became a column. <strong>This is how you build a small DataFrame by hand</strong> (like <code>tibble()</code> in R), and a preview of next week.</p>
+<aside class="notes">
+<p>Point out the 0-based row labels on the DataFrame: Python counts from 0 here too.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sneak-peek-at-week-14-containers-inside-containers" class="slide level2">
+<h2>Sneak peek at Week 14: containers inside containers</h2>
+<p>Data from websites (called <strong>JSON</strong>) is built from dicts and lists nested inside each other. How to read it: <strong><code>{ }</code> = dict</strong> (look up by name), <strong><code>[ ]</code> = list</strong> (look up by position).</p>
+<div id="d3ed659c" class="cell" data-execution_count="43">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> {</span>
+<span id="cb82-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="st">"city"</span>: <span class="st">"Philadelphia"</span>,                  <span class="co"># a string</span></span>
+<span id="cb82-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="st">"days"</span>: [                                <span class="co"># a list...</span></span>
+<span id="cb82-4"><a href="" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"day"</span>: <span class="dv">1</span>, <span class="st">"high"</span>: <span class="dv">55</span>},              <span class="co"># ...of dicts, one per day</span></span>
+<span id="cb82-5"><a href="" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"day"</span>: <span class="dv">2</span>, <span class="st">"high"</span>: <span class="dv">58</span>},</span>
+<span id="cb82-6"><a href="" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb82-7"><a href="" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<p>Dig in one step at a time, left to right:</p>
+<div id="c1051c4a" class="cell" data-execution_count="44">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="" aria-hidden="true" tabindex="-1"></a>forecast[<span class="st">"days"</span>]              <span class="co"># the list of days</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="41">
+<pre><code>[{'day': 1, 'high': 55}, {'day': 2, 'high': 58}]</code></pre>
+</div>
+</div>
+<div id="a62f8158" class="cell" data-execution_count="45">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="" aria-hidden="true" tabindex="-1"></a>forecast[<span class="st">"days"</span>][<span class="dv">1</span>]           <span class="co"># 2nd item in that list: day 2's dict</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="42">
+<pre><code>{'day': 2, 'high': 58}</code></pre>
+</div>
+</div>
+<div id="e862aa2a" class="cell" data-execution_count="46">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="" aria-hidden="true" tabindex="-1"></a>forecast[<span class="st">"days"</span>][<span class="dv">1</span>][<span class="st">"high"</span>]   <span class="co"># the "high" inside it</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="43">
+<pre><code>58</code></pre>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="names-and-mutability" class="title-slide slide level1 section-divider middle center">
+<h1>Names and mutability</h1>
+
+</section>
+<section id="pause-predict-the-most-important-slide-today" class="slide level2">
+<h2>⏸ Pause &amp; predict: the most important slide today</h2>
+<div class="pause">
+<p>What does <code>print(a)</code> show?</p>
+</div>
+<div id="8deab4ef" class="cell" data-execution_count="47">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
+<span id="cb89-2"><a href="" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> a</span>
+<span id="cb89-3"><a href="" aria-hidden="true" tabindex="-1"></a>b.append(<span class="dv">4</span>)</span>
+<span id="cb89-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<div id="55dd3db1" class="cell" data-execution_count="48">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1, 2, 3, 4]</code></pre>
+</div>
+</div>
+<p>In R, <code>b &lt;- a</code> makes (effectively) a copy, so changing <code>b</code> leaves <code>a</code> alone. <strong>In Python, <code>b = a</code> makes a second name for the same object.</strong></p>
+</div>
+</section>
+<section id="names-are-sticky-notes" class="slide level2">
+<h2>Names are sticky notes</h2>
+<div class="names-demo">
+  <div class="labels"><span class="sticky">a</span><span class="sticky">b</span></div>
+  <span class="arrow">→</span>
+  <span class="obj">[1, 2, 3, 4]</span>
+</div>
+<ul>
+<li><code>b = a</code> sticks a second note on the <strong>same</strong> list</li>
+<li><code>b.append(4)</code> changes the list itself (it <strong>mutates</strong> it), so both names see the change</li>
+<li>R’s model is “copy-on-modify”: modifying <code>b</code> quietly creates a new copy for <code>b</code></li>
+</ul>
+</section>
+<section id="if-you-want-a-copy-ask-for-one" class="slide level2">
+<h2>If you want a copy, ask for one</h2>
+<div id="de323702" class="cell" data-execution_count="49">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
+<span id="cb91-2"><a href="" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> a.copy()       <span class="co"># or list(a)</span></span>
+<span id="cb91-3"><a href="" aria-hidden="true" tabindex="-1"></a>b.append(<span class="dv">4</span>)</span>
+<span id="cb91-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a, b)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1, 2, 3] [1, 2, 3, 4]</code></pre>
+</div>
+</div>
+<div id="f00bf1b4" class="cell" data-execution_count="50">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="" aria-hidden="true" tabindex="-1"></a>a <span class="kw">is</span> b             <span class="co"># same object?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="46">
+<pre><code>False</code></pre>
+</div>
+</div>
+</section>
+<section id="not-everything-can-be-mutated" class="slide level2">
+<h2>Not everything can be mutated</h2>
+<p>Numbers and strings are <strong>immutable</strong>. You can’t change them, only move the sticky note to a new value.</p>
+<div id="d5ba7415" class="cell" data-execution_count="51">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb95-1"><a href="" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb95-2"><a href="" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x</span>
+<span id="cb95-3"><a href="" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> y <span class="op">+</span> <span class="dv">1</span>          <span class="co"># makes a NEW number and moves the "y" note to it</span></span>
+<span id="cb95-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5 6</code></pre>
+</div>
+</div>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Mutable (can change in place)</th>
+<th>Immutable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>list, dict, NumPy array, DataFrame</td>
+<td>int, float, str, bool</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="why-this-matters-functions" class="slide level2">
+<h2>Why this matters: functions</h2>
+<div id="7ca2eb83" class="cell" data-execution_count="52">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb97-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_total(values):</span>
+<span id="cb97-2"><a href="" aria-hidden="true" tabindex="-1"></a>    values.append(<span class="bu">sum</span>(values))</span>
+<span id="cb97-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> values</span>
+<span id="cb97-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb97-5"><a href="" aria-hidden="true" tabindex="-1"></a>sales <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>]</span>
+<span id="cb97-6"><a href="" aria-hidden="true" tabindex="-1"></a>with_total <span class="op">=</span> add_total(sales)</span>
+<span id="cb97-7"><a href="" aria-hidden="true" tabindex="-1"></a>sales</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="48">
+<pre><code>[10, 20, 30, 60]</code></pre>
+</div>
+</div>
+<p>The function quietly changed <code>sales</code>. An R function would have worked on a copy.</p>
+</section></section>
+<section>
+<section id="numpy-vectors-python-style" class="title-slide slide level1 section-divider middle center">
+<h1>NumPy: vectors, Python-style</h1>
+
+</section>
+<section id="pause-predict-lists-arent-vectors" class="slide level2">
+<h2>⏸ Pause &amp; predict: lists aren’t vectors</h2>
+<div class="pause">
+<p>In R, <code>c(1, 2, 3) * 2</code> gives <code>2 4 6</code>. What do these give in Python?</p>
+</div>
+<div id="b530411c" class="cell" data-execution_count="53">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb99"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb99-1"><a href="" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>] <span class="op">*</span> <span class="dv">2</span></span>
+<span id="cb99-2"><a href="" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>] <span class="op">+</span> [<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]</span>
+<span id="cb99-3"><a href="" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>] <span class="op">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<div id="74ab400f" class="cell" data-execution_count="54">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>] <span class="op">*</span> <span class="dv">2</span>, [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>] <span class="op">+</span> [<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1, 2, 3, 1, 2, 3] [1, 2, 3, 4, 5, 6]</code></pre>
+</div>
+</div>
+<div id="a5b2208d" class="cell" data-execution_count="55">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb102-1"><a href="" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>] <span class="op">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">TypeError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[50]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> [<span class="ansi-green-fg">1</span>, <span class="ansi-green-fg">2</span>, <span class="ansi-green-fg">3</span>] + <span class="ansi-green-fg">1</span>
+
+<span class="ansi-red-fg">TypeError</span>: can only concatenate list (not "int") to list</pre>
+</div>
+</div>
+</div>
+<p>Lists are general containers, not math objects. <code>*</code> repeats and <code>+</code> joins.</p>
+</div>
+</section>
+<section id="numpy-arrays-the-r-vector-you-know" class="slide level2">
+<h2>NumPy arrays: the R vector you know</h2>
+<div id="6ba3ad4c" class="cell" data-execution_count="56">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb103"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb103-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb103-2"><a href="" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>])</span>
+<span id="cb103-3"><a href="" aria-hidden="true" tabindex="-1"></a>v <span class="op">*</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="51">
+<pre><code>array([2, 4, 6])</code></pre>
+</div>
+</div>
+<div id="05917a43" class="cell" data-execution_count="57">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb105"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb105-1"><a href="" aria-hidden="true" tabindex="-1"></a>v <span class="op">+</span> np.array([<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="52">
+<pre><code>array([5, 7, 9])</code></pre>
+</div>
+</div>
+<div id="da319c24" class="cell" data-execution_count="58">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb107-1"><a href="" aria-hidden="true" tabindex="-1"></a>np.sqrt(v) <span class="op">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="53">
+<pre><code>array([2.        , 2.41421356, 2.73205081])</code></pre>
+</div>
+</div>
+<p>Element-wise math, just like R. Under the hood, <strong>pandas columns are NumPy-style arrays</strong>, so this is what makes next week work.</p>
+</section>
+<section id="wheres-log" class="slide level2">
+<h2>Where’s <code>log()</code>?</h2>
+<p>In R, math functions like <code>log()</code>, <code>sqrt()</code>, and <code>exp()</code> are <strong>built in</strong>. In Python, they need an import.</p>
+<div id="f8a2b18e" class="cell" data-execution_count="59">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb109"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb109-1"><a href="" aria-hidden="true" tabindex="-1"></a>log(<span class="dv">7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[54]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> log(<span class="ansi-green-fg">7</span>)
+
+<span class="ansi-red-fg">NameError</span>: name 'log' is not defined</pre>
+</div>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><code>math</code></strong> comes with Python, but works on <strong>one number</strong> at a time</p>
+<div id="b2e34e9a" class="cell" data-execution_count="60">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb110"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb110-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb110-2"><a href="" aria-hidden="true" tabindex="-1"></a>math.log(<span class="dv">7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="55">
+<pre><code>1.9459101490553132</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong>NumPy</strong> works on whole arrays, like R. <strong>This is the one we’ll use.</strong></p>
+<div id="f1a7e925" class="cell" data-execution_count="61">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb112-1"><a href="" aria-hidden="true" tabindex="-1"></a>np.log(np.array([<span class="dv">1</span>, <span class="dv">7</span>, <span class="dv">20</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="56">
+<pre><code>array([0.        , 1.94591015, 2.99573227])</code></pre>
+</div>
+</div>
+</div></div>
+<p>Only a handful of basics are built in with no import: <code>abs()</code>, <code>round()</code>, <code>sum()</code>, <code>min()</code>, <code>max()</code>, <code>len()</code>.</p>
+</section>
+<section id="arrays-have-one-type" class="slide level2">
+<h2>Arrays have one type</h2>
+<p>Like R vectors, an array holds one type. Mix types and NumPy converts everything:</p>
+<div id="bc9d8754" class="cell" data-execution_count="62">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb114"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb114-1"><a href="" aria-hidden="true" tabindex="-1"></a>np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="st">"three"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="57">
+<pre><code>array(['1', '2', 'three'], dtype='&lt;U21')</code></pre>
+</div>
+</div>
+<p>Like <code>c(1, 2, "three")</code> in R: now everything is a string.</p>
+</section>
+<section id="summaries-functions-or-methods" class="slide level2">
+<h2>Summaries: functions or methods</h2>
+<div id="c6a77eed" class="cell" data-execution_count="63">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb116"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb116-1"><a href="" aria-hidden="true" tabindex="-1"></a>mass <span class="op">=</span> np.array([<span class="dv">3750</span>, <span class="dv">3800</span>, <span class="dv">3250</span>, <span class="dv">3450</span>, <span class="dv">3650</span>, <span class="dv">4675</span>, <span class="dv">3200</span>])</span>
+<span id="cb116-2"><a href="" aria-hidden="true" tabindex="-1"></a>np.mean(mass), mass.mean(), mass.<span class="bu">max</span>(), mass.<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="58">
+<pre><code>(np.float64(3682.1428571428573),
+ np.float64(3682.1428571428573),
+ np.int64(4675),
+ np.int64(25775))</code></pre>
+</div>
+</div>
+<p><code>np.float64(3682.14...)</code> is NumPy labeling its own number type. Wrap in <code>print()</code> for plain output.</p>
+<div class="fragment">
+<div class="pause">
+<p><strong>⏸ Pause &amp; predict:</strong> will <code>mass.std()</code> match R’s <code>sd(mass)</code>?</p>
+</div>
+</div>
+<div class="fragment">
+<div id="54b08c49" class="cell" data-execution_count="64">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb118"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb118-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(mass.std(), mass.std(ddof<span class="op">=</span><span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>459.563901532569 496.3857466968704</code></pre>
+</div>
+</div>
+<p>NumPy’s default divides by <span class="math inline">\(n\)</span>. R’s <code>sd()</code> divides by <span class="math inline">\(n-1\)</span>. For a <strong>sample</strong> SD, use <code>ddof=1</code>. (pandas uses <span class="math inline">\(n-1\)</span> by default. Yes, it’s inconsistent.)</p>
+<p><code>ddof</code> = “delta degrees of freedom”: NumPy divides by <span class="math inline">\(n - \text{ddof}\)</span>. So <code>ddof=0</code> → <span class="math inline">\(n\)</span>, <code>ddof=1</code> → <span class="math inline">\(n - 1\)</span>.</p>
+</div>
+</section>
+<section id="logical-arrays-and-masks" class="slide level2">
+<h2>Logical arrays and masks</h2>
+<div id="ff70ae12" class="cell" data-execution_count="65">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb120"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb120-1"><a href="" aria-hidden="true" tabindex="-1"></a>mass</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="60">
+<pre><code>array([3750, 3800, 3250, 3450, 3650, 4675, 3200])</code></pre>
+</div>
+</div>
+<div id="2274e859" class="cell" data-execution_count="66">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb122"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb122-1"><a href="" aria-hidden="true" tabindex="-1"></a>mass <span class="op">&gt;</span> <span class="dv">3700</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="61">
+<pre><code>array([ True,  True, False, False, False,  True, False])</code></pre>
+</div>
+</div>
+<div id="70a7a121" class="cell" data-execution_count="67">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb124"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb124-1"><a href="" aria-hidden="true" tabindex="-1"></a>mass[mass <span class="op">&gt;</span> <span class="dv">3700</span>]      <span class="co"># keep only the TRUE positions, like R</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="62">
+<pre><code>array([3750, 3800, 4675])</code></pre>
+</div>
+</div>
+<div id="1945ade8" class="cell" data-execution_count="68">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb126"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb126-1"><a href="" aria-hidden="true" tabindex="-1"></a>(mass <span class="op">&gt;</span> <span class="dv">3700</span>).mean()   <span class="co"># proportion True: same trick as R's mean(x &gt; 3700)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="63">
+<pre><code>np.float64(0.42857142857142855)</code></pre>
+</div>
+</div>
+<p>Next week, this is how you filter rows of a DataFrame.</p>
+</section>
+<section id="missing-values" class="slide level2">
+<h2>Missing values</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>R</th>
+<th>Python</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>NA</code> (missing value in a vector)</td>
+<td><code>np.nan</code></td>
+</tr>
+<tr class="even">
+<td><code>NULL</code> (nothing at all)</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td><code>mean(x, na.rm = TRUE)</code></td>
+<td><code>np.nanmean(x)</code></td>
+</tr>
+<tr class="even">
+<td><code>is.na(x)</code></td>
+<td><code>np.isnan(x)</code></td>
+</tr>
+<tr class="odd">
+<td><code>x[!is.na(x)]</code></td>
+<td><code>x[~np.isnan(x)]</code></td>
+</tr>
+</tbody>
+</table>
+<div id="ca88de41" class="cell" data-execution_count="69">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb128"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb128-1"><a href="" aria-hidden="true" tabindex="-1"></a>sales <span class="op">=</span> np.array([<span class="dv">95</span>, <span class="dv">142</span>, np.nan, <span class="dv">170</span>])</span>
+<span id="cb128-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.mean(sales), np.nanmean(sales), np.isnan(sales).mean())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>nan 135.66666666666666 0.25</code></pre>
+</div>
+</div>
+<div id="12cc6994" class="cell" data-execution_count="70">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb130"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb130-1"><a href="" aria-hidden="true" tabindex="-1"></a>sales[<span class="op">~</span>np.isnan(sales)]     <span class="co"># keep the values that are NOT missing</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="65">
+<pre><code>array([ 95., 142., 170.])</code></pre>
+</div>
+</div>
+<p>For arrays, <strong><code>~</code> means “not”</strong> (R’s <code>!</code>). It flips every True to False and vice versa.</p>
+</section>
+<section id="sequences" class="slide level2">
+<h2>Sequences</h2>
+<div id="baf1df41" class="cell" data-execution_count="71">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb132"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb132-1"><a href="" aria-hidden="true" tabindex="-1"></a>np.arange(<span class="dv">1</span>, <span class="dv">6</span>)          <span class="co"># like 1:5 -- the stop value is excluded!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="66">
+<pre><code>array([1, 2, 3, 4, 5])</code></pre>
+</div>
+</div>
+<div id="9fd39a60" class="cell" data-execution_count="72">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb134"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb134-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">6</span>))        <span class="co"># plain Python version (no NumPy needed)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="67">
+<pre><code>[1, 2, 3, 4, 5]</code></pre>
+</div>
+</div>
+<p>End-exclusive again: <strong>start is in, stop is out.</strong></p>
+<div id="4e84781f" class="cell" data-execution_count="73">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb136"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb136-1"><a href="" aria-hidden="true" tabindex="-1"></a>np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">5</span>)     <span class="co"># like seq(0, 1, length.out = 5)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="68">
+<pre><code>array([0.  , 0.25, 0.5 , 0.75, 1.  ])</code></pre>
+</div>
+</div>
+<p><code>linspace</code> = “<strong>lin</strong>early <strong>spaced</strong>”: 5 evenly spaced numbers from 0 to 1. The one exception: <strong>both ends are included</strong>.</p>
+</section>
+<section id="demo-3-standardize-again" class="slide level2">
+<h2>Demo 3: <code>standardize()</code>, again</h2>
+<p><strong>Practice file, Demo 3.</strong> Week 9’s function, in Python:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>R</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="" aria-hidden="true" tabindex="-1"></a>standardize <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb138-2"><a href="" aria-hidden="true" tabindex="-1"></a>  (x <span class="sc">-</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">/</span></span>
+<span id="cb138-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sd</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb138-4"><a href="" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:50%;">
+<p><strong>Python</strong></p>
+<div id="45f98f64" class="cell" data-execution_count="74">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb139"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb139-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> standardize(x):</span>
+<span id="cb139-2"><a href="" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.asarray(x, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb139-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (x <span class="op">-</span> np.nanmean(x)) <span class="op">/</span> np.nanstd(x, ddof<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div></div>
+<div id="0d1babf4" class="cell" data-execution_count="75">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb140"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb140-1"><a href="" aria-hidden="true" tabindex="-1"></a>standardize([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="70">
+<pre><code>array([-1.26491106, -0.63245553,  0.        ,  0.63245553,  1.26491106])</code></pre>
+</div>
+</div>
+<p>Same answer as R in Week 9: <code>-1.26, -0.63, 0, 0.63, 1.26</code>. Test where you know the answer!</p>
+<aside class="notes">
+<p>Show what happens with ddof left out: -1.41 instead of -1.26. A good reminder that matching a known answer catches silent bugs.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="your-turn-numpy" class="slide level2 scrollable">
+<h2>Your turn: NumPy</h2>
+<div class="your-turn">
+<p><strong>Pause the video. Practice file, Your turn 2</strong> (about 4 minutes).</p>
+<div id="0aba652d" class="cell" data-execution_count="76">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb142"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb142-1"><a href="" aria-hidden="true" tabindex="-1"></a>bill <span class="op">=</span> np.array([<span class="fl">39.1</span>, <span class="fl">39.5</span>, <span class="fl">40.3</span>, np.nan, <span class="fl">36.7</span>, <span class="fl">39.3</span>, <span class="fl">38.9</span>, <span class="fl">39.2</span>, <span class="fl">34.1</span>, <span class="fl">42.0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol type="1">
+<li>How many values are missing? What proportion?</li>
+<li>What is the mean bill length, ignoring missing values?</li>
+<li>Which bill lengths are longer than 40 mm? What proportion of the non-missing values is that?</li>
+</ol>
+<p><strong>Stretch:</strong> use <code>standardize(bill)</code>. What happened to the <code>nan</code>? <strong>Experienced:</strong> do step 3 without dropping <code>nan</code> first. Why does <code>bill &gt; 40</code> still work?</p>
+</div>
+</section>
+<section id="your-turn-2-one-solution" class="slide level2">
+<h2>Your turn 2: one solution</h2>
+<div id="5bf7e181" class="cell" data-execution_count="77">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb143"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb143-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.isnan(bill).<span class="bu">sum</span>(), np.isnan(bill).mean())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1 0.1</code></pre>
+</div>
+</div>
+<div id="91901a17" class="cell" data-execution_count="78">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb145"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb145-1"><a href="" aria-hidden="true" tabindex="-1"></a>np.nanmean(bill)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="73">
+<pre><code>np.float64(38.78888888888889)</code></pre>
+</div>
+</div>
+<div id="b3624cb3" class="cell" data-execution_count="79">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb147"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb147-1"><a href="" aria-hidden="true" tabindex="-1"></a>observed <span class="op">=</span> bill[<span class="op">~</span>np.isnan(bill)]      <span class="co"># ~ means "not" for arrays</span></span>
+<span id="cb147-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(observed[observed <span class="op">&gt;</span> <span class="dv">40</span>], (observed <span class="op">&gt;</span> <span class="dv">40</span>).mean())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[40.3 42. ] 0.2222222222222222</code></pre>
+</div>
+</div>
+</section>
+<section id="watch-out-nan-in-comparisons" class="slide level2">
+<h2>Watch out: <code>nan</code> in comparisons</h2>
+<p>What if we skip dropping the missing value?</p>
+<div id="c72a0967" class="cell" data-execution_count="80">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb149"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb149-1"><a href="" aria-hidden="true" tabindex="-1"></a>bill <span class="op">&gt;</span> <span class="dv">40</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="75">
+<pre><code>array([False, False,  True, False, False, False, False, False, False,
+        True])</code></pre>
+</div>
+</div>
+<div id="54cf1b75" class="cell" data-execution_count="81">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb151"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb151-1"><a href="" aria-hidden="true" tabindex="-1"></a>(bill <span class="op">&gt;</span> <span class="dv">40</span>).mean()      <span class="co"># 2 out of 10, not 2 out of 9</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="76">
+<pre><code>np.float64(0.2)</code></pre>
+</div>
+</div>
+<div class="fragment">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>R</th>
+<th>Python (NumPy)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Missing value in <code>bill &gt; 40</code></td>
+<td><code>NA</code></td>
+<td><code>False</code></td>
+</tr>
+<tr class="even">
+<td><code>mean(bill &gt; 40)</code></td>
+<td><code>NA</code>: forces you to decide (<code>na.rm = TRUE</code>)</td>
+<td><code>0.2</code>: quietly counts missing as “not over 40”</td>
+</tr>
+</tbody>
+</table>
+<p>R makes you deal with missing values. NumPy doesn’t, so <strong>decide what you mean</strong> (all penguins, or only the ones measured?) and drop <code>nan</code> yourself when needed.</p>
+</div>
+</section></section>
+<section>
+<section id="functions-loops-and-comprehensions" class="title-slide slide level1 section-divider middle center">
+<h1>Functions, loops, and comprehensions</h1>
+
+</section>
+<section id="anatomy-of-a-function" class="slide level2">
+<h2>Anatomy of a function</h2>
+<div id="b83f6ce5" class="cell" data-execution_count="82">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb153"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb153-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prop_missing(x, digits<span class="op">=</span><span class="dv">2</span>):</span>
+<span id="cb153-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Proportion of values in x that are missing (nan)."""</span></span>
+<span id="cb153-3"><a href="" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.asarray(x, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb153-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(<span class="bu">round</span>(np.isnan(x).mean(), digits))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><code>def</code> name <code>(arguments):</code> then an <strong>indented</strong> body. Indentation <em>is</em> the syntax (R uses <code>{ }</code>)</li>
+<li><code>digits=2</code> is a default, just like R</li>
+<li>The <code>"""docstring"""</code> documents it: try <code>help(prop_missing)</code></li>
+<li><code>return</code> is <strong>required</strong>. Python does not return the last value automatically</li>
+</ul>
+</section>
+<section id="pause-predict-the-missing-return" class="slide level2">
+<h2>⏸ Pause &amp; predict: the missing <code>return</code></h2>
+<div class="pause">
+<p>What does <code>result</code> contain?</p>
+</div>
+<div id="3843eca3" class="cell" data-execution_count="83">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb154"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb154-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> double(x):</span>
+<span id="cb154-2"><a href="" aria-hidden="true" tabindex="-1"></a>    x <span class="op">*</span> <span class="dv">2</span></span>
+<span id="cb154-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb154-4"><a href="" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> double(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<div id="ab5ef586" class="cell" data-execution_count="84">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb155"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb155-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>None</code></pre>
+</div>
+</div>
+<p>No <code>return</code>, so the function returns <code>None</code>. No error, no warning. In R, the last value would have been returned.</p>
+</div>
+</section>
+<section id="indentation-is-syntax" class="slide level2">
+<h2>Indentation is syntax</h2>
+<div id="4e7a1cf3" class="cell" data-execution_count="85">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb157"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb157-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> double(x):</span>
+<span id="cb157-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> x <span class="op">*</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre>  <span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[80]</span><span class="ansi-green-fg">, line 2</span>
+<span class="ansi-red-fg">    </span><span class="ansi-red-fg">return x * 2</span>
+    ^
+<span class="ansi-red-fg">IndentationError</span><span class="ansi-red-fg">:</span> expected an indented block after function definition on line 1
+</pre>
+</div>
+</div>
+</div>
+<p>Positron indents for you after a <code>:</code>. Use <strong>4 spaces</strong> per level, never a mix of tabs and spaces.</p>
+<div class="tip">
+<p><strong>Check your setting:</strong> the status bar at the bottom right of Positron should say <strong>“Spaces: 4”</strong>. If it says “Spaces: 2” or “Tab Size,” click it → <em>Indent Using Spaces</em> → <strong>4</strong>. To make it permanent: Settings (Cmd/Ctrl + ,) → search <strong>“tab size”</strong> → set to <strong>4</strong>.</p>
+</div>
+<p>(2 spaces technically works if you’re consistent, but 4 is the Python standard, and mixing styles when you paste code from elsewhere causes errors you can’t see.)</p>
+</section>
+<section id="fail-loudly" class="slide level2">
+<h2>Fail loudly</h2>
+<p>Week 9: “a clear error now is better than a quiet <code>NA</code> three steps later.”</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>R</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb158"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb158-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(x) <span class="sc">&lt;</span> <span class="dv">2</span>) {</span>
+<span id="cb158-2"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">"Need at least 2 values."</span>)</span>
+<span id="cb158-3"><a href="" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:50%;">
+<p><strong>Python</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb159"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb159-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(x) <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb159-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Need at least 2 values."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div></div>
+</section>
+<section id="if-elif-else" class="slide level2">
+<h2><code>if</code> / <code>elif</code> / <code>else</code></h2>
+<p><code>if</code> / <code>elif</code> / <code>else</code> work like R’s <code>if</code> / <code>else if</code> / <code>else</code>, with a colon and indentation instead of <code>( )</code> and <code>{ }</code>:</p>
+<p>A data-quality check (remember Week 9’s fake survey with negative ages?):</p>
+<div id="c2731bec" class="cell" data-execution_count="86">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb160"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb160-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_age(age):</span>
+<span id="cb160-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> np.isnan(age):</span>
+<span id="cb160-3"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"missing"</span></span>
+<span id="cb160-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> age <span class="op">&lt;</span> <span class="dv">0</span> <span class="kw">or</span> age <span class="op">&gt;</span> <span class="dv">110</span>:</span>
+<span id="cb160-5"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"implausible"</span></span>
+<span id="cb160-6"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb160-7"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"ok"</span></span>
+<span id="cb160-8"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb160-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(check_age(<span class="dv">42</span>), check_age(<span class="op">-</span><span class="dv">3</span>), check_age(np.nan))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ok implausible missing</code></pre>
+</div>
+</div>
+</section>
+<section id="for-loops" class="slide level2">
+<h2><code>for</code> loops</h2>
+<p>Python loops over the <strong>items themselves</strong>. No index needed:</p>
+<div id="e4ee783f" class="cell" data-execution_count="87">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb162"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb162-1"><a href="" aria-hidden="true" tabindex="-1"></a>cities <span class="op">=</span> [<span class="st">"Austin"</span>, <span class="st">"Dallas"</span>, <span class="st">"Houston"</span>]</span>
+<span id="cb162-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> city <span class="kw">in</span> cities:</span>
+<span id="cb162-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Making a plot for </span><span class="sc">{</span>city<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Making a plot for Austin
+Making a plot for Dallas
+Making a plot for Houston</code></pre>
+</div>
+</div>
+<p>Looping over a <strong>dict</strong>? <code>.items()</code> hands you each key and its value as a pair:</p>
+<div id="5da37d4f" class="cell" data-execution_count="88">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb164"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb164-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col, values <span class="kw">in</span> scores.items():</span>
+<span id="cb164-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(col, <span class="st">"-&gt;"</span>, values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>student -&gt; ['S1', 'S2', 'S3', 'S4']
+math -&gt; [91, 85, 88, 95]
+english -&gt; [92, 80, 85, 74]
+science -&gt; [78, 91, 83, 88]</code></pre>
+</div>
+</div>
+<p><code>col, values</code> gives each half of the pair its own name. (Related dict methods: <code>.keys()</code> for just the keys, <code>.values()</code> for just the values.)</p>
+</section>
+<section id="the-loop-recipe-from-week-9" class="slide level2">
+<h2>The loop recipe from Week 9</h2>
+<p>Every loop needs an <strong>output container</strong>, a <strong>sequence</strong>, and a <strong>body</strong>.</p>
+<div id="20f988ad" class="cell" data-execution_count="89">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb166"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb166-1"><a href="" aria-hidden="true" tabindex="-1"></a>squares <span class="op">=</span> []                 <span class="co"># 1. output container</span></span>
+<span id="cb166-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">6</span>):        <span class="co"># 2. sequence: 1, 2, 3, 4, 5</span></span>
+<span id="cb166-3"><a href="" aria-hidden="true" tabindex="-1"></a>    squares.append(i <span class="op">**</span> <span class="dv">2</span>)   <span class="co"># 3. body</span></span>
+<span id="cb166-4"><a href="" aria-hidden="true" tabindex="-1"></a>squares</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="84">
+<pre><code>[1, 4, 9, 16, 25]</code></pre>
+</div>
+</div>
+</section>
+<section id="list-comprehensions-pythons-map" class="slide level2">
+<h2>List comprehensions: Python’s <code>map()</code></h2>
+<p>The same loop, in one line:</p>
+<div id="4e376ad1" class="cell" data-execution_count="90">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb168"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb168-1"><a href="" aria-hidden="true" tabindex="-1"></a>[i <span class="op">**</span> <span class="dv">2</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">6</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="85">
+<pre><code>[1, 4, 9, 16, 25]</code></pre>
+</div>
+</div>
+<p>Read it aloud: “<em><code>i</code> squared, for each <code>i</code> in 1 to 5.</em>”</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>R</th>
+<th>Python</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>map(1:5, f)</code></td>
+<td><code>[f(i) for i in range(1, 6)]</code></td>
+</tr>
+<tr class="even">
+<td><code>map(x, \(v) v^2)</code></td>
+<td><code>[v ** 2 for v in x]</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="dict-comprehensions" class="slide level2">
+<h2>Dict comprehensions</h2>
+<p>Build a dict the same way: <code>{key: value for ...}</code></p>
+<div id="84095588" class="cell" data-execution_count="91">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb170"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb170-1"><a href="" aria-hidden="true" tabindex="-1"></a>cities <span class="op">=</span> [<span class="st">"Austin"</span>, <span class="st">"Dallas"</span>, <span class="st">"Houston"</span>]</span>
+<span id="cb170-2"><a href="" aria-hidden="true" tabindex="-1"></a>{city: <span class="bu">len</span>(city) <span class="cf">for</span> city <span class="kw">in</span> cities}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="86">
+<pre><code>{'Austin': 6, 'Dallas': 6, 'Houston': 7}</code></pre>
+</div>
+</div>
+</section>
+<section id="demo-4-a-missing-data-audit" class="slide level2">
+<h2>Demo 4: a missing-data audit</h2>
+<p><strong>Practice file, Demo 4.</strong> Week 9’s Practice 1: <code>summarise(across(everything(), prop_missing))</code>.</p>
+<div id="1003f379" class="cell" data-execution_count="92">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb172"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb172-1"><a href="" aria-hidden="true" tabindex="-1"></a>tx <span class="op">=</span> {</span>
+<span id="cb172-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="st">"city"</span>:   np.array([<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>], dtype<span class="op">=</span><span class="bu">float</span>),   <span class="co"># coded city id</span></span>
+<span id="cb172-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sales"</span>:  np.array([<span class="dv">95</span>, np.nan, <span class="dv">172</span>, <span class="dv">210</span>, np.nan, np.nan]),</span>
+<span id="cb172-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="st">"volume"</span>: np.array([<span class="fl">11.4</span>, <span class="fl">16.9</span>, np.nan, <span class="fl">24.1</span>, <span class="fl">26.3</span>, <span class="fl">30.0</span>]),</span>
+<span id="cb172-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="st">"median"</span>: np.array([<span class="fl">105.6</span>, <span class="fl">102.0</span>, <span class="fl">112.0</span>, <span class="fl">119.5</span>, <span class="fl">121.0</span>, <span class="fl">118.4</span>]),</span>
+<span id="cb172-6"><a href="" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb172-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb172-8"><a href="" aria-hidden="true" tabindex="-1"></a>{col: prop_missing(values) <span class="cf">for</span> col, values <span class="kw">in</span> tx.items()}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="87">
+<pre><code>{'city': 0.0, 'sales': 0.5, 'volume': 0.17, 'median': 0.0}</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p>A dict of equal-length arrays, one per column… that’s basically a <strong>data frame</strong>. Next week, pandas gives this a name and a lot of tools.</p>
+</div>
+</section>
+<section id="anonymous-functions-lambda" class="slide level2">
+<h2>Anonymous functions: <code>lambda</code></h2>
+<p>R’s <code>\(x) x^2</code> is Python’s <code>lambda x: x ** 2</code>:</p>
+<div id="c0bde20b" class="cell" data-execution_count="93">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb174"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb174-1"><a href="" aria-hidden="true" tabindex="-1"></a>squared <span class="op">=</span> <span class="kw">lambda</span> x: x <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb174-2"><a href="" aria-hidden="true" tabindex="-1"></a>squared(<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="88">
+<pre><code>16</code></pre>
+</div>
+</div>
+<p>You’ll mostly see <code>lambda</code> inside other functions. Next week: <code>.assign(ratio=lambda d: d["a"] / d["b"])</code>.</p>
+</section>
+<section id="your-turn-write-a-function" class="slide level2">
+<h2>Your turn: write a function</h2>
+<div class="your-turn">
+<p><strong>Pause the video. Practice file, Your turn 3</strong> (about 5 minutes).</p>
+<p>Write <code>summarize_num(x)</code> that returns a <strong>dict</strong> with the number of values <code>n</code>, number missing <code>n_missing</code>, the <code>mean</code>, and the sample <code>sd</code> (ignoring missing values).</p>
+<p>Test it on <code>[2, 4, 4, 4, 5, 5, 7, 9]</code>. You should get a mean of 5 and an SD of about 2.14.</p>
+<p><strong>Stretch:</strong> raise a <code>ValueError</code> if there are fewer than 2 non-missing values. <strong>Experienced:</strong> use a dict comprehension to apply it to every column of <code>tx</code>.</p>
+</div>
+</section>
+<section id="your-turn-3-one-solution" class="slide level2">
+<h2>Your turn 3: one solution</h2>
+<div id="d8708537" class="cell" data-execution_count="94">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb176"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb176-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> summarize_num(x):</span>
+<span id="cb176-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""n, number missing, mean, and sample SD of x."""</span></span>
+<span id="cb176-3"><a href="" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.asarray(x, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb176-4"><a href="" aria-hidden="true" tabindex="-1"></a>    n_missing <span class="op">=</span> <span class="bu">int</span>(np.isnan(x).<span class="bu">sum</span>())</span>
+<span id="cb176-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(x) <span class="op">-</span> n_missing <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb176-6"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Need at least 2 non-missing values."</span>)</span>
+<span id="cb176-7"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"n"</span>: <span class="bu">len</span>(x), <span class="st">"n_missing"</span>: n_missing,</span>
+<span id="cb176-8"><a href="" aria-hidden="true" tabindex="-1"></a>            <span class="st">"mean"</span>: <span class="bu">float</span>(np.nanmean(x)), <span class="st">"sd"</span>: <span class="bu">float</span>(np.nanstd(x, ddof<span class="op">=</span><span class="dv">1</span>))}</span>
+<span id="cb176-9"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb176-10"><a href="" aria-hidden="true" tabindex="-1"></a>summarize_num([<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">9</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="89">
+<pre><code>{'n': 8, 'n_missing': 0, 'mean': 5.0, 'sd': 2.138089935299395}</code></pre>
+</div>
+</div>
+<div id="34f2a547" class="cell" data-execution_count="95">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb178"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb178-1"><a href="" aria-hidden="true" tabindex="-1"></a>{col: summarize_num(values)[<span class="st">"mean"</span>] <span class="cf">for</span> col, values <span class="kw">in</span> tx.items()}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="90">
+<pre><code>{'city': 1.5,
+ 'sales': 159.0,
+ 'volume': 21.740000000000002,
+ 'median': 113.08333333333333}</code></pre>
+</div>
+</div>
+</section></section>
+<section>
+<section id="randomness-and-simulation" class="title-slide slide level1 section-divider middle center">
+<h1>Randomness and simulation</h1>
+
+</section>
+<section id="random-numbers-make-a-generator" class="slide level2">
+<h2>Random numbers: make a generator</h2>
+<p>R uses a global seed. Modern NumPy uses a <strong>random number generator object</strong> that you create with a seed:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>R</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb180"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb180-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7500</span>)</span>
+<span id="cb180-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:50%;">
+<p><strong>Python</strong></p>
+<div id="25904fb5" class="cell" data-execution_count="96">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb181"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb181-1"><a href="" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">7500</span>)</span>
+<span id="cb181-2"><a href="" aria-hidden="true" tabindex="-1"></a>rng.choice(np.arange(<span class="dv">1</span>, <span class="dv">101</span>), <span class="dv">3</span>, replace<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="91">
+<pre><code>array([67, 80, 31])</code></pre>
+</div>
+</div>
+</div></div>
+<div class="fragment">
+<ul>
+<li>Then draw from it with <strong>methods</strong>: <code>rng.choice()</code>, <code>rng.normal()</code>, …</li>
+<li>Same seed → same numbers in Python, but not the same numbers as R (different generators)</li>
+<li>Older tutorials use <code>np.random.seed()</code>. That still works but is the legacy approach</li>
+</ul>
+</div>
+</section>
+<section id="sample-in-python" class="slide level2">
+<h2><code>sample()</code> in Python</h2>
+<div id="47a467c5" class="cell" data-execution_count="97">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb183"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb183-1"><a href="" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">7500</span>)</span>
+<span id="cb183-2"><a href="" aria-hidden="true" tabindex="-1"></a>reviewers <span class="op">=</span> [<span class="st">"Ana"</span>, <span class="st">"Ben"</span>, <span class="st">"Cal"</span>, <span class="st">"Dee"</span>, <span class="st">"Eli"</span>, <span class="st">"Fay"</span>]</span>
+<span id="cb183-3"><a href="" aria-hidden="true" tabindex="-1"></a>rng.choice(reviewers, <span class="dv">2</span>, replace<span class="op">=</span><span class="va">False</span>)        <span class="co"># pick 2, no repeats</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="92">
+<pre><code>array(['Dee', 'Ben'], dtype='&lt;U3')</code></pre>
+</div>
+</div>
+<div id="9691487f" class="cell" data-execution_count="98">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb185"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb185-1"><a href="" aria-hidden="true" tabindex="-1"></a>rng.permutation(reviewers)                      <span class="co"># random order</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="93">
+<pre><code>array(['Cal', 'Fay', 'Dee', 'Eli', 'Ana', 'Ben'], dtype='&lt;U3')</code></pre>
+</div>
+</div>
+<div id="f756a09a" class="cell" data-execution_count="99">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb187"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb187-1"><a href="" aria-hidden="true" tabindex="-1"></a>rng.choice([<span class="st">"bronze"</span>, <span class="st">"silver"</span>, <span class="st">"gold"</span>], size<span class="op">=</span><span class="dv">8</span>, p<span class="op">=</span>[<span class="fl">0.6</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="94">
+<pre><code>array(['bronze', 'bronze', 'bronze', 'silver', 'gold', 'bronze', 'bronze',
+       'gold'], dtype='&lt;U6')</code></pre>
+</div>
+</div>
+<div class="tip">
+<p><strong>Gotcha:</strong> R’s <code>sample()</code> defaults to <em>without</em> replacement. <code>rng.choice()</code> defaults to <strong>with</strong> replacement. Always write <code>replace=</code> explicitly.</p>
+</div>
+</section>
+<section id="drawing-from-distributions" class="slide level2">
+<h2>Drawing from distributions</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>R</th>
+<th>NumPy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rnorm(5, mean = 3, sd = 0.8)</code></td>
+<td><code>rng.normal(3, 0.8, size=5)</code></td>
+</tr>
+<tr class="even">
+<td><code>rbinom(5, size = 20, prob = 0.1)</code></td>
+<td><code>rng.binomial(20, 0.1, size=5)</code></td>
+</tr>
+<tr class="odd">
+<td><code>rpois(5, lambda = 12)</code></td>
+<td><code>rng.poisson(12, size=5)</code></td>
+</tr>
+<tr class="even">
+<td><code>runif(5)</code></td>
+<td><code>rng.uniform(size=5)</code></td>
+</tr>
+</tbody>
+</table>
+<div id="cae693d4" class="cell" data-execution_count="100">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb189"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb189-1"><a href="" aria-hidden="true" tabindex="-1"></a>rng.normal(<span class="dv">3</span>, <span class="fl">0.8</span>, size<span class="op">=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="95">
+<pre><code>array([3.09747657, 4.16096681, 2.35940643, 3.39815146, 3.56148168])</code></pre>
+</div>
+</div>
+</section>
+<section id="demo-5-the-overbooked-flight" class="slide level2">
+<h2>Demo 5: the overbooked flight</h2>
+<p><strong>Practice file, Demo 5.</strong> Week 9’s simulation, in Python. 100 seats, 105 tickets sold, each passenger shows up with probability 0.95. How often is someone bumped?</p>
+<div id="aee824ee" class="cell" data-execution_count="101">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb191"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb191-1"><a href="" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">7500</span>)</span>
+<span id="cb191-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb191-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> one_flight(tickets<span class="op">=</span><span class="dv">105</span>, seats<span class="op">=</span><span class="dv">100</span>, p_show<span class="op">=</span><span class="fl">0.95</span>):</span>
+<span id="cb191-4"><a href="" aria-hidden="true" tabindex="-1"></a>    showed_up <span class="op">=</span> rng.binomial(tickets, p_show)</span>
+<span id="cb191-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> showed_up <span class="op">&gt;</span> seats          <span class="co"># True if someone is bumped</span></span>
+<span id="cb191-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb191-7"><a href="" aria-hidden="true" tabindex="-1"></a>bumped <span class="op">=</span> [one_flight() <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)]   <span class="co"># R: replicate(10000, one_flight())</span></span>
+<span id="cb191-8"><a href="" aria-hidden="true" tabindex="-1"></a>np.mean(bumped)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="96">
+<pre><code>np.float64(0.3932)</code></pre>
+</div>
+</div>
+<p>About 0.39, same as our R simulation in Week 9. Same three steps: <strong>a function for one run → repeat it → summarize.</strong></p>
+<p><code>_</code> is the conventional name for a loop variable you don’t use. <code>10_000</code> is just <code>10000</code>, easier to read.</p>
+</section></section>
+<section>
+<section id="wrap-up" class="title-slide slide level1 section-divider middle center">
+<h1>Wrap-up</h1>
+
+</section>
+<section id="r-python-cheat-sheet" class="slide level2">
+<h2>R → Python cheat sheet</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>R</th>
+<th>Python</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>library(pkg)</code></td>
+<td><code>import pkg as alias</code></td>
+</tr>
+<tr class="even">
+<td><code>x &lt;- 5</code></td>
+<td><code>x = 5</code></td>
+</tr>
+<tr class="odd">
+<td><code>c(1, 2, 3)</code></td>
+<td><code>np.array([1, 2, 3])</code> (or a list)</td>
+</tr>
+<tr class="even">
+<td><code>list(a = 1, b = "x")</code></td>
+<td><code>{"a": 1, "b": "x"}</code></td>
+</tr>
+<tr class="odd">
+<td><code>x[1]</code> (first) / <code>x[2:3]</code></td>
+<td><code>x[0]</code> / <code>x[1:3]</code></td>
+</tr>
+<tr class="even">
+<td><code>NA</code> / <code>NULL</code></td>
+<td><code>np.nan</code> / <code>None</code></td>
+</tr>
+<tr class="odd">
+<td><code>function(x) { ... }</code></td>
+<td><code>def f(x):</code> + indented body + <code>return</code></td>
+</tr>
+<tr class="even">
+<td><code>map(1:5, f)</code></td>
+<td><code>[f(i) for i in range(1, 6)]</code></td>
+</tr>
+<tr class="odd">
+<td><code>\(x) x^2</code></td>
+<td><code>lambda x: x ** 2</code></td>
+</tr>
+<tr class="even">
+<td><code>set.seed(1); sample(x, 2)</code></td>
+<td><code>rng = np.random.default_rng(1)</code>; <code>rng.choice(x, 2, replace=False)</code></td>
+</tr>
+<tr class="odd">
+<td><code>rnorm(5, 3, 0.8)</code></td>
+<td><code>rng.normal(3, 0.8, size=5)</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="todays-gotchas" class="slide level2 scrollable">
+<h2>Today’s gotchas</h2>
+<ol type="1">
+<li>Counting starts at <strong>0</strong>, and slices exclude the stop value</li>
+<li>Powers are <code>**</code>, not <code>^</code></li>
+<li><code>b = a</code> doesn’t copy a list, dict, or array. Use <code>.copy()</code></li>
+<li>Lists aren’t vectors: use NumPy arrays for math</li>
+<li><code>np.std()</code> divides by <span class="math inline">\(n\)</span>; use <code>ddof=1</code> for a sample SD</li>
+<li>Functions need an explicit <code>return</code></li>
+<li><code>rng.choice()</code> samples <strong>with</strong> replacement unless told otherwise</li>
+<li>Indentation is part of the syntax</li>
+</ol>
+<p>Every one of these runs (or fails) differently than you’d expect from R. When something looks off, check this list first.</p>
+</section>
+<section id="looking-ahead-pandas" class="slide level2">
+<h2>Looking ahead: pandas</h2>
+<div id="50261b1a" class="cell" data-execution_count="102">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb193"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb193-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb193-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb193-3"><a href="" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> pd.read_csv(<span class="st">"data/penguins.csv"</span>)</span>
+<span id="cb193-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb193-5"><a href="" aria-hidden="true" tabindex="-1"></a>(penguins</span>
+<span id="cb193-6"><a href="" aria-hidden="true" tabindex="-1"></a> .query(<span class="st">"species == 'Adelie'"</span>)</span>
+<span id="cb193-7"><a href="" aria-hidden="true" tabindex="-1"></a> .groupby(<span class="st">"island"</span>)</span>
+<span id="cb193-8"><a href="" aria-hidden="true" tabindex="-1"></a> .agg(mean_mass<span class="op">=</span>(<span class="st">"body_mass_g"</span>, <span class="st">"mean"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Can you already read it? <em>Take penguins, then keep the Adelie rows, then group by island, then summarize mean mass.</em> That’s a dplyr pipeline in Python clothing.</p>
+</section>
+<section id="to-do" class="slide level2">
+<h2>To do</h2>
+<ul>
+<li><strong>R Data Challenge</strong> due today (Tue 6:15pm)</li>
+<li><strong>Python HW 01</strong> due next Tuesday, Nov 10, 6:15pm (instructions on Brightspace)</li>
+<li><strong>Annotations 08</strong> due Sunday 11:59pm</li>
+<li><strong>Exit ticket</strong> on the Brightspace HELP Forum: <em>One R idea I saw again; one Python difference that surprised me.</em></li>
+</ul>
+<div class="question">
+<p><strong>Already know Python?</strong> Reply to the exit ticket thread if you’ve used polars, DuckDB, or Jupyter in a job. I’d love your help in the “experienced lane” over the next few weeks.</p>
+</div>
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="10-python-foundations_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="10-python-foundations_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="10-python-foundations_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="10-python-foundations_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="10-python-foundations_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="10-python-foundations_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="10-python-foundations_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="10-python-foundations_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="10-python-foundations_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="10-python-foundations_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

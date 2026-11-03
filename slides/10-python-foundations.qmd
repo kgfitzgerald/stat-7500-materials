@@ -1,0 +1,1370 @@
+---
+title: "Python Foundations"
+subtitle: "Same thinking, new syntax"
+author: "Dr. Katie Fitzgerald, with Claude :)"
+format:
+  revealjs:
+    css: [stat7500-slides.css, python-extra.css]
+    width: 1280
+    height: 720
+    slide-number: true
+    scrollable: true
+    code-line-numbers: false
+    highlight-style: github
+jupyter: python3
+execute:
+  echo: true
+  warning: false
+---
+
+```{python}
+#| include: false
+# Setup used throughout the deck
+import numpy as np
+```
+
+## This week is a recorded lecture
+
+**Before you continue:** install Python and Positron (**Steps 1–2** of the Python Setup instructions on Brightspace), then download `week_10_practice.qmd` from the GitHub repo and put it in your `STAT_7500` folder. We'll do the rest of the setup together.
+
+You'll see three kinds of prompts in this video:
+
+::: pause
+**⏸ Pause & predict.** Pause the video. Write down what you think the code returns. *Then* un-pause.
+:::
+
+::: tip
+**Demo.** I write code, you type along in the matching section of the practice file.
+:::
+
+::: your-turn
+**Your turn.** Pause the video, try the task, then un-pause for my solution.
+:::
+
+::: notes
+Recording tip: say "pause now" out loud and leave 2-3 seconds of silence before advancing the fragment with the answer.
+:::
+
+## Why learn a second language?
+
+- In the workplace, you'll see both. Many teams are Python-first; many statisticians are R-first.
+- **R** was built by statisticians for data analysis. **Python** is a general-purpose language that grew a data science toolkit.
+- Neither is "better." Being able to *read* both makes you a better collaborator.
+
+. . .
+
+::: question
+**The theme of the next five weeks: same thinking, new syntax.** You already know how to import, wrangle, visualize, and simulate. Now you'll learn a second dialect for the same ideas.
+:::
+
+## The Python unit
+
+| Week | Python topic | Builds on R week... |
+|---|---|---|
+| **10** | **Foundations** | 1 (basics), 9 (functions, sampling, simulation) |
+| 11 | Data wrangling I | 4–5 (isolating, piping, deriving) |
+| 12 | Data wrangling II | 6–7 (combining, tidy data) |
+| 13 | Data visualization | 2–3 (ggplot2) |
+| 14 | Working with external data | 2 (importing) |
+
+. . .
+
+Most people who "know pandas" learned it as a bag of tricks. You'll learn it as **the same grammar you already know.**
+
+## Today's plan
+
+1. Running Python (Positron, Quarto, imports)
+2. Values and types
+3. Containers and indexing
+4. Names and mutability
+5. NumPy: vectors, Python-style
+6. Functions, loops, and comprehensions
+7. Randomness and simulation (Week 9, again!)
+
+::: notes
+Roughly 80-90 minutes of video. Sections 1-4 = first half; 5-7 = second half. Consider recording each section as its own clip.
+:::
+
+# Running Python {.section-divider .middle}
+
+## Python and Positron
+
+::: columns
+::: {.column width="50%"}
+- **Python** is the language (the engine)
+- **Positron** is an IDE (the dashboard), made by Posit, the company behind RStudio
+- Positron runs R *and* Python, and renders Quarto, so your workflow barely changes
+:::
+::: {.column width="50%"}
+**Positron tour**
+
+- Interpreter picker (top right): choose Python
+- Console, Variables pane, Plots pane
+- Same `STAT_7500` folder as before
+:::
+:::
+
+::: tip
+Install problems? See the **Backup plan** at the bottom of the Python Setup instructions (Brightspace) so you can keep following along, and come to student hours. Don't let setup block you.
+:::
+
+::: notes
+Live tour in the recording: open the STAT_7500 folder, switch interpreter to Python, run 1 + 1 in the console, show Variables pane.
+:::
+
+## Python in Quarto
+
+Same `.qmd` files. Two changes:
+
+::: columns
+::: {.column width="50%"}
+**YAML**
+
+```yaml
+---
+title: "Week 10 practice"
+format: html
+jupyter: python3
+---
+```
+:::
+::: {.column width="50%"}
+**Chunks**
+
+```{{python}}
+1 + 1
+```
+:::
+:::
+
+. . .
+
+Same rule as Week 1: **rendering starts a fresh Python session**, separate from your Console. It runs the document top to bottom and can only use what the document itself creates. A variable you made in the Console (or in the Variables pane) doesn't exist when you render.
+
+## Packages: install once, import every time
+
+| | R | Python |
+|---|---|---|
+| Install (once, not in your document) | `install.packages("dplyr")` | `%pip install pandas` (Python console) |
+| Load (every document) | `library(dplyr)` | `import pandas as pd` |
+| Use a function | `filter(...)` | `pd.read_csv(...)` |
+
+. . .
+
+```{python}
+import numpy as np         # "np" is an alias, by universal convention
+np.sqrt(16)
+```
+
+Python makes you say **where** each function comes from: `np.sqrt`, not just `sqrt`. Like writing `dplyr::filter()` every time.
+
+## Installing packages: use `%pip`
+
+Your computer may have **more than one Python**. Installing into the wrong one is the most common setup problem.
+
+::: columns
+::: {.column width="50%"}
+**Best: the Positron Python console** (or a Jupyter cell)
+
+```python
+%pip install pandas matplotlib
+```
+
+`%pip` always installs into the Python that is running your code.
+:::
+::: {.column width="50%"}
+**Alternative: the Terminal**
+
+```bash
+# Mac
+python3 -m pip install pandas
+
+# Windows
+py -m pip install pandas
+```
+
+Plain `pip` is often `command not found` on a Mac.
+:::
+:::
+
+::: tip
+**After installing, restart the kernel** (in Positron: the circular-arrow ↻ button in the Console, "Restart Session"). The running Python won't reliably see new or updated packages until you do. Like restarting R after updating a package.
+
+Never put `%pip install` in your `.qmd`. Like `install.packages()`, you install once, in the console, not every time you render.
+:::
+
+## Your turn: install this week's packages
+
+::: your-turn
+**Pause the video.** In the Positron **Python console** (not the Terminal), run:
+
+```python
+%pip install numpy pandas matplotlib jupyter
+```
+
+It may take a few minutes. When it finishes, **restart the session** (↻ in the Console), then un-pause.
+:::
+
+`jupyter` is what lets Quarto run Python code when you render. Errors? See the **Troubleshooting** table in the Python Setup instructions.
+
+## Functions vs. methods
+
+R mostly uses **functions**: `verb(object)`. Python uses both functions *and* **methods**: `object.verb()`.
+
+```{python}
+word = "villanova"
+len(word)          # function: verb(object)
+```
+
+```{python}
+word.upper()       # method: object.verb()
+```
+
+. . .
+
+Read `object.verb()` like a pipe: *take `word`, then make it uppercase.* That's exactly how pandas chains will read next week.
+
+## Getting help
+
+```{python}
+#| eval: false
+help(np.sqrt)      # works anywhere: use this one
+np.sqrt?           # IPython/Jupyter shortcut; errors in plain Python
+```
+
+Hover over a function name in Positron to see its documentation, too.
+
+::: tip
+Search tip: include the package **and version**, e.g. "pandas 3 groupby". Python libraries change, and old StackOverflow answers (and AI tools trained on them) can be out of date.
+:::
+
+## Demo 1: Check your setup
+
+**Practice file, Demo 1.** Run this chunk. Every line should run without an error.
+
+```{python}
+import sys
+import numpy as np
+import pandas as pd
+import matplotlib
+
+print("Python    ", sys.version.split()[0])
+print("NumPy     ", np.__version__)
+print("pandas    ", pd.__version__)
+print("matplotlib", matplotlib.__version__)
+```
+
+::: notes
+pandas should be 3.x. If a student sees ModuleNotFoundError, they should run %pip install <name> in the Positron Python console (not in the document), then restart the Python session. If it installed but still isn't found, check the interpreter picker: Positron may be using a different Python.
+:::
+
+# Values and types {.section-divider .middle}
+
+## Assignment and naming
+
+```{python}
+n_penguins = 344        # = instead of <-
+species = "Adelie"      # single or double quotes both work
+n_penguins
+```
+
+- Python is case-sensitive: `Species` and `species` are different names
+- Use `snake_case`. A dot in a name means something else in Python: `my.data` means "the `data` attribute of `my`"
+- In a chunk, only the **last** line prints automatically (more on the next slide)
+
+## `print(x)` vs. just `x`
+
+::: columns
+::: {.column width="50%"}
+**Only the last line shows itself**
+
+```{python}
+a_num = 5
+a_num          # not shown!
+a_word = "Adelie"
+a_word         # shown: last line
+```
+:::
+::: {.column width="50%"}
+**`print()` shows anything, anywhere**
+
+```{python}
+print(a_num)
+print(a_word)
+```
+:::
+:::
+
+R prints *every* bare line in a chunk. Python only shows the **last** one.
+
+. . .
+
+| | Bare name (last line) | `print()` |
+|---|---|---|
+| Looks like | text shown in quotes: `'Adelie'` | plain: `Adelie` |
+| Works inside loops, functions, `.py` scripts | No | Yes |
+| Best for | a quick look; DataFrames (next week: a nice table) | several outputs, clean output |
+
+## Basic types
+
+| R | Python | Example |
+|---|---|---|
+| numeric (integer) | `int` | `344` |
+| numeric (double) | `float` | `3.75` |
+| character | `str` | `"Adelie"` |
+| logical | `bool` | `True`, `False` *(capitalized!)* |
+| `NULL` | `None` | `None` |
+
+```{python}
+type(3.75), type("Adelie"), type(True)
+```
+
+`type()` is Python's `class()`. Separate several values with commas and Python shows them together in parentheses: a handy way to see a few things at once.
+
+## ⏸ Pause & predict: arithmetic
+
+::: pause
+What does each line return? Pause and write down your guesses.
+:::
+
+```{python}
+#| eval: false
+7 / 2
+2 ** 3
+2 ^ 3
+```
+
+. . .
+
+```{python}
+print(7 / 2, 2 ** 3, 2 ^ 3)
+```
+
+- **Powers use `**`.** `2 ^ 3` is a *bitwise* operation that runs without error and gives the wrong answer. (Remember Week 9: code that runs is not necessarily correct.)
+
+## Strings and f-strings
+
+```{python}
+species = "Adelie"
+n = 152
+f"There are {n} {species} penguins."
+```
+
+An **f-string** (note the `f` before the quote) fills in `{ }` with values, like `glue()` or `paste0()`.
+
+```{python}
+mean_mass = 4201.754386               # imagine this was computed from data
+f"Mean mass: {mean_mass:.1f} g"        # :.1f = round to 1 decimal place
+```
+
+## Logic: words, not symbols
+
+| R | Python |
+|---|---|
+| `TRUE`, `FALSE` | `True`, `False` |
+| `&&`, <code>&#124;&#124;</code>, `!` | `and`, `or`, `not` |
+| `==`, `!=`, `<`, `>=` | same |
+
+```{python}
+mass = 4500
+mass > 4000 and species == "Adelie"
+```
+
+::: tip
+`and`/`or` compare **single** True/False values. Next week, comparing whole columns will need `&` and `|` instead. File that away.
+:::
+
+## Converting types
+
+```{python}
+int("3") + 1
+```
+
+```{python}
+#| error: true
+int("three")
+```
+
+. . .
+
+Remember `number_of_cats` stored as character? Same problem, same fix: convert explicitly, and expect an error when a value can't be converted. Python **errors loudly** where R often gives a quiet `NA` with a warning.
+
+# Containers and indexing {.section-divider .middle}
+
+## This week is the "base R" of Python
+
+Plain Python has no tidyverse, so this week we're back to square brackets. **Next week, pandas method chains bring back the tidyverse feel.**
+
+You've used base R indexing more recently than you might think:
+
+```r
+iqr <- q[2] - q[1]                       # Week 9, is_outlier(): 2nd and 1st quantiles
+tx_list[[i]] <- read_csv(files[i])       # Week 9, the for loop: i-th file
+mean(mpg$hwy)                            # all semester: a column by name
+```
+
+. . .
+
+Python uses the same ideas, with brackets for all of them. And the brackets you learn today are exactly how you'll grab columns and filter rows in pandas next week.
+
+## Containers: a rough map from R
+
+| R | Python | Notes |
+|---|---|---|
+| `c(1, 2, 3)` | `[1, 2, 3]` (list) | Lists can mix types. *Not* a vector (more soon) |
+| `c(1, 2, 3)` | `np.array([1, 2, 3])` | This is the real vector |
+| `list(a = 1, b = "x")` | `{"a": 1, "b": "x"}` (dict) | Look things up by name |
+| tibble / data.frame | `pd.DataFrame` | Next week! |
+
+## Lists
+
+```{python}
+temps = [55, 61, 58, 70, 64]
+len(temps)
+```
+
+```{python}
+temps.append(67)         # a method that changes temps in place
+temps
+```
+
+```{python}
+mixed = [1, "two", 3.0, True]   # allowed, but usually a bad idea for data
+mixed
+```
+
+## Python counts from 0
+
+```{=html}
+<table class="idx">
+<tr class="pos"><td class="lab">index</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+<tr class="vals"><td class="lab">x</td><td>10</td><td>20</td><td>30</td><td>40</td><td>50</td></tr>
+<tr class="neg"><td class="lab">negative index</td><td>-5</td><td>-4</td><td>-3</td><td>-2</td><td>-1</td></tr>
+</table>
+```
+
+```{python}
+x = [10, 20, 30, 40, 50]
+x[0], x[1], x[-1]
+```
+
+- `x[0]` is the **first** element (R: `x[1]`)
+- Negative indices count from the end: `x[-1]` is the last element
+- In R, `x[-1]` means "drop the first element." Same symbols, very different meaning!
+
+## Slicing: start is in, stop is out
+
+`x[start:stop]` takes elements from `start` up to **but not including** `stop`.
+
+```{python}
+x = [10, 20, 30, 40, 50]
+x[1:3]
+```
+
+. . .
+
+Think of the slice numbers as **fence posts between elements**:
+
+```{=html}
+<table class="idx">
+<tr class="pos"><td>0</td><td></td><td>1</td><td></td><td>2</td><td></td><td>3</td><td></td><td>4</td><td></td><td>5</td></tr>
+<tr class="vals"><td style="background:transparent;border:none"></td><td>10</td><td style="background:transparent;border:none"></td><td>20</td><td style="background:transparent;border:none"></td><td>30</td><td style="background:transparent;border:none"></td><td>40</td><td style="background:transparent;border:none"></td><td>50</td><td style="background:transparent;border:none"></td></tr>
+</table>
+```
+
+`x[1:3]` takes everything between post 1 and post 3: `[20, 30]`. And `x[a:b]` always has `b - a` elements.
+
+## Slicing shortcuts
+
+```{python}
+x = [10, 20, 30, 40, 50]
+x[:2]      # first 2
+```
+
+```{python}
+x[2:]      # everything from index 2 on
+```
+
+```{python}
+x[-2:]     # last 2
+```
+
+## Slicing with a step (good to know)
+
+**The core you'll use constantly:** `x[0]`, `x[-1]`, `x[:n]`, `x[-n:]`. This slide is a bonus.
+
+The full form is **`x[start:stop:step]`**. Leave any part blank to use its default (beginning, end, step of 1).
+
+```{python}
+x[::2]      # every 2nd element, starting at index 0
+```
+
+```{python}
+x[1::2]     # every 2nd element, starting at index 1
+```
+
+```{python}
+x[::-1]     # step of -1: reversed
+```
+
+R equivalent of `x[1::2]`: `x[seq(2, length(x), by = 2)]`
+
+## ⏸ Pause & predict: indexing
+
+::: pause
+`x = [10, 20, 30, 40, 50]`. What does each return?
+:::
+
+```{python}
+#| eval: false
+x[3]
+x[1:4]
+x[:2] + x[-2:]
+x[5]
+```
+
+. . .
+
+```{python}
+print(x[3], x[1:4], x[:2] + x[-2:])
+```
+
+```{python}
+#| error: true
+x[5]
+```
+
+`+` **joins** lists. And asking for an index that doesn't exist is an **error** (R would quietly return `NA`).
+
+## Strings are sequences, too
+
+```{python}
+school = "Villanova"
+school[0], school[:4], school[-4:]
+```
+
+Same indexing rules for lists, strings, and (next week) rows of a DataFrame.
+
+## Your turn: slicing
+
+::: your-turn
+**Pause the video. Practice file, Your turn 1** (about 3 minutes).
+
+```{python}
+months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+```
+
+1. Get `"Mar"`. 
+2. Get the last three months. 
+3. Get the fall semester, `"Aug"` through `"Dec"`. 
+4. Get every third month starting with `"Jan"`.
+
+**Stretch:** get every other month starting with `"Feb"`, then every other month going *backwards* from `"Dec"`.
+**Experienced:** predict `months[-3:-1]` and `months[10:100]` before running.
+:::
+
+## Your turn 1: one solution
+
+```{python}
+months[2]
+```
+
+```{python}
+months[-3:]
+```
+
+```{python}
+months[7:12]      # or months[7:]; Aug is index 7
+```
+
+```{python}
+months[::3]
+```
+
+Stretch: `months[1::2]` and `months[::-2]`. Experienced: `months[-3:-1]` gives `['Oct', 'Nov']` (stop excluded), and `months[10:100]` gives `['Nov', 'Dec']`: slices past the end don't error, single indices do.
+
+## Dictionaries: look up by name
+
+A **dict** holds `key: value` pairs. The closest R analog is a named list.
+
+A dict of equal-length lists is a common way to hold **columns of data** (remember `scores` from R HW 06?):
+
+```{python}
+scores = {"student": ["S1", "S2", "S3", "S4"],
+          "math":    [90, 85, 88, 95],
+          "english": [92, 80, 85, 74]}
+scores["math"]                   # look up a "column" by name
+```
+
+```{python}
+scores["math"][0]                # first student's math score
+```
+
+## Changing a dict
+
+```{python}
+scores["math"] = [91, 85, 88, 95]          # key exists → replace its value
+scores["science"] = [78, 91, 83, 88]       # key is new → add a key-value pair
+scores.keys()
+```
+
+```{python}
+#| error: true
+scores["history"]                          # this key doesn't exist
+```
+
+A missing key is an **error** (R's `my_list$history` quietly returns `NULL`).
+
+## Same idea, three dialects
+
+```text
+# Get a column
+scores$math                    # R (base)
+scores["math"]                 # Python, today
+df["math"]                     # pandas, next week
+
+# Replace or add a column
+scores$science <- c(...)       # R (base)
+scores["science"] = [...]      # Python, today
+df["science"] = [...]          # pandas, next week
+```
+
+Today's dict brackets are next week's DataFrame brackets.
+
+## Demo 2: from dict to DataFrame
+
+**Practice file, Demo 2.** Follow along.
+
+```{python}
+import pandas as pd
+pd.DataFrame(scores)
+```
+
+Each key became a column name; each list became a column. **This is how you build a small DataFrame by hand** (like `tibble()` in R), and a preview of next week.
+
+::: notes
+Point out the 0-based row labels on the DataFrame: Python counts from 0 here too.
+:::
+
+## Sneak peek at Week 14: containers inside containers
+
+Data from websites (called **JSON**) is built from dicts and lists nested inside each other. How to read it: **`{ }` = dict** (look up by name), **`[ ]` = list** (look up by position).
+
+```{python}
+forecast = {
+    "city": "Philadelphia",                  # a string
+    "days": [                                # a list...
+        {"day": 1, "high": 55},              # ...of dicts, one per day
+        {"day": 2, "high": 58},
+    ],
+}
+```
+
+. . .
+
+Dig in one step at a time, left to right:
+
+```{python}
+forecast["days"]              # the list of days
+```
+
+```{python}
+forecast["days"][1]           # 2nd item in that list: day 2's dict
+```
+
+```{python}
+forecast["days"][1]["high"]   # the "high" inside it
+```
+
+# Names and mutability {.section-divider .middle}
+
+## ⏸ Pause & predict: the most important slide today
+
+::: pause
+What does `print(a)` show?
+:::
+
+```{python}
+#| eval: false
+a = [1, 2, 3]
+b = a
+b.append(4)
+print(a)
+```
+
+. . .
+
+```{python}
+#| echo: false
+a = [1, 2, 3]
+b = a
+b.append(4)
+print(a)
+```
+
+In R, `b <- a` makes (effectively) a copy, so changing `b` leaves `a` alone. **In Python, `b = a` makes a second name for the same object.**
+
+## Names are sticky notes
+
+```{=html}
+<div class="names-demo">
+  <div class="labels"><span class="sticky">a</span><span class="sticky">b</span></div>
+  <span class="arrow">&#8594;</span>
+  <span class="obj">[1, 2, 3, 4]</span>
+</div>
+```
+
+- `b = a` sticks a second note on the **same** list
+- `b.append(4)` changes the list itself (it **mutates** it), so both names see the change
+- R's model is "copy-on-modify": modifying `b` quietly creates a new copy for `b`
+
+## If you want a copy, ask for one
+
+```{python}
+a = [1, 2, 3]
+b = a.copy()       # or list(a)
+b.append(4)
+print(a, b)
+```
+
+```{python}
+a is b             # same object?
+```
+
+## Not everything can be mutated
+
+Numbers and strings are **immutable**. You can't change them, only move the sticky note to a new value.
+
+```{python}
+x = 5
+y = x
+y = y + 1          # makes a NEW number and moves the "y" note to it
+print(x, y)
+```
+
+| Mutable (can change in place) | Immutable |
+|---|---|
+| list, dict, NumPy array, DataFrame | int, float, str, bool |
+
+## Why this matters: functions
+
+```{python}
+def add_total(values):
+    values.append(sum(values))
+    return values
+
+sales = [10, 20, 30]
+with_total = add_total(sales)
+sales
+```
+
+The function quietly changed `sales`. An R function would have worked on a copy.
+
+# NumPy: vectors, Python-style {.section-divider .middle}
+
+## ⏸ Pause & predict: lists aren't vectors
+
+::: pause
+In R, `c(1, 2, 3) * 2` gives `2 4 6`. What do these give in Python?
+:::
+
+```{python}
+#| eval: false
+[1, 2, 3] * 2
+[1, 2, 3] + [4, 5, 6]
+[1, 2, 3] + 1
+```
+
+. . .
+
+```{python}
+print([1, 2, 3] * 2, [1, 2, 3] + [4, 5, 6])
+```
+
+```{python}
+#| error: true
+[1, 2, 3] + 1
+```
+
+Lists are general containers, not math objects. `*` repeats and `+` joins.
+
+## NumPy arrays: the R vector you know
+
+```{python}
+import numpy as np
+v = np.array([1, 2, 3])
+v * 2
+```
+
+```{python}
+v + np.array([4, 5, 6])
+```
+
+```{python}
+np.sqrt(v) + 1
+```
+
+Element-wise math, just like R. Under the hood, **pandas columns are NumPy-style arrays**, so this is what makes next week work.
+
+## Where's `log()`?
+
+In R, math functions like `log()`, `sqrt()`, and `exp()` are **built in**. In Python, they need an import.
+
+```{python}
+#| error: true
+log(7)
+```
+
+::: columns
+::: {.column width="50%"}
+**`math`** comes with Python, but works on **one number** at a time
+
+```{python}
+import math
+math.log(7)
+```
+:::
+::: {.column width="50%"}
+**NumPy** works on whole arrays, like R. **This is the one we'll use.**
+
+```{python}
+np.log(np.array([1, 7, 20]))
+```
+:::
+:::
+
+Only a handful of basics are built in with no import: `abs()`, `round()`, `sum()`, `min()`, `max()`, `len()`.
+
+## Arrays have one type
+
+Like R vectors, an array holds one type. Mix types and NumPy converts everything:
+
+```{python}
+np.array([1, 2, "three"])
+```
+
+Like `c(1, 2, "three")` in R: now everything is a string.
+
+## Summaries: functions or methods
+
+```{python}
+mass = np.array([3750, 3800, 3250, 3450, 3650, 4675, 3200])
+np.mean(mass), mass.mean(), mass.max(), mass.sum()
+```
+
+`np.float64(3682.14...)` is NumPy labeling its own number type. Wrap in `print()` for plain output.
+
+. . .
+
+::: pause
+**⏸ Pause & predict:** will `mass.std()` match R's `sd(mass)`?
+:::
+
+. . .
+
+```{python}
+print(mass.std(), mass.std(ddof=1))
+```
+
+NumPy's default divides by $n$. R's `sd()` divides by $n-1$. For a **sample** SD, use `ddof=1`. (pandas uses $n-1$ by default. Yes, it's inconsistent.)
+
+`ddof` = "delta degrees of freedom": NumPy divides by $n - \text{ddof}$. So `ddof=0` → $n$, `ddof=1` → $n - 1$.
+
+## Logical arrays and masks
+
+```{python}
+mass
+```
+
+```{python}
+mass > 3700
+```
+
+```{python}
+mass[mass > 3700]      # keep only the TRUE positions, like R
+```
+
+```{python}
+(mass > 3700).mean()   # proportion True: same trick as R's mean(x > 3700)
+```
+
+Next week, this is how you filter rows of a DataFrame.
+
+## Missing values
+
+| R | Python |
+|---|---|
+| `NA` (missing value in a vector) | `np.nan` |
+| `NULL` (nothing at all) | `None` |
+| `mean(x, na.rm = TRUE)` | `np.nanmean(x)` |
+| `is.na(x)` | `np.isnan(x)` |
+| `x[!is.na(x)]` | `x[~np.isnan(x)]` |
+
+```{python}
+sales = np.array([95, 142, np.nan, 170])
+print(np.mean(sales), np.nanmean(sales), np.isnan(sales).mean())
+```
+
+```{python}
+sales[~np.isnan(sales)]     # keep the values that are NOT missing
+```
+
+For arrays, **`~` means "not"** (R's `!`). It flips every True to False and vice versa.
+
+## Sequences
+
+```{python}
+np.arange(1, 6)          # like 1:5 -- the stop value is excluded!
+```
+
+```{python}
+list(range(1, 6))        # plain Python version (no NumPy needed)
+```
+
+End-exclusive again: **start is in, stop is out.**
+
+```{python}
+np.linspace(0, 1, 5)     # like seq(0, 1, length.out = 5)
+```
+
+`linspace` = "**lin**early **spaced**": 5 evenly spaced numbers from 0 to 1. The one exception: **both ends are included**.
+
+## Demo 3: `standardize()`, again
+
+**Practice file, Demo 3.** Week 9's function, in Python:
+
+::: columns
+::: {.column width="50%"}
+**R**
+
+```r
+standardize <- function(x) {
+  (x - mean(x, na.rm = TRUE)) /
+    sd(x, na.rm = TRUE)
+}
+```
+:::
+::: {.column width="50%"}
+**Python**
+
+```{python}
+def standardize(x):
+    x = np.asarray(x, dtype=float)
+    return (x - np.nanmean(x)) / np.nanstd(x, ddof=1)
+```
+:::
+:::
+
+```{python}
+standardize([1, 2, 3, 4, 5])
+```
+
+Same answer as R in Week 9: `-1.26, -0.63, 0, 0.63, 1.26`. Test where you know the answer!
+
+::: notes
+Show what happens with ddof left out: -1.41 instead of -1.26. A good reminder that matching a known answer catches silent bugs.
+:::
+
+## Your turn: NumPy
+
+::: your-turn
+**Pause the video. Practice file, Your turn 2** (about 4 minutes).
+
+```{python}
+bill = np.array([39.1, 39.5, 40.3, np.nan, 36.7, 39.3, 38.9, 39.2, 34.1, 42.0])
+```
+
+1. How many values are missing? What proportion?
+2. What is the mean bill length, ignoring missing values?
+3. Which bill lengths are longer than 40 mm? What proportion of the non-missing values is that?
+
+**Stretch:** use `standardize(bill)`. What happened to the `nan`? **Experienced:** do step 3 without dropping `nan` first. Why does `bill > 40` still work?
+:::
+
+## Your turn 2: one solution
+
+```{python}
+print(np.isnan(bill).sum(), np.isnan(bill).mean())
+```
+
+```{python}
+np.nanmean(bill)
+```
+
+```{python}
+observed = bill[~np.isnan(bill)]      # ~ means "not" for arrays
+print(observed[observed > 40], (observed > 40).mean())
+```
+
+## Watch out: `nan` in comparisons
+
+What if we skip dropping the missing value?
+
+```{python}
+bill > 40
+```
+
+```{python}
+(bill > 40).mean()      # 2 out of 10, not 2 out of 9
+```
+
+. . .
+
+| | R | Python (NumPy) |
+|---|---|---|
+| Missing value in `bill > 40` | `NA` | `False` |
+| `mean(bill > 40)` | `NA`: forces you to decide (`na.rm = TRUE`) | `0.2`: quietly counts missing as "not over 40" |
+
+R makes you deal with missing values. NumPy doesn't, so **decide what you mean** (all penguins, or only the ones measured?) and drop `nan` yourself when needed.
+
+# Functions, loops, and comprehensions {.section-divider .middle}
+
+## Anatomy of a function
+
+```{python}
+def prop_missing(x, digits=2):
+    """Proportion of values in x that are missing (nan)."""
+    x = np.asarray(x, dtype=float)
+    return float(round(np.isnan(x).mean(), digits))
+```
+
+- `def` name `(arguments):` then an **indented** body. Indentation *is* the syntax (R uses `{ }`)
+- `digits=2` is a default, just like R
+- The `"""docstring"""` documents it: try `help(prop_missing)`
+- `return` is **required**. Python does not return the last value automatically
+
+## ⏸ Pause & predict: the missing `return`
+
+::: pause
+What does `result` contain?
+:::
+
+```{python}
+def double(x):
+    x * 2
+
+result = double(5)
+```
+
+. . .
+
+```{python}
+print(result)
+```
+
+No `return`, so the function returns `None`. No error, no warning. In R, the last value would have been returned.
+
+## Indentation is syntax
+
+```{python}
+#| error: true
+def double(x):
+return x * 2
+```
+
+Positron indents for you after a `:`. Use **4 spaces** per level, never a mix of tabs and spaces.
+
+::: tip
+**Check your setting:** the status bar at the bottom right of Positron should say **"Spaces: 4"**. If it says "Spaces: 2" or "Tab Size," click it → *Indent Using Spaces* → **4**. To make it permanent: Settings (Cmd/Ctrl + ,) → search **"tab size"** → set to **4**.
+:::
+
+(2 spaces technically works if you're consistent, but 4 is the Python standard, and mixing styles when you paste code from elsewhere causes errors you can't see.)
+
+## Fail loudly
+
+Week 9: "a clear error now is better than a quiet `NA` three steps later."
+
+::: columns
+::: {.column width="50%"}
+**R**
+
+```r
+if (length(x) < 2) {
+  stop("Need at least 2 values.")
+}
+```
+:::
+::: {.column width="50%"}
+**Python**
+
+```python
+if len(x) < 2:
+    raise ValueError("Need at least 2 values.")
+```
+:::
+:::
+
+## `if` / `elif` / `else`
+
+`if` / `elif` / `else` work like R's `if` / `else if` / `else`, with a colon and indentation instead of `( )` and `{ }`:
+
+A data-quality check (remember Week 9's fake survey with negative ages?):
+
+```{python}
+def check_age(age):
+    if np.isnan(age):
+        return "missing"
+    elif age < 0 or age > 110:
+        return "implausible"
+    else:
+        return "ok"
+
+print(check_age(42), check_age(-3), check_age(np.nan))
+```
+
+## `for` loops
+
+Python loops over the **items themselves**. No index needed:
+
+```{python}
+cities = ["Austin", "Dallas", "Houston"]
+for city in cities:
+    print(f"Making a plot for {city}")
+```
+
+Looping over a **dict**? `.items()` hands you each key and its value as a pair:
+
+```{python}
+for col, values in scores.items():
+    print(col, "->", values)
+```
+
+`col, values` gives each half of the pair its own name. (Related dict methods: `.keys()` for just the keys, `.values()` for just the values.)
+
+## The loop recipe from Week 9
+
+Every loop needs an **output container**, a **sequence**, and a **body**.
+
+```{python}
+squares = []                 # 1. output container
+for i in range(1, 6):        # 2. sequence: 1, 2, 3, 4, 5
+    squares.append(i ** 2)   # 3. body
+squares
+```
+
+## List comprehensions: Python's `map()`
+
+The same loop, in one line:
+
+```{python}
+[i ** 2 for i in range(1, 6)]
+```
+
+Read it aloud: "*`i` squared, for each `i` in 1 to 5.*"
+
+| R | Python |
+|---|---|
+| `map(1:5, f)` | `[f(i) for i in range(1, 6)]` |
+| `map(x, \(v) v^2)` | `[v ** 2 for v in x]` |
+
+## Dict comprehensions
+
+Build a dict the same way: `{key: value for ...}`
+
+```{python}
+cities = ["Austin", "Dallas", "Houston"]
+{city: len(city) for city in cities}
+```
+
+## Demo 4: a missing-data audit
+
+**Practice file, Demo 4.** Week 9's Practice 1: `summarise(across(everything(), prop_missing))`.
+
+```{python}
+tx = {
+    "city":   np.array([1, 1, 1, 2, 2, 2], dtype=float),   # coded city id
+    "sales":  np.array([95, np.nan, 172, 210, np.nan, np.nan]),
+    "volume": np.array([11.4, 16.9, np.nan, 24.1, 26.3, 30.0]),
+    "median": np.array([105.6, 102.0, 112.0, 119.5, 121.0, 118.4]),
+}
+
+{col: prop_missing(values) for col, values in tx.items()}
+```
+
+. . .
+
+A dict of equal-length arrays, one per column... that's basically a **data frame**. Next week, pandas gives this a name and a lot of tools.
+
+## Anonymous functions: `lambda`
+
+R's `\(x) x^2` is Python's `lambda x: x ** 2`:
+
+```{python}
+squared = lambda x: x ** 2
+squared(4)
+```
+
+You'll mostly see `lambda` inside other functions. Next week: `.assign(ratio=lambda d: d["a"] / d["b"])`.
+
+## Your turn: write a function
+
+::: your-turn
+**Pause the video. Practice file, Your turn 3** (about 5 minutes).
+
+Write `summarize_num(x)` that returns a **dict** with the number of values `n`, number missing `n_missing`, the `mean`, and the sample `sd` (ignoring missing values).
+
+Test it on `[2, 4, 4, 4, 5, 5, 7, 9]`. You should get a mean of 5 and an SD of about 2.14.
+
+**Stretch:** raise a `ValueError` if there are fewer than 2 non-missing values. **Experienced:** use a dict comprehension to apply it to every column of `tx`.
+:::
+
+## Your turn 3: one solution
+
+```{python}
+def summarize_num(x):
+    """n, number missing, mean, and sample SD of x."""
+    x = np.asarray(x, dtype=float)
+    n_missing = int(np.isnan(x).sum())
+    if len(x) - n_missing < 2:
+        raise ValueError("Need at least 2 non-missing values.")
+    return {"n": len(x), "n_missing": n_missing,
+            "mean": float(np.nanmean(x)), "sd": float(np.nanstd(x, ddof=1))}
+
+summarize_num([2, 4, 4, 4, 5, 5, 7, 9])
+```
+
+```{python}
+{col: summarize_num(values)["mean"] for col, values in tx.items()}
+```
+
+# Randomness and simulation {.section-divider .middle}
+
+## Random numbers: make a generator
+
+R uses a global seed. Modern NumPy uses a **random number generator object** that you create with a seed:
+
+::: columns
+::: {.column width="50%"}
+**R**
+
+```r
+set.seed(7500)
+sample(1:100, 3)
+```
+:::
+::: {.column width="50%"}
+**Python**
+
+```{python}
+rng = np.random.default_rng(7500)
+rng.choice(np.arange(1, 101), 3, replace=False)
+```
+:::
+:::
+
+. . .
+
+- Then draw from it with **methods**: `rng.choice()`, `rng.normal()`, ...
+- Same seed → same numbers in Python, but not the same numbers as R (different generators)
+- Older tutorials use `np.random.seed()`. That still works but is the legacy approach
+
+## `sample()` in Python
+
+```{python}
+rng = np.random.default_rng(7500)
+reviewers = ["Ana", "Ben", "Cal", "Dee", "Eli", "Fay"]
+rng.choice(reviewers, 2, replace=False)        # pick 2, no repeats
+```
+
+```{python}
+rng.permutation(reviewers)                      # random order
+```
+
+```{python}
+rng.choice(["bronze", "silver", "gold"], size=8, p=[0.6, 0.3, 0.1])
+```
+
+::: tip
+**Gotcha:** R's `sample()` defaults to *without* replacement. `rng.choice()` defaults to **with** replacement. Always write `replace=` explicitly.
+:::
+
+## Drawing from distributions
+
+| R | NumPy |
+|---|---|
+| `rnorm(5, mean = 3, sd = 0.8)` | `rng.normal(3, 0.8, size=5)` |
+| `rbinom(5, size = 20, prob = 0.1)` | `rng.binomial(20, 0.1, size=5)` |
+| `rpois(5, lambda = 12)` | `rng.poisson(12, size=5)` |
+| `runif(5)` | `rng.uniform(size=5)` |
+
+```{python}
+rng.normal(3, 0.8, size=5)
+```
+
+## Demo 5: the overbooked flight
+
+**Practice file, Demo 5.** Week 9's simulation, in Python. 100 seats, 105 tickets sold, each passenger shows up with probability 0.95. How often is someone bumped?
+
+```{python}
+rng = np.random.default_rng(7500)
+
+def one_flight(tickets=105, seats=100, p_show=0.95):
+    showed_up = rng.binomial(tickets, p_show)
+    return showed_up > seats          # True if someone is bumped
+
+bumped = [one_flight() for _ in range(10_000)]   # R: replicate(10000, one_flight())
+np.mean(bumped)
+```
+
+About 0.39, same as our R simulation in Week 9. Same three steps: **a function for one run → repeat it → summarize.**
+
+`_` is the conventional name for a loop variable you don't use. `10_000` is just `10000`, easier to read.
+
+# Wrap-up {.section-divider .middle}
+
+## R → Python cheat sheet
+
+| R | Python |
+|---|---|
+| `library(pkg)` | `import pkg as alias` |
+| `x <- 5` | `x = 5` |
+| `c(1, 2, 3)` | `np.array([1, 2, 3])` (or a list) |
+| `list(a = 1, b = "x")` | `{"a": 1, "b": "x"}` |
+| `x[1]` (first) / `x[2:3]` | `x[0]` / `x[1:3]` |
+| `NA` / `NULL` | `np.nan` / `None` |
+| `function(x) { ... }` | `def f(x):` + indented body + `return` |
+| `map(1:5, f)` | `[f(i) for i in range(1, 6)]` |
+| `\(x) x^2` | `lambda x: x ** 2` |
+| `set.seed(1); sample(x, 2)` | `rng = np.random.default_rng(1)`; `rng.choice(x, 2, replace=False)` |
+| `rnorm(5, 3, 0.8)` | `rng.normal(3, 0.8, size=5)` |
+
+## Today's gotchas
+
+1. Counting starts at **0**, and slices exclude the stop value
+2. Powers are `**`, not `^`
+3. `b = a` doesn't copy a list, dict, or array. Use `.copy()`
+4. Lists aren't vectors: use NumPy arrays for math
+5. `np.std()` divides by $n$; use `ddof=1` for a sample SD
+6. Functions need an explicit `return`
+7. `rng.choice()` samples **with** replacement unless told otherwise
+8. Indentation is part of the syntax
+
+Every one of these runs (or fails) differently than you'd expect from R. When something looks off, check this list first.
+
+## Looking ahead: pandas
+
+```{python}
+#| eval: false
+import pandas as pd
+
+penguins = pd.read_csv("data/penguins.csv")
+
+(penguins
+ .query("species == 'Adelie'")
+ .groupby("island")
+ .agg(mean_mass=("body_mass_g", "mean")))
+```
+
+Can you already read it? *Take penguins, then keep the Adelie rows, then group by island, then summarize mean mass.* That's a dplyr pipeline in Python clothing.
+
+## To do
+
+- **R Data Challenge** due today (Tue 6:15pm)
+- **Python HW 01** due next Tuesday, Nov 10, 6:15pm (instructions on Brightspace)
+- **Annotations 08** due Sunday 11:59pm
+- **Exit ticket** on the Brightspace HELP Forum: *One R idea I saw again; one Python difference that surprised me.*
+
+::: question
+**Already know Python?** Reply to the exit ticket thread if you've used polars, DuckDB, or Jupyter in a job. I'd love your help in the "experienced lane" over the next few weeks.
+:::

@@ -444,6 +444,15 @@ sheets <- readxl::excel_sheets(path)     # "East" "North" "South" ...
 budgets <- sheets |>
   map(\(s) readxl::read_excel(path, sheet = s)) |> #\(s) is shortcut for function(s)
   bind_rows()
+
+# alternative version 1
+sheets |> map(readxl::read_excel, path = path) |> bind_rows()
+
+# alternative version 2
+sheets |>
+  set_names() |>
+  map(\(s) readxl::read_excel(path, sheet = s)) |>
+  bind_rows(.id = "sheet")
 ```
 
 ---

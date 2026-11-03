@@ -1,0 +1,69 @@
+/* Extra classes for the Python unit (load after stat7500-slides.css) */
+
+/* "Pause the video" callout for recorded lectures */
+.reveal .pause {
+  box-sizing: border-box;
+  background: #e9d96826;
+  border-left: 5px solid var(--yellow);
+  color: white;
+  margin: 6px 0;
+  padding: 3px 10px;
+}
+
+/* Index diagram: positions and fence posts */
+.reveal table.idx {
+  border-collapse: collapse;
+  margin: 0.4em auto;
+  font-family: "Source Code Pro", monospace;
+}
+.reveal table.idx td {
+  border: none;
+  padding: 6px 18px;
+  text-align: center;
+}
+.reveal table.idx tr.vals td {
+  background: var(--beige);
+  color: var(--dark-blue);
+  border: 2px solid var(--dark-blue);
+  font-size: 1.1em;
+  font-weight: 600;
+}
+.reveal table.idx tr.pos td { color: var(--light-blue); }
+.reveal table.idx tr.neg td { color: var(--pink); }
+.reveal table.idx td.lab {
+  background: transparent !important;
+  border: none !important;
+  color: var(--gray) !important;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 0.8em;
+  text-align: right;
+}
+
+/* Sticky-note diagram for names vs. objects */
+.reveal .names-demo {
+  align-items: center;
+  display: flex;
+  gap: 1.2em;
+  justify-content: center;
+  margin: 0.5em 0;
+}
+.reveal .names-demo .labels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+.reveal .sticky {
+  background: var(--yellow);
+  color: var(--dark-blue);
+  font-family: "Source Code Pro", monospace;
+  font-weight: 600;
+  padding: 4px 16px;
+}
+.reveal .arrow { color: var(--yellow); font-size: 1.6em; }
+.reveal .obj {
+  background: var(--beige);
+  border-radius: 6px;
+  color: var(--dark-blue);
+  font-family: "Source Code Pro", monospace;
+  padding: 10px 22px;
+}
