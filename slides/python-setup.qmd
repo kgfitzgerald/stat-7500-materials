@@ -1,0 +1,137 @@
+---
+title: "Python Setup for STAT 7500"
+subtitle: "Complete before watching the Week 10 video"
+format:
+  html:
+    toc: true
+    embed-resources: true
+---
+
+::: callout-important
+## Before you press play on the Week 10 video: Steps 1 and 2
+
+**Install Python and Positron (Steps 1–2)** before watching. Plan for about 20 minutes, mostly waiting for downloads.
+
+**Steps 3–5 we'll do together in the video**, so you can watch each click. They're written out here too, as a reference if you get stuck or want to get ahead.
+
+If you get stuck, post a screenshot of the error on the **HELP Forum** or come to student hours. Don't let setup keep you from watching the video: see [Backup plan](#backup-plan) at the bottom.
+:::
+
+You'll install two things, the same way you installed R and RStudio at the start of the semester:
+
+| | R world | Python world |
+|---|---|---|
+| The language (the engine) | R | **Python** |
+| The IDE (the dashboard) | RStudio | **Positron** (made by Posit, the RStudio company) |
+
+Positron runs **both** R and Python and renders Quarto documents, so you can keep using it for R too if you like it.
+
+# Step 1: Install Python 3.14
+
+1. Go to [python.org/downloads](https://www.python.org/downloads/).
+2. Download **Python 3.14** (the latest 3.14.x version). The big yellow button probably offers **3.15**, which came out in October 2026. Instead, scroll down to "Looking for a specific release?" and choose the latest **3.14**. That matches the version in the class videos, and a few packages we'll use later in the unit may not fully support 3.15 yet. (Already installed 3.15? It will work for Week 10; just mention it if you hit an install error later.)
+3. Run the installer.
+
+::: {.panel-tabset}
+## Mac
+
+- Click through the installer with the default options.
+- When it finishes, a Finder window opens to **Applications → Python 3.14**. Double-click **`Install Certificates.command`**. A Terminal window will run briefly; you can close it when it says it's done. (This prevents download errors later in the unit.)
+
+## Windows
+
+- **On the first installer screen, check the box "Add python.exe to PATH"** before clicking *Install Now*. This is the most commonly missed step.
+- If it offers to "Disable path length limit" at the end, click it.
+:::
+
+::: callout-note
+Already have Python? If it's version 3.12 or newer from python.org (or Anaconda), you can use it. Many Macs have an old built-in Python (3.9) that won't work for this class.
+:::
+
+# Step 2: Install Positron
+
+1. Go to [positron.posit.co/download.html](https://positron.posit.co/download.html).
+2. Download the installer for your computer:
+   - **Mac:** choose *Apple Silicon* (M1/M2/M3/M4 chips; most Macs from 2021 on) or *Intel*. Not sure? Apple menu → *About This Mac* → look for "Chip."
+   - **Windows:** choose **x64 → User install** (most laptops).
+3. Install it:
+   - **Mac:** open the `.dmg` and drag Positron into your **Applications** folder. The first time you open it, macOS may ask "Are you sure you want to open it?" Click *Open*.
+   - **Windows:** run the installer. Positron needs the [Microsoft Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist); if Positron won't start, install the **x64** version from that page and try again.
+
+::: callout-note
+## Steps 3–5: we'll do these together in the video
+
+Follow along in the video, or work through them here at your own pace.
+:::
+
+# Step 3: Set up Positron
+
+1. **Open your class folder:** File → **Open Folder** → choose your `STAT_7500` folder. (This is Positron's version of opening an R Project.)
+2. **Choose your Python:** click the interpreter button in the **top-right corner** of the window and choose **Python 3.14**.
+   - If you see several Pythons, pick the one from python.org. On a Mac its path contains `/Library/Frameworks/Python.framework/`; on Windows, `AppData\Local\Programs\Python\`.
+   - **Avoid** any Python labeled *System*, *Homebrew*, or with a path of `/usr/bin/python3`.
+   - Don't see Python 3.14? Press **Cmd/Ctrl + Shift + P**, type **Discover All Interpreters**, and press Enter. Still missing? Quit and reopen Positron.
+   - If Positron offers to install Python or "uv" for you, click no: we'll all use the python.org version so our setups match.
+
+A **Python console** should open at the bottom of the window, with a `>>>` prompt.
+
+3. **Choose the RStudio-style layout:** press **Cmd/Ctrl + Shift + P**, type **stacked**, and choose **Stacked Layout** (document on top, console below, Variables and Plots on the right).
+4. **Set indentation to 4 spaces:** open any `.qmd` file and look at the status bar at the bottom right. It should say **"Spaces: 4"**. If not, open Settings (**Cmd/Ctrl + ,**), search **tab size**, and set it to **4**. (In Python, indentation is part of the code.)
+
+# Step 4: Install packages
+
+Click in the **Python console** (at the bottom, *not* the Terminal tab), paste this line, and press Enter:
+
+```
+%pip install numpy pandas matplotlib jupyter
+```
+
+It will print a lot of text and may take a few minutes. When it finishes:
+
+- **Restart the Python session:** click the circular-arrow ↻ button at the top of the Console. *Always restart after installing packages.*
+
+::: callout-tip
+**Why `%pip` and not `pip`?** Your computer may have more than one Python. `%pip` (with the percent sign) always installs into the Python Positron is using right now. Plain `pip` in the Terminal often fails on Macs ("command not found") or installs into the wrong Python.
+:::
+
+# Step 5: Check your setup
+
+1. Download `week_10_practice.qmd` from the class GitHub repo and put it in your `STAT_7500` folder.
+2. Open it in Positron (it'll appear in the file list on the left).
+3. In the **Demo 1** cell, click **Run Cell** (just above the cell). You should see something like:
+
+```
+Python     3.14.x
+NumPy      2.x.x
+pandas     3.x.x
+matplotlib 3.x.x
+```
+
+4. **Render the file:** press **Cmd/Ctrl + Shift + K** (same shortcut as RStudio), or click **Preview** in the top-right of the editor. A rendered version should appear in the Viewer.
+
+✅ **If both of those work, you're all set!**
+
+# Troubleshooting
+
+Find the message you're seeing:
+
+| You see... | What it means | Fix |
+|---|---|---|
+| `zsh: command not found: pip` (or `pip` is not recognized) | You typed `pip` in the **Terminal** | Use `%pip install ...` in the **Python console** instead (Step 4). |
+| `ModuleNotFoundError: No module named 'pandas'` | The package isn't installed in the Python you're using | Run `%pip install pandas` in the Python console, then **restart** (↻). Still failing? Check the interpreter button (top right) shows **Python 3.14**. |
+| `error: externally-managed-environment` | You picked a System or Homebrew Python | Switch the interpreter (top right) to the **python.org** Python 3.14, then install again. |
+| Lots of red text mentioning `Failed building wheel` or a compiler | Your Python is too new (or too old) for the package | Install **Python 3.14** from python.org (Step 1) and select it. |
+| Render fails with `Jupyter is not available` or `Unable to locate an installed version of Python 3` | Quarto can't find Jupyter, or can't find your Python | Run `%pip install jupyter` in the console and restart. **Windows:** if it still fails, reinstall Python with **"Add python.exe to PATH"** checked. To see what Quarto finds, run `quarto check jupyter` in the **Terminal**. |
+| pandas version starts with **2** | An older pandas was already installed | Run `%pip install -U pandas` in the console, then restart. |
+| **Windows:** typing `python` in the Terminal opens the Microsoft Store | Windows' placeholder "python" | You don't need the Terminal for this class. If you do use it, type `py` instead of `python`. |
+| `Python 3.14 failed to start` or `Address already in use` | A leftover Python process from earlier | Quit Positron completely (**Cmd + Q** on Mac; close all windows on Windows) and reopen it. |
+| `SSL: CERTIFICATE_VERIFY_FAILED` (usually later, when downloading data) | **Mac:** certificates step was skipped | Applications → Python 3.14 → double-click `Install Certificates.command`. |
+
+**Still stuck?** Post on the HELP Forum with (1) a screenshot of the error, (2) Mac or Windows, and (3) what you see in the interpreter button (top right). That's almost always enough to diagnose it.
+
+# Backup plan
+
+If you can't get set up in time, don't skip the video. Use one of these to follow along, and come to student hours to fix your setup:
+
+- **Posit Cloud** ([posit.cloud](https://posit.cloud)): create a free account → *New Project* → **New Positron Project**. This runs Positron in your browser. Upload `week_10_practice.qmd` (drag it into the file list), choose Python, and do Step 4. Everything else works the same as in the video.
+- **Google Colab** ([colab.research.google.com](https://colab.research.google.com)): use the `.ipynb` version of the practice file posted on Brightspace (File → Upload notebook).
