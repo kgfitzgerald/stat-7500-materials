@@ -1363,7 +1363,7 @@ Can you already read it? *Take penguins, then keep the Adelie rows, then group b
 - **R Data Challenge** due today (Tue 6:15pm)
 - **Python HW 01** due next Tuesday, Nov 10, 6:15pm (instructions on Brightspace)
 - **Annotations 08** due Sunday 11:59pm
-- **Exit ticket** on the Brightspace HELP Forum: *One R idea I saw again; one Python difference that surprised me.*
+- **Exit ticket** on the Brightspace Discussion Board (Week 10 Python Foundations): *One R idea I saw again; one Python difference that surprised me.*
 
 ::: question
 **Already know Python?** Reply to the exit ticket thread if you've used polars, DuckDB, or Jupyter in a job. I'd love your help in the "experienced lane" over the next few weeks.
