@@ -1,0 +1,197 @@
+---
+title: "Python HW 01 - Hello Python!"
+subtitle: "Due Tuesday, Nov 10 at 6:15pm"
+format:
+  html:
+    toc: true
+    embed-resources: true
+jupyter: python3
+---
+
+::: {.callout-note appearance="minimal"}
+**Topics:** Python basics · containers & indexing · mutability · NumPy · functions · simulation
+:::
+
+# Goals
+
+The main goal of this assignment is to get comfortable writing Python by translating ideas you already know from R. The thinking is the same; the syntax is new.
+
+You will...
+
+- predict what Python code does *before* running it, and explain any surprises
+- store and summarize data with lists and dictionaries
+- use NumPy arrays for vectorized math, logical masks, and missing values
+- write functions with default arguments, docstrings, and input checks
+- redo a Week 9 simulation in Python
+
+Some of you have used Python before. Each part has optional **Stretch** and **Experienced lane** tasks. They are not required, but they're a good use of your time if the core tasks feel easy.
+
+# Getting started
+
+1. Open our class GitHub repo and download `Python_HW_01.qmd` (click "Download raw file").
+2. Place it in your `STAT_7500` folder.
+3. Open the folder in **Positron**, select a Python interpreter (top right), and open `Python_HW_01.qmd`.
+4. Change the author name in the YAML to your name and **render** the document. If it renders, you're set up.
+
+This document has all of the instructions. You will complete the assignment by adding code and text to `Python_HW_01.qmd`.
+
+::: callout-important
+**Make every answer visible in your rendered file.** Python only displays the result of the **last line** in a cell (R shows every line). Use **one cell per part** (the template already gives you separate cells), or use labeled `print()` statements when a part needs several results, e.g. `print("mean:", np.nanmean(temps_f))`. While you're working, Cmd/Ctrl + Enter on a single line shows its result in the Console.
+:::
+
+::: callout-tip
+If the document won't render because a package is missing, run `%pip install <package>` in Positron's **Python console** (not in the `.qmd`), then **restart the kernel** (the circular-arrow ↻ button in the Console) before rendering again. (In the Terminal, use `python3 -m pip install <package>` on a Mac or `py -m pip install <package>` on Windows; plain `pip` often isn't found.) If you're still stuck, check the **Troubleshooting** table and **Backup plan** in the Python Setup instructions, post on the HELP Forum, and come to student hours.
+:::
+
+We'll use this package throughout. It is already loaded at the top of your template:
+
+```{python}
+import numpy as np
+```
+
+# Part 1: Predict, then run
+
+::: callout-note
+## Exercise 1
+
+For each snippet below, **first** type your prediction of the output in your `.qmd` (in the text, not the code chunk). **Then** run the code. If your prediction was wrong, explain in one sentence why Python behaves that way. If it was right, write one sentence on what R would do differently (if anything).
+
+Your grade is for the explanations, not for the predictions, so make an honest guess before you run anything.
+:::
+
+```{python}
+#| eval: false
+# (a)
+x = [3, 6, 9, 12, 15]
+x[1:4]
+
+# (b)
+x[-2]
+
+# (c)
+s = "statistics"
+s[:4] + s[-3:]
+
+# (d)
+nums = [1, 2, 3]
+more = nums
+more[0] = 100
+nums
+
+# (e)
+[1, 2, 3] * 3
+
+# (f)
+np.array([1, 2, 3]) * 3
+
+# (g)
+def add_one(x):
+    x + 1
+
+add_one(3)
+
+# (h)
+3 ** 2 == 3 ^ 2
+```
+
+# Part 2: Containers
+
+In R HW 06 you worked with YouGov's poll of 1,500 US adults about changes in Division I college athletics. Here are the same counts, stored as a **nested dictionary**: the outer keys are age groups, and each value is another dict of opinion counts.
+
+```{python}
+survey = {
+    "18-44": {"Very positive": 78, "Somewhat positive": 176, "Neutral": 162,
+              "Somewhat negative": 50, "Very negative": 36, "Unsure": 197},
+    "45+":   {"Very positive": 41, "Somewhat positive": 121, "Neutral": 186,
+              "Somewhat negative": 146, "Very negative": 97, "Unsure": 210},
+}
+```
+
+::: callout-note
+## Exercise 2
+
+a. Using indexing, pull out the number of respondents aged 45+ who answered "Neutral."
+b. Using indexing, find the total number of respondents aged 18–44 who answered “Very positive” or “Somewhat positive.”
+:::
+
+# Part 3: NumPy and functions
+
+The array below has daily high temperatures (°F) for two weeks. Two days are missing.
+
+```{python}
+temps_f = np.array([72, 75, 81, np.nan, 79, 84, 88, 77, 70, np.nan, 83, 86, 90, 74])
+```
+
+::: callout-note
+## Exercise 3
+
+Using **vectorized** NumPy code (no loops):
+
+a. Convert `temps_f` to Celsius, $C = (F - 32) \times 5/9$, and round to 1 decimal place.
+b. Find the mean and the **sample** standard deviation of `temps_f`, ignoring missing values. (Be careful: what does NumPy divide by by default?)
+c. How many of the non-missing days had a high above 80°F? What proportion of the non-missing days is that?
+d. Write a function `standardize(x)` (Week 9's function, translated) and use it on `temps_f`. What happens to the missing days?
+:::
+
+::: callout-note
+## Exercise 4
+
+In Week 9 we wrote `is_outlier()`, which flags values outside $[Q_1 - k \cdot IQR,\ Q_3 + k \cdot IQR]$:
+
+```r
+is_outlier <- function(x, k = 1.5) {
+  q   <- quantile(x, c(0.25, 0.75), na.rm = TRUE)
+  iqr <- q[2] - q[1]
+  x < q[1] - k * iqr | x > q[2] + k * iqr
+}
+```
+
+a. Translate it into a Python function `is_outlier(x, k=1.5)` that returns a boolean NumPy array. Include a docstring. *Hints:* `np.nanquantile()`; for element-wise "or" on arrays, use `|` with parentheses around each comparison.
+b. Test it where you know the answer: `is_outlier([1, 2, 3, 4, 5, 100])` should flag only `100`.
+c. Using the commute times below, how many commutes are flagged with `k=1.5`? With `k=3`? Print the flagged values.
+
+**Stretch:** make the function raise a `ValueError` with a helpful message if `k` is negative.
+:::
+
+```{python}
+commute = np.array([12, 15, 18, 20, 22, 22, 25, 25, 27, 28, 30, 30, 32,
+                    35, 35, 38, 40, 42, 45, 48, 55, 60, 75, 90, 110])
+```
+
+# Part 4: Simulation
+
+A clinic has **40** appointment slots per day. Each booked patient shows up with probability **0.85**, independently. To reduce empty slots, the clinic books more than 40 appointments. If more than 40 patients show up, the clinic is *over capacity*.
+
+::: callout-note
+## Exercise 5
+
+a. Write a function `over_capacity(booked, slots=40, p_show=0.85)` that simulates **one day** and returns `True` if more patients show up than there are slots. Create your generator with `rng = np.random.default_rng(7500)` before defining the function.
+b. Using a list comprehension (like `one_flight()` in the lecture), simulate 10,000 days with 44 appointments booked and estimate P(over capacity).
+c. Repeat part (b) for 42, 43, and 45 appointments. (Copying and editing your line from (b) is fine.) What is the **largest** number of appointments that keeps P(over capacity) at or below 5%?
+:::
+
+**Stretch:** do part (c) for every booking level from 40 to 50 in one line, with a list comprehension over the booking levels.
+
+
+# Part 5: Reflection
+
+::: callout-note
+## Exercise 6
+
+In a short paragraph (your own words, no AI for this one):
+
+a. Describe two differences between R and Python that you noticed while doing this assignment.
+b. Which difference do you expect will trip you up most in the coming weeks, and what will you do to catch it?
+:::
+
+::: callout-important
+**AI acknowledgment.** If AI substantially contributed to your work, briefly note which model you used and what you used it for, at the end of your document (see the course AI policy).
+:::
+
+# Submit
+
+➡️ ✅ Render one last time and open `Python_HW_01.html` in a web browser. Check that your code, output, and written responses are organized and readable.
+
+::: callout-important
+To submit, upload your `Python_HW_01.html` file to the Python HW 01 assignment on Brightspace.
+:::
