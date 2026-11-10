@@ -14,26 +14,21 @@ jupyter: python3
 
 # Goals
 
-The main goal of this assignment is to see the dplyr verbs you already know (`select()`, `filter()`, `arrange()`, `count()`, `mutate()`, `summarize()`) as Python methods, and to write them as one readable chain. The thinking is the same; the syntax is new.
+The goal of this assignment is to practice the dplyr verbs you already know (`select()`, `filter()`, `arrange()`, `count()`, `mutate()`, `summarize()`) as pandas methods. The thinking is the same; the syntax is new.
 
 You will...
 
-- import data and inspect what your tool decided about each column
-- select, filter, sort, count, and derive columns in pandas (or polars, if you choose)
-- write method chains that read like a dplyr pipeline
-- **read and debug pandas code**, whichever tool you write in
-- **validate** your results: check row counts and compare with R
-- notice where Python and R make different choices about missing values
+- import data and check what pandas did with it
+- select, filter, sort, count, and derive columns, written as method chains
+- read pandas code and predict what it does
+- check your results against R
 
-Some of you have used pandas before. Each part has optional **Stretch** and **Experienced lane** tasks. They are not required, but they're a good use of your time if the core tasks feel easy.
+
 
 ::: callout-important
 ## pandas by default; polars optional
 
-- **Use pandas** unless you already know polars or are curious to try it. New to Python? Stick with pandas this week.
-- **Parts 1 and 4 are pandas for everyone.** They're about reading and debugging pandas code, which you'll meet everywhere (tutorials, StackOverflow, AI-written code, other people's projects).
-- **Parts 2 and 3:** pandas, or polars if you choose. Every question asks about the **data**, so both lead to the same answers (where they don't, the exercise says so, and explaining why is part of the answer). polars reference: the appendix of the Week 11 slides.
-- Your template loads both. **Not using polars?** Delete the two `polars` import lines at the top so it renders without polars installed. (Keep `pandas`: Parts 1 and 4 need it.)
+Use **pandas** unless you already know polars or want to try it. **Parts 1 and 4 are pandas for everyone.** For Parts 2 and 3, polars is fine: see the appendix of the Week 11 slides. **Not using polars?** Delete the two `polars` import lines at the top of your template so it renders without polars installed.
 :::
 
 # Getting started
@@ -60,43 +55,27 @@ STAT_7500/
 This document has all of the instructions. You will complete the assignment by adding code and text to `Python_HW_02.qmd`.
 
 ::: callout-important
-**Make every answer visible in your rendered file.** Python only displays the result of the **last line** in a cell. Use **one cell per part** (the template already gives you separate cells), or use labeled `print()` statements when a part needs several results, e.g. `print("rows:", hotels.shape[0])`.
+**Make every answer visible in your rendered file.** Python only displays the result of the **last line** in a cell. Use the separate cells in the template, or use labeled `print()` statements when a part needs several results, e.g. `print("rows:", hotels.shape[0])`.
 :::
 
 ::: callout-tip
 **Write each answer as one chain** wrapped in parentheses, one step per line, unless the exercise says otherwise. While you're building a chain, comment out the later lines and add `.shape` at the end to check each step.
 :::
 
-We'll use these packages throughout. They are already loaded at the top of your template:
-
-```{python}
-#| eval: false
-import numpy as np
-import pandas as pd
-import polars as pl                  # if you'll use polars (install: %pip install polars)
-import polars.selectors as cs        # polars helpers like cs.contains("arrival")
-```
-
 ::: callout-tip
-## Reading the CSVs in polars
-
-polars counts only **empty cells** as missing unless you tell it otherwise, and it guesses column types from the first 100 rows. Read files like this so your data matches pandas:
+## polars users: reading the CSVs
 
 ```{python}
 #| eval: false
 hotels = pl.read_csv("data/hotels.csv", null_values=["NA", "NULL"], infer_schema_length=None)
 starwars = pl.read_csv("data/starwars.csv", null_values="NA", infer_schema_length=None)
 ```
-
-Name your DataFrames `hotels` and `starwars` whichever tool you use.
 :::
 
 # Part 1: Predict, then run (pandas, everyone)
 
 ::: callout-note
 ## Exercise 1
-
-*Everyone does this part in pandas, including polars users. The goal is to **read** pandas code.*
 
 The snippets below use this small DataFrame:
 
@@ -107,9 +86,9 @@ df = pd.DataFrame({"name":  ["Ana", "Ben", "Cal", "Dee", "Eli"],
                    "score": [88, np.nan, 95, 72, 81]})
 ```
 
-For each snippet, **first** type your prediction of the output in your `.qmd` (in the text, not the code chunk). **Then** run the code. If your prediction was wrong, explain in one sentence why pandas behaves that way. If it was right, write one sentence on what R/dplyr (or polars, if you're using it) would do differently (if anything).
+For each snippet, **first** write your prediction of the output in your `.qmd` (in the text, not the code chunk). **Then** run the code. If your prediction was wrong, explain in one sentence why. If it was right, just write "correct."
 
-Your grade is for the explanations, not for the predictions, so make an honest guess before you run anything.
+Your grade is for making an honest guess and explaining any surprises, not for getting the predictions right.
 :::
 
 ```{python}
@@ -120,43 +99,29 @@ type(df["score"]), type(df[["score"]])
 # (b)
 df["score"].mean()
 
-# (c)
-df[df["score"] > 80].shape[0]
-
-# (d)
+# (c) run both lines
 df.sort_values("score").iloc[0]["name"]
-
-# (e)
 df.sort_values("score").loc[0, "name"]
 
-# (f)
-df["dept"].value_counts()
-
-# (g)
+# (d)
 df[df["score"] > 80 and df["dept"] == "A"]
-
-# (h)
-df[df["dept"] == "A"]["score"] = 100
-df["score"].max()
 ```
 
 # Part 2: Hotel bookings
 
-In Week 4 you explored these hotel bookings in R. Now you'll answer new questions about them in Python. **Parts 2 and 3: pandas (or polars, if you choose).**
+In Week 4 you explored these hotel bookings in R. Now you'll work with them in Python.
 
 ::: callout-note
 ## Exercise 2: Import and inspect
 
-a. Read `data/hotels.csv` into a DataFrame called `hotels`. How many rows and columns does it have? Does that match what you saw in R?
-b. Look at the column types (pandas: `.info()` or `.dtypes`; polars: `.glimpse()` or `.schema`). `agent` and `company` are **ID numbers** for the travel agency and the company that made (or paid for) the booking; `NULL` means none. In R, `read_csv()` read them as **character** columns. What type are they in your DataFrame, and why? Which type makes more sense for an ID, and why? (*Hint:* look at the raw values in the CSV. pandas: look up `na_values` in `help(pd.read_csv)`. polars: what did `null_values=` do? What do you think `agent` would be without it?)
-c. Count the missing values in every column. Which three columns have the most?
-d. Is `reservation_status_date` stored as a date? How can you tell?
+a. Read `data/hotels.csv` into a DataFrame called `hotels`. How many rows and columns does it have?
+b. Count the missing values in every column. Which three columns have the most?
 :::
 
 ::: callout-note
 ## Exercise 3: Translate these R pipelines
 
-Translate each R pipeline into **one chain** (pandas or polars). Then **validate**: compare your result with the R output given below each pipeline. Same number of rows? Same values in the first few rows? Report the shape of your result in a sentence. (No need to run R.)
+Translate each R pipeline into **one chain**. Then compare your result with the R output given below it (no need to run R). Does it match? Report the shape of your result in a sentence.
 
 a.
 ```r
@@ -189,39 +154,14 @@ hotels |>
 
 *R output:* `mean_lead` = 80.0, `median_lead` = 45.
 
-d.
-```r
-hotels |>
-  filter(children >= 1 | babies >= 1) |>
-  count(hotel, meal)
-```
-
-*R output:* 9 rows × 3 columns, starting with City Hotel / BB 4,816; City Hotel / FB 1; City Hotel / HB 399.
-
-*Hints:* pandas: `.isin()` for `%in%`; `value_counts()` sorts by frequency unless you say `sort=False`. polars: `.is_in()` for `%in%`; `count(x, y)` is `.group_by("x", "y").len()`. The slides' cheat sheet has both.
-:::
-
-**Stretch:** after each chain, add one `assert` that would catch a mistake (for example, that every row in (a) is a Resort Hotel booking, or that (b) only contains zero-night stays).
-
-**Experienced lane:** redo Exercise 3 in the tool you *didn't* use. Which translation was easiest in each, and which was hardest?
-
-::: callout-note
-## Exercise 4: Who cancels?
-
-`is_canceled` is 1 for a canceled booking and 0 otherwise, so its **mean** is the cancellation rate (the same `mean()` of 0/1 trick from R).
-
-a. What is the overall cancellation rate?
-b. What is the cancellation rate for City Hotel bookings? For Resort Hotel bookings? (Filter, then take the mean. Next week we'll do this in one step with `groupby` / `group_by`.)
-c. What is the cancellation rate for each `deposit_type`? Start with `hotels["deposit_type"].value_counts()` (works in both tools) to see the categories, then compute the rate for each one.
-d. **Interpret** in 3–4 sentences. One of the rates in (c) should surprise you. Does it make sense that customers who paid a non-refundable deposit would cancel at that rate? Suggest at least one explanation for the pattern (think about who makes these bookings and how the data were collected), and say what you would want to know before using this variable to predict cancellations.
+*Hints:* `.isin()` for `%in%`; `.value_counts()` for `count()`; `.agg(["mean", "median"])` for two summaries at once. The slides' cheat sheet has all three.
 :::
 
 ::: callout-note
-## Exercise 5: Check before you average
+## Exercise 4: Cancellations and nightly rates
 
-a. How many bookings have an average daily rate (`adr`) of **zero or less**? Show the most negative one.
-b. Show the row with the largest `adr`. Does it look like a real nightly rate? (Look at the other columns, too.)
-c. Compute the mean `adr` (i) for all bookings and (ii) after removing bookings with `adr <= 0` and the single largest value. In a sentence or two, explain which number you would report as "the average nightly rate," and why.
+a. `is_canceled` is 1 for a canceled booking and 0 otherwise, so its **mean** is the cancellation rate (the same trick from R). What is the cancellation rate overall? For City Hotel bookings? For Resort Hotel bookings? (Filter, then take the mean. Next week we'll do this in one step with `groupby`.)
+b. How many bookings have an average daily rate (`adr`) of **zero or less**? Compute the mean `adr` for all bookings and for bookings with `adr > 0`. Which would you report as "the average nightly rate"? One sentence.
 :::
 
 # Part 3: Star Wars characters
@@ -229,26 +169,19 @@ c. Compute the mean `adr` (i) for all bookings and (ii) after removing bookings 
 You used `starwars` in Week 2. The CSV version leaves out the three list columns (`films`, `vehicles`, `starships`), because a CSV can't store a list in a cell.
 
 ::: callout-note
-## Exercise 6
+## Exercise 5
 
-a. Read `data/starwars.csv` into `starwars`. How many rows and columns? How many values are missing in each column?
-b. Add a `bmi` column, $\text{BMI} = \text{mass} / (\text{height}/100)^2$, using `.assign()` (pandas) or `.with_columns()` (polars). Show the name, species, and BMI of the **five** characters with the highest BMI. (polars users: check where the missing BMIs ended up when you sorted.)
-c. For how many characters is `bmi` missing? Explain why, using what you found in (a).
-:::
-
-::: callout-note
-## Exercise 7
-
-a. In one chain: keep characters whose `species` is `"Human"` and whose `height` is not missing, keep `name`, `height`, and `homeworld`, and sort tallest first. How many rows?
-b. What proportion of human characters come from Tatooine? Compute it two ways: with `value_counts(normalize=True)` on `homeworld` (same name in both tools), and as (number from Tatooine) ÷ (number of humans). Do the two answers agree? If not, why not? (*Hint:* what does *your tool's* `value_counts()` do with missing values? pandas and polars make different choices here.)
+a. Read `data/starwars.csv` into `starwars`. Add a `bmi` column, $\text{BMI} = \text{mass} / (\text{height}/100)^2$, using `.assign()` (polars: `.with_columns()`). Show the name, species, and BMI of the **five** characters with the highest BMI.
+b. For how many characters is `bmi` missing? In a sentence, explain why. (*Hint:* `.isna().sum()` on `mass` and `height`.)
+c. In one chain: keep characters whose `species` is `"Human"` and whose `height` is not missing, keep `name`, `height`, and `homeworld`, and sort tallest first. How many rows?
 :::
 
 # Part 4: Copy-on-Write (pandas, everyone)
 
 ::: callout-note
-## Exercise 8
+## Exercise 6
 
-*Everyone does this part in pandas. You'll see code like this in old tutorials and StackOverflow answers, so you need to recognize it and know how to fix it.*
+*You'll see code like this in old tutorials and StackOverflow answers, so it's worth recognizing.*
 
 A classmate wants a column flagging penguins that weigh more than 5,000 g. They wrote:
 
@@ -262,24 +195,15 @@ penguins["heavy"].sum()
 
 a. Run it. What does `penguins["heavy"].sum()` return, and why? (Use the words *chained assignment* in your answer.)
 b. Fix it with a single `.loc[...]` assignment.
-c. Fix it a second way, in a method chain with `.assign()`, without changing `penguins` itself. Save the result as `penguins_flagged`.
-d. Both fixes should agree. How many heavy penguins are there? What happens to the two penguins with a missing `body_mass_g`?
+c. Fix it a second way, with `.assign()`. How many heavy penguins are there? (Both fixes should agree.)
 :::
-
-**Stretch:** older tutorials would show the code in Exercise 8 with a `SettingWithCopyWarning`. In a sentence, explain why pandas 3 behaves more like R here.
-
-**Experienced lane:** (i) write the Exercise 8 flag in polars with `.with_columns()`. Why can't polars have the chained-assignment problem? (ii) rewrite Exercise 6(b) using pandas 3's `pd.col()` instead of `lambda`.
 
 # Part 5: Reflection
 
 ::: callout-note
-## Exercise 9
+## Exercise 7
 
-In a short paragraph (your own words, no AI for this one):
-
-a. Python and R made different choices at least three times in this assignment (think about missing values, sorting, and counting). Describe two of them, for the tool you used in Parts 2–3. (If you used polars, also name one place where polars and pandas differ.)
-b. For one of those differences, describe a situation where it could lead to a wrong answer that *doesn't* produce an error, and the check you would add to catch it.
-c. Which tool did you choose for Parts 2–3, and why? (One or two sentences. Either answer is fine.)
+In 2–3 sentences (your own words, no AI for this one): describe two places in this assignment where Python and R made different choices (for example, about missing values, sorting, or counting).
 :::
 
 ::: callout-important

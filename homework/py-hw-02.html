@@ -2394,17 +2394,14 @@ window.Quarto = {
 </div>
 <section id="goals" class="level1">
 <h1>Goals</h1>
-<p>The main goal of this assignment is to see the dplyr verbs you already know (<code>select()</code>, <code>filter()</code>, <code>arrange()</code>, <code>count()</code>, <code>mutate()</code>, <code>summarize()</code>) as Python methods, and to write them as one readable chain. The thinking is the same; the syntax is new.</p>
+<p>The goal of this assignment is to practice the dplyr verbs you already know (<code>select()</code>, <code>filter()</code>, <code>arrange()</code>, <code>count()</code>, <code>mutate()</code>, <code>summarize()</code>) as pandas methods. The thinking is the same; the syntax is new.</p>
 <p>You will…</p>
 <ul>
-<li>import data and inspect what your tool decided about each column</li>
-<li>select, filter, sort, count, and derive columns in pandas (or polars, if you choose)</li>
-<li>write method chains that read like a dplyr pipeline</li>
-<li><strong>read and debug pandas code</strong>, whichever tool you write in</li>
-<li><strong>validate</strong> your results: check row counts and compare with R</li>
-<li>notice where Python and R make different choices about missing values</li>
+<li>import data and check what pandas did with it</li>
+<li>select, filter, sort, count, and derive columns, written as method chains</li>
+<li>read pandas code and predict what it does</li>
+<li>check your results against R</li>
 </ul>
-<p>Some of you have used pandas before. Each part has optional <strong>Stretch</strong> and <strong>Experienced lane</strong> tasks. They are not required, but they’re a good use of your time if the core tasks feel easy.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2415,12 +2412,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li><strong>Use pandas</strong> unless you already know polars or are curious to try it. New to Python? Stick with pandas this week.</li>
-<li><strong>Parts 1 and 4 are pandas for everyone.</strong> They’re about reading and debugging pandas code, which you’ll meet everywhere (tutorials, StackOverflow, AI-written code, other people’s projects).</li>
-<li><strong>Parts 2 and 3:</strong> pandas, or polars if you choose. Every question asks about the <strong>data</strong>, so both lead to the same answers (where they don’t, the exercise says so, and explaining why is part of the answer). polars reference: the appendix of the Week 11 slides.</li>
-<li>Your template loads both. <strong>Not using polars?</strong> Delete the two <code>polars</code> import lines at the top so it renders without polars installed. (Keep <code>pandas</code>: Parts 1 and 4 need it.)</li>
-</ul>
+<p>Use <strong>pandas</strong> unless you already know polars or want to try it. <strong>Parts 1 and 4 are pandas for everyone.</strong> For Parts 2 and 3, polars is fine: see the appendix of the Week 11 slides. <strong>Not using polars?</strong> Delete the two <code>polars</code> import lines at the top of your template so it renders without polars installed.</p>
 </div>
 </div>
 </section>
@@ -2455,7 +2447,7 @@ Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Make every answer visible in your rendered file.</strong> Python only displays the result of the <strong>last line</strong> in a cell. Use <strong>one cell per part</strong> (the template already gives you separate cells), or use labeled <code>print()</code> statements when a part needs several results, e.g. <code>print(&quot;rows:&quot;, hotels.shape[0])</code>.</p>
+<p><strong>Make every answer visible in your rendered file.</strong> Python only displays the result of the <strong>last line</strong> in a cell. Use the separate cells in the template, or use labeled <code>print()</code> statements when a part needs several results, e.g. <code>print(&quot;rows:&quot;, hotels.shape[0])</code>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -2471,29 +2463,20 @@ Tip
 <p><strong>Write each answer as one chain</strong> wrapped in parentheses, one step per line, unless the exercise says otherwise. While you’re building a chain, comment out the later lines and add <code>.shape</code> at the end to check each step.</p>
 </div>
 </div>
-<p>We’ll use these packages throughout. They are already loaded at the top of your template:</p>
-<div id="ff274aaa" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl                  <span class="co"># if you&#39;ll use polars (install: %pip install polars)</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars.selectors <span class="im">as</span> cs        <span class="co"># polars helpers like cs.contains(&quot;arrival&quot;)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Reading the CSVs in polars
+<span class="screen-reader-only">Tip</span>polars users: reading the CSVs
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>polars counts only <strong>empty cells</strong> as missing unless you tell it otherwise, and it guesses column types from the first 100 rows. Read files like this so your data matches pandas:</p>
-<div id="20d86a14" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>hotels <span class="op">=</span> pl.read_csv(<span class="st">&quot;data/hotels.csv&quot;</span>, null_values<span class="op">=</span>[<span class="st">&quot;NA&quot;</span>, <span class="st">&quot;NULL&quot;</span>], infer_schema_length<span class="op">=</span><span class="va">None</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>starwars <span class="op">=</span> pl.read_csv(<span class="st">&quot;data/starwars.csv&quot;</span>, null_values<span class="op">=</span><span class="st">&quot;NA&quot;</span>, infer_schema_length<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="edb88ed0" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hotels <span class="op">=</span> pl.read_csv(<span class="st">&quot;data/hotels.csv&quot;</span>, null_values<span class="op">=</span>[<span class="st">&quot;NA&quot;</span>, <span class="st">&quot;NULL&quot;</span>], infer_schema_length<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>starwars <span class="op">=</span> pl.read_csv(<span class="st">&quot;data/starwars.csv&quot;</span>, null_values<span class="op">=</span><span class="st">&quot;NA&quot;</span>, infer_schema_length<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Name your DataFrames <code>hotels</code> and <code>starwars</code> whichever tool you use.</p>
 </div>
 </div>
 </section>
@@ -2509,47 +2492,34 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><em>Everyone does this part in pandas, including polars users. The goal is to <strong>read</strong> pandas code.</em></p>
 <p>The snippets below use this small DataFrame:</p>
-<div id="8feff1af" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">&quot;name&quot;</span>:  [<span class="st">&quot;Ana&quot;</span>, <span class="st">&quot;Ben&quot;</span>, <span class="st">&quot;Cal&quot;</span>, <span class="st">&quot;Dee&quot;</span>, <span class="st">&quot;Eli&quot;</span>],</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;dept&quot;</span>:  [<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;C&quot;</span>, <span class="st">&quot;B&quot;</span>],</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;score&quot;</span>: [<span class="dv">88</span>, np.nan, <span class="dv">95</span>, <span class="dv">72</span>, <span class="dv">81</span>]})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="7ce22977" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">&quot;name&quot;</span>:  [<span class="st">&quot;Ana&quot;</span>, <span class="st">&quot;Ben&quot;</span>, <span class="st">&quot;Cal&quot;</span>, <span class="st">&quot;Dee&quot;</span>, <span class="st">&quot;Eli&quot;</span>],</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;dept&quot;</span>:  [<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;C&quot;</span>, <span class="st">&quot;B&quot;</span>],</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;score&quot;</span>: [<span class="dv">88</span>, np.nan, <span class="dv">95</span>, <span class="dv">72</span>, <span class="dv">81</span>]})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>For each snippet, <strong>first</strong> type your prediction of the output in your <code>.qmd</code> (in the text, not the code chunk). <strong>Then</strong> run the code. If your prediction was wrong, explain in one sentence why pandas behaves that way. If it was right, write one sentence on what R/dplyr (or polars, if you’re using it) would do differently (if anything).</p>
-<p>Your grade is for the explanations, not for the predictions, so make an honest guess before you run anything.</p>
+<p>For each snippet, <strong>first</strong> write your prediction of the output in your <code>.qmd</code> (in the text, not the code chunk). <strong>Then</strong> run the code. If your prediction was wrong, explain in one sentence why. If it was right, just write “correct.”</p>
+<p>Your grade is for making an honest guess and explaining any surprises, not for getting the predictions right.</p>
 </div>
 </div>
-<div id="6a543180" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (a)</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(df[<span class="st">&quot;score&quot;</span>]), <span class="bu">type</span>(df[[<span class="st">&quot;score&quot;</span>]])</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (b)</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;score&quot;</span>].mean()</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (c)</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>df[df[<span class="st">&quot;score&quot;</span>] <span class="op">&gt;</span> <span class="dv">80</span>].shape[<span class="dv">0</span>]</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># (d)</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>df.sort_values(<span class="st">&quot;score&quot;</span>).iloc[<span class="dv">0</span>][<span class="st">&quot;name&quot;</span>]</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># (e)</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>df.sort_values(<span class="st">&quot;score&quot;</span>).loc[<span class="dv">0</span>, <span class="st">&quot;name&quot;</span>]</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># (f)</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;dept&quot;</span>].value_counts()</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># (g)</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>df[df[<span class="st">&quot;score&quot;</span>] <span class="op">&gt;</span> <span class="dv">80</span> <span class="kw">and</span> df[<span class="st">&quot;dept&quot;</span>] <span class="op">==</span> <span class="st">&quot;A&quot;</span>]</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># (h)</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>df[df[<span class="st">&quot;dept&quot;</span>] <span class="op">==</span> <span class="st">&quot;A&quot;</span>][<span class="st">&quot;score&quot;</span>] <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;score&quot;</span>].<span class="bu">max</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="a1e87af6" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (a)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(df[<span class="st">&quot;score&quot;</span>]), <span class="bu">type</span>(df[[<span class="st">&quot;score&quot;</span>]])</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (b)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;score&quot;</span>].mean()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (c) run both lines</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>df.sort_values(<span class="st">&quot;score&quot;</span>).iloc[<span class="dv">0</span>][<span class="st">&quot;name&quot;</span>]</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>df.sort_values(<span class="st">&quot;score&quot;</span>).loc[<span class="dv">0</span>, <span class="st">&quot;name&quot;</span>]</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># (d)</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>df[df[<span class="st">&quot;score&quot;</span>] <span class="op">&gt;</span> <span class="dv">80</span> <span class="kw">and</span> df[<span class="st">&quot;dept&quot;</span>] <span class="op">==</span> <span class="st">&quot;A&quot;</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="part-2-hotel-bookings" class="level1">
 <h1>Part 2: Hotel bookings</h1>
-<p>In Week 4 you explored these hotel bookings in R. Now you’ll answer new questions about them in Python. <strong>Parts 2 and 3: pandas (or polars, if you choose).</strong></p>
+<p>In Week 4 you explored these hotel bookings in R. Now you’ll work with them in Python.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2561,10 +2531,8 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="a">
-<li>Read <code>data/hotels.csv</code> into a DataFrame called <code>hotels</code>. How many rows and columns does it have? Does that match what you saw in R?</li>
-<li>Look at the column types (pandas: <code>.info()</code> or <code>.dtypes</code>; polars: <code>.glimpse()</code> or <code>.schema</code>). <code>agent</code> and <code>company</code> are <strong>ID numbers</strong> for the travel agency and the company that made (or paid for) the booking; <code>NULL</code> means none. In R, <code>read_csv()</code> read them as <strong>character</strong> columns. What type are they in your DataFrame, and why? Which type makes more sense for an ID, and why? (<em>Hint:</em> look at the raw values in the CSV. pandas: look up <code>na_values</code> in <code>help(pd.read_csv)</code>. polars: what did <code>null_values=</code> do? What do you think <code>agent</code> would be without it?)</li>
+<li>Read <code>data/hotels.csv</code> into a DataFrame called <code>hotels</code>. How many rows and columns does it have?</li>
 <li>Count the missing values in every column. Which three columns have the most?</li>
-<li>Is <code>reservation_status_date</code> stored as a date? How can you tell?</li>
 </ol>
 </div>
 </div>
@@ -2578,61 +2546,33 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Translate each R pipeline into <strong>one chain</strong> (pandas or polars). Then <strong>validate</strong>: compare your result with the R output given below each pipeline. Same number of rows? Same values in the first few rows? Report the shape of your result in a sentence. (No need to run R.)</p>
+<p>Translate each R pipeline into <strong>one chain</strong>. Then compare your result with the R output given below it (no need to run R). Does it match? Report the shape of your result in a sentence.</p>
 <ol type="a">
 <li></li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>hotels <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(hotel <span class="sc">==</span> <span class="st">&quot;Resort Hotel&quot;</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>         arrival_date_month <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;June&quot;</span>, <span class="st">&quot;July&quot;</span>, <span class="st">&quot;August&quot;</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(hotel, arrival_date_month, adr) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(adr))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hotels <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(hotel <span class="sc">==</span> <span class="st">&quot;Resort Hotel&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>         arrival_date_month <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;June&quot;</span>, <span class="st">&quot;July&quot;</span>, <span class="st">&quot;August&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(hotel, arrival_date_month, adr) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(adr))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>R output:</em> 12,512 rows × 3 columns; the top three <code>adr</code> values are 508, 450, and 437.</p>
 <ol start="2" type="a">
 <li></li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>hotels <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_nights =</span> stays_in_weekend_nights <span class="sc">+</span> stays_in_week_nights) <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(total_nights <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(reservation_status, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>hotels <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_nights =</span> stays_in_weekend_nights <span class="sc">+</span> stays_in_week_nights) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(total_nights <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(reservation_status, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>R output:</em> 3 rows: Check-Out 680, Canceled 22, No-Show 13.</p>
 <ol start="3" type="a">
 <li></li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>hotels <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(is_canceled <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_lead =</span> <span class="fu">mean</span>(lead_time),</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">median_lead =</span> <span class="fu">median</span>(lead_time))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>hotels <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(is_canceled <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_lead =</span> <span class="fu">mean</span>(lead_time),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">median_lead =</span> <span class="fu">median</span>(lead_time))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>R output:</em> <code>mean_lead</code> = 80.0, <code>median_lead</code> = 45.</p>
-<ol start="4" type="a">
-<li></li>
-</ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>hotels <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(children <span class="sc">&gt;=</span> <span class="dv">1</span> <span class="sc">|</span> babies <span class="sc">&gt;=</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(hotel, meal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>R output:</em> 9 rows × 3 columns, starting with City Hotel / BB 4,816; City Hotel / FB 1; City Hotel / HB 399.</p>
-<p><em>Hints:</em> pandas: <code>.isin()</code> for <code>%in%</code>; <code>value_counts()</code> sorts by frequency unless you say <code>sort=False</code>. polars: <code>.is_in()</code> for <code>%in%</code>; <code>count(x, y)</code> is <code>.group_by(&quot;x&quot;, &quot;y&quot;).len()</code>. The slides’ cheat sheet has both.</p>
-</div>
-</div>
-<p><strong>Stretch:</strong> after each chain, add one <code>assert</code> that would catch a mistake (for example, that every row in (a) is a Resort Hotel booking, or that (b) only contains zero-night stays).</p>
-<p><strong>Experienced lane:</strong> redo Exercise 3 in the tool you <em>didn’t</em> use. Which translation was easiest in each, and which was hardest?</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Exercise 4: Who cancels?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><code>is_canceled</code> is 1 for a canceled booking and 0 otherwise, so its <strong>mean</strong> is the cancellation rate (the same <code>mean()</code> of 0/1 trick from R).</p>
-<ol type="a">
-<li>What is the overall cancellation rate?</li>
-<li>What is the cancellation rate for City Hotel bookings? For Resort Hotel bookings? (Filter, then take the mean. Next week we’ll do this in one step with <code>groupby</code> / <code>group_by</code>.)</li>
-<li>What is the cancellation rate for each <code>deposit_type</code>? Start with <code>hotels[&quot;deposit_type&quot;].value_counts()</code> (works in both tools) to see the categories, then compute the rate for each one.</li>
-<li><strong>Interpret</strong> in 3–4 sentences. One of the rates in (c) should surprise you. Does it make sense that customers who paid a non-refundable deposit would cancel at that rate? Suggest at least one explanation for the pattern (think about who makes these bookings and how the data were collected), and say what you would want to know before using this variable to predict cancellations.</li>
-</ol>
+<p><em>Hints:</em> <code>.isin()</code> for <code>%in%</code>; <code>.value_counts()</code> for <code>count()</code>; <code>.agg([&quot;mean&quot;, &quot;median&quot;])</code> for two summaries at once. The slides’ cheat sheet has all three.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2641,14 +2581,13 @@ Tip
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Exercise 5: Check before you average
+<span class="screen-reader-only">Note</span>Exercise 4: Cancellations and nightly rates
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ol type="a">
-<li>How many bookings have an average daily rate (<code>adr</code>) of <strong>zero or less</strong>? Show the most negative one.</li>
-<li>Show the row with the largest <code>adr</code>. Does it look like a real nightly rate? (Look at the other columns, too.)</li>
-<li>Compute the mean <code>adr</code> (i) for all bookings and (ii) after removing bookings with <code>adr &lt;= 0</code> and the single largest value. In a sentence or two, explain which number you would report as “the average nightly rate,” and why.</li>
+<li><code>is_canceled</code> is 1 for a canceled booking and 0 otherwise, so its <strong>mean</strong> is the cancellation rate (the same trick from R). What is the cancellation rate overall? For City Hotel bookings? For Resort Hotel bookings? (Filter, then take the mean. Next week we’ll do this in one step with <code>groupby</code>.)</li>
+<li>How many bookings have an average daily rate (<code>adr</code>) of <strong>zero or less</strong>? Compute the mean <code>adr</code> for all bookings and for bookings with <code>adr &gt; 0</code>. Which would you report as “the average nightly rate”? One sentence.</li>
 </ol>
 </div>
 </div>
@@ -2662,30 +2601,14 @@ Tip
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Exercise 6
+<span class="screen-reader-only">Note</span>Exercise 5
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ol type="a">
-<li>Read <code>data/starwars.csv</code> into <code>starwars</code>. How many rows and columns? How many values are missing in each column?</li>
-<li>Add a <code>bmi</code> column, <span class="math inline">\(\text{BMI} = \text{mass} / (\text{height}/100)^2\)</span>, using <code>.assign()</code> (pandas) or <code>.with_columns()</code> (polars). Show the name, species, and BMI of the <strong>five</strong> characters with the highest BMI. (polars users: check where the missing BMIs ended up when you sorted.)</li>
-<li>For how many characters is <code>bmi</code> missing? Explain why, using what you found in (a).</li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Exercise 7
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="a">
+<li>Read <code>data/starwars.csv</code> into <code>starwars</code>. Add a <code>bmi</code> column, <span class="math inline">\(\text{BMI} = \text{mass} / (\text{height}/100)^2\)</span>, using <code>.assign()</code> (polars: <code>.with_columns()</code>). Show the name, species, and BMI of the <strong>five</strong> characters with the highest BMI.</li>
+<li>For how many characters is <code>bmi</code> missing? In a sentence, explain why. (<em>Hint:</em> <code>.isna().sum()</code> on <code>mass</code> and <code>height</code>.)</li>
 <li>In one chain: keep characters whose <code>species</code> is <code>&quot;Human&quot;</code> and whose <code>height</code> is not missing, keep <code>name</code>, <code>height</code>, and <code>homeworld</code>, and sort tallest first. How many rows?</li>
-<li>What proportion of human characters come from Tatooine? Compute it two ways: with <code>value_counts(normalize=True)</code> on <code>homeworld</code> (same name in both tools), and as (number from Tatooine) ÷ (number of humans). Do the two answers agree? If not, why not? (<em>Hint:</em> what does <em>your tool’s</em> <code>value_counts()</code> do with missing values? pandas and polars make different choices here.)</li>
 </ol>
 </div>
 </div>
@@ -2698,28 +2621,25 @@ Tip
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Exercise 8
+<span class="screen-reader-only">Note</span>Exercise 6
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><em>Everyone does this part in pandas. You’ll see code like this in old tutorials and StackOverflow answers, so you need to recognize it and know how to fix it.</em></p>
+<p><em>You’ll see code like this in old tutorials and StackOverflow answers, so it’s worth recognizing.</em></p>
 <p>A classmate wants a column flagging penguins that weigh more than 5,000 g. They wrote:</p>
-<div id="213107a3" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> pd.read_csv(<span class="st">&quot;data/penguins.csv&quot;</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>penguins[<span class="st">&quot;heavy&quot;</span>] <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>penguins[penguins[<span class="st">&quot;body_mass_g&quot;</span>] <span class="op">&gt;</span> <span class="dv">5000</span>][<span class="st">&quot;heavy&quot;</span>] <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>penguins[<span class="st">&quot;heavy&quot;</span>].<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="bd20df80" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> pd.read_csv(<span class="st">&quot;data/penguins.csv&quot;</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>penguins[<span class="st">&quot;heavy&quot;</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>penguins[penguins[<span class="st">&quot;body_mass_g&quot;</span>] <span class="op">&gt;</span> <span class="dv">5000</span>][<span class="st">&quot;heavy&quot;</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>penguins[<span class="st">&quot;heavy&quot;</span>].<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol type="a">
 <li>Run it. What does <code>penguins[&quot;heavy&quot;].sum()</code> return, and why? (Use the words <em>chained assignment</em> in your answer.)</li>
 <li>Fix it with a single <code>.loc[...]</code> assignment.</li>
-<li>Fix it a second way, in a method chain with <code>.assign()</code>, without changing <code>penguins</code> itself. Save the result as <code>penguins_flagged</code>.</li>
-<li>Both fixes should agree. How many heavy penguins are there? What happens to the two penguins with a missing <code>body_mass_g</code>?</li>
+<li>Fix it a second way, with <code>.assign()</code>. How many heavy penguins are there? (Both fixes should agree.)</li>
 </ol>
 </div>
 </div>
-<p><strong>Stretch:</strong> older tutorials would show the code in Exercise 8 with a <code>SettingWithCopyWarning</code>. In a sentence, explain why pandas 3 behaves more like R here.</p>
-<p><strong>Experienced lane:</strong> (i) write the Exercise 8 flag in polars with <code>.with_columns()</code>. Why can’t polars have the chained-assignment problem? (ii) rewrite Exercise 6(b) using pandas 3’s <code>pd.col()</code> instead of <code>lambda</code>.</p>
 </section>
 <section id="part-5-reflection" class="level1">
 <h1>Part 5: Reflection</h1>
@@ -2729,16 +2649,11 @@ Tip
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Exercise 9
+<span class="screen-reader-only">Note</span>Exercise 7
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In a short paragraph (your own words, no AI for this one):</p>
-<ol type="a">
-<li>Python and R made different choices at least three times in this assignment (think about missing values, sorting, and counting). Describe two of them, for the tool you used in Parts 2–3. (If you used polars, also name one place where polars and pandas differ.)</li>
-<li>For one of those differences, describe a situation where it could lead to a wrong answer that <em>doesn’t</em> produce an error, and the check you would add to catch it.</li>
-<li>Which tool did you choose for Parts 2–3, and why? (One or two sentences. Either answer is fine.)</li>
-</ol>
+<p>In 2–3 sentences (your own words, no AI for this one): describe two places in this assignment where Python and R made different choices (for example, about missing values, sorting, or counting).</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-important callout-titled">
