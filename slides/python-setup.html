@@ -2263,7 +2263,11 @@ vertical-align: -.125em;
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <ul>
 <li>Click through the installer with the default options.</li>
-<li>When it finishes, a Finder window opens to <strong>Applications → Python 3.14</strong>. Double-click <strong><code>Install Certificates.command</code></strong>. A Terminal window will run briefly; you can close it when it says it’s done. (This prevents download errors later in the unit.)</li>
+<li><strong>Don’t skip this:</strong> when it finishes, a Finder window opens to <strong>Applications → Python 3.14</strong>. Double-click <strong><code>Install Certificates.command</code></strong>. A Terminal window will run briefly; you can close it when it says it’s done.
+<ul>
+<li>Why: without it, Python can’t verify secure (<code>https://</code>) websites, so reading data from a URL fails with <code>SSL: CERTIFICATE_VERIFY_FAILED</code>. Everything else (including <code>%pip install</code>) works fine, so you may not notice until later in the unit.</li>
+<li>Already installed Python and not sure you did this? Do it now; running it twice is harmless.</li>
+</ul></li>
 </ul>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
@@ -2431,9 +2435,9 @@ matplotlib 3.x.x</code></pre>
 <td>Quit Positron completely (<strong>Cmd + Q</strong> on Mac; close all windows on Windows) and reopen it.</td>
 </tr>
 <tr class="odd">
-<td><code>SSL: CERTIFICATE_VERIFY_FAILED</code> (usually later, when downloading data)</td>
-<td><strong>Mac:</strong> certificates step was skipped</td>
-<td>Applications → Python 3.14 → double-click <code>Install Certificates.command</code>.</td>
+<td><code>URLError: ... SSL: CERTIFICATE_VERIFY_FAILED ... unable to get local issuer certificate</code> (usually the first time you run <code>pd.read_csv()</code> on a web address)</td>
+<td><strong>Mac:</strong> the certificates step in Step 1 was skipped</td>
+<td>In Finder: Applications → Python 3.14 → double-click <code>Install Certificates.command</code> (or paste <code>/Applications/Python\ 3.14/Install\ Certificates.command</code> into the Terminal). Then <strong>restart</strong> the Python session (↻) and rerun. Don’t use workarounds that turn off SSL checking.</td>
 </tr>
 </tbody>
 </table>

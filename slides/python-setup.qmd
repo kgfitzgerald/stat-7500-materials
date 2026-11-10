@@ -36,7 +36,9 @@ Positron runs **both** R and Python and renders Quarto documents, so you can kee
 ## Mac
 
 - Click through the installer with the default options.
-- When it finishes, a Finder window opens to **Applications → Python 3.14**. Double-click **`Install Certificates.command`**. A Terminal window will run briefly; you can close it when it says it's done. (This prevents download errors later in the unit.)
+- **Don't skip this:** when it finishes, a Finder window opens to **Applications → Python 3.14**. Double-click **`Install Certificates.command`**. A Terminal window will run briefly; you can close it when it says it's done.
+  - Why: without it, Python can't verify secure (`https://`) websites, so reading data from a URL fails with `SSL: CERTIFICATE_VERIFY_FAILED`. Everything else (including `%pip install`) works fine, so you may not notice until later in the unit.
+  - Already installed Python and not sure you did this? Do it now; running it twice is harmless.
 
 ## Windows
 
@@ -125,7 +127,7 @@ Find the message you're seeing:
 | pandas version starts with **2** | An older pandas was already installed | Run `%pip install -U pandas` in the console, then restart. |
 | **Windows:** typing `python` in the Terminal opens the Microsoft Store | Windows' placeholder "python" | You don't need the Terminal for this class. If you do use it, type `py` instead of `python`. |
 | `Python 3.14 failed to start` or `Address already in use` | A leftover Python process from earlier | Quit Positron completely (**Cmd + Q** on Mac; close all windows on Windows) and reopen it. |
-| `SSL: CERTIFICATE_VERIFY_FAILED` (usually later, when downloading data) | **Mac:** certificates step was skipped | Applications → Python 3.14 → double-click `Install Certificates.command`. |
+| `URLError: ... SSL: CERTIFICATE_VERIFY_FAILED ... unable to get local issuer certificate` (usually the first time you run `pd.read_csv()` on a web address) | **Mac:** the certificates step in Step 1 was skipped | In Finder: Applications → Python 3.14 → double-click `Install Certificates.command` (or paste `/Applications/Python\ 3.14/Install\ Certificates.command` into the Terminal). Then **restart** the Python session (↻) and rerun. Don't use workarounds that turn off SSL checking. |
 
 **Still stuck?** Post on the HELP Forum with (1) a screenshot of the error, (2) Mac or Windows, and (3) what you see in the interpreter button (top right). That's almost always enough to diagnose it.
 

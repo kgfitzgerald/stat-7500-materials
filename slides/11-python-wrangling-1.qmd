@@ -1,0 +1,1390 @@
+---
+title: "Python Data Wrangling I"
+subtitle: "The dplyr verbs, as one pandas chain (plus a peek at polars)"
+author: "Dr. Katie Fitzgerald, with Claude :)"
+format:
+  revealjs:
+    css: [stat7500-slides.css, python-extra.css]
+    width: 1280
+    height: 720
+    margin: 0.03
+    code-overflow: scroll
+    slide-number: true
+    scrollable: true
+    code-line-numbers: false
+    highlight-style: github
+jupyter: python3
+execute:
+  echo: true
+  warning: false
+---
+
+```{python}
+#| include: false
+# Setup used throughout the deck
+import numpy as np
+import pandas as pd
+import polars as pl
+import polars.selectors as cs
+pd.set_option("display.max_columns", 8)   # keep wide tables readable on slides
+pd.set_option("display.width", 110)
+pl.Config.set_tbl_cols(8)
+pl.Config.set_tbl_rows(10)
+```
+
+## Tonight
+
+::: columns
+::: {.column width="50%"}
+**dplyr verbs, in pandas**
+
+- `select()`
+- `filter()`
+- `arrange()`
+- `slice()`
+- `distinct()` and `count()`
+- `mutate()` and `summarize()`
+- `|>` (method chains)
+:::
+::: {.column width="50%"}
+**New in Python**
+
+- DataFrames, Series, and attributes
+- The Index: `.loc` and `.iloc`
+- Missing values
+- Copy-on-Write
+:::
+:::
+
+**Open now:**
+
+- `week_11_practice.qmd`
+- `data/hotels.csv` and `data/penguins.csv` in your `STAT_7500/data` folder
+
+**Optional:** curious about polars?
+
+- `%pip install polars` in the Python console, then restart (↻)
+
+# Warm-up {.section-divider .middle}
+
+## Same question, two languages
+
+From Week 4. What will this code provide us with? Say it in plain English.
+
+```r
+hotels |>
+  mutate(little_ones = children + babies) |>
+  filter(little_ones >= 1, hotel == "Resort Hotel") |>
+  select(hotel, little_ones)
+```
+
+. . .
+
+*"Which Resort Hotel bookings included a child or baby, and how many?"*
+
+. . .
+
+::: columns
+::: {.column width="50%"}
+**pandas**
+
+```{python}
+#| eval: false
+(
+    hotels
+    .assign(little_ones=lambda d:
+            d["children"] + d["babies"])
+    .query('little_ones >= 1')
+    .query('hotel == "Resort Hotel"')
+    [["hotel", "little_ones"]]
+)
+```
+:::
+::: {.column width="50%"}
+**polars**
+
+```{python}
+#| eval: false
+(
+    hotels_pl
+    .with_columns(little_ones=pl.col("children")
+                            + pl.col("babies"))
+    .filter(pl.col("little_ones") >= 1,
+            pl.col("hotel") == "Resort Hotel")
+    .select("hotel", "little_ones")
+)
+```
+:::
+:::
+
+
+
+# Two Python dialects {.section-divider .middle}
+
+## pandas and polars
+
+| | pandas | polars |
+|---|---|---|
+| Around since | 2008 | 2020 |
+| Feels like | its own thing (an Index, brackets, `.loc`) | **dplyr** (`select`, `filter`, `with_columns`, `group_by`) |
+| Where you'll see it | almost everywhere: tutorials, StackOverflow, AI-written code, statsmodels, scikit-learn, workplace code | growing fast, especially for big data (it's very fast) |
+| Row labels (Index)? | yes | no, like a tibble |
+
+. . .
+
+Same data-wrangling steps, different syntax. **You already know the steps.**
+
+## Tonight: pandas (polars optional)
+
+::: columns
+::: {.column width="50%"}
+**Tonight's lecture is pandas**
+
+- Most Python code you'll meet at work, online, or from AI is pandas
+- Know pandas for the quizzes
+:::
+::: {.column width="50%"}
+**polars is optional**
+
+- Curious, or already use it? Use it on the practice file and HW 02 Parts 2–3
+- Reference: the **appendix** at the end of these slides
+- You still need to *read* pandas
+:::
+:::
+
+::: tip
+New to Python? **Stick with pandas this week.** You can try polars any time later; the steps are the same.
+:::
+
+# DataFrames {.section-divider .middle}
+
+## Read and inspect
+
+::: demo
+**Demo 1** in Positron
+:::
+
+
+```{python}
+hotels = pd.read_csv("data/hotels.csv")
+hotels.shape   # attribute: no ()
+```
+
+| R | pandas | |
+|---|---|---|
+| `read_csv("data/hotels.csv")` | `pd.read_csv("data/hotels.csv")` | same relative path |
+| `dim(hotels)` | `hotels.shape` | attribute: no `()` |
+| `names(hotels)` | `hotels.columns` | |
+| `glimpse(hotels)` | `hotels.info()` | types + non-missing counts |
+| `head(hotels)` | `hotels.head()` | first 5 rows |
+| `summary(hotels)` | `hotels.describe()` | numeric columns |
+
+Remember Week 2: **always inspect after importing.**
+
+- Does `shape` match the R result from Week 4: 119,390 × 32?
+
+## New word: attributes
+
+Week 10: **methods** are actions, `object.verb()`. 
+
+Some things after the dot are **attributes** instead: stored facts about the object.
+
+::: columns
+::: {.column width="50%"}
+**Attributes: no `()`**
+
+- `hotels.shape`
+- `hotels.columns`
+- `hotels.dtypes`
+:::
+::: {.column width="50%"}
+**Methods: `()`**
+
+- `hotels.head()`
+- `hotels.info()`
+- `hotels.describe()`
+- ...
+:::
+:::
+
+You can't always tell from the name: `.info()` sounds like a fact, but it's a method
+
+**The practical rule:** learn the handful of attributes you'll use
+
+- `shape`, `columns`, `dtypes`, `index`
+- Everything else takes `()`
+
+
+## When do I write `pd.`?
+
+::: columns
+::: {.column width="50%"}
+**`pd.` + function**: no DataFrame yet, or combining several
+
+```{python}
+#| eval: false
+pd.read_csv("data/hotels.csv")
+pd.DataFrame({"a": [1, 2]})
+pd.concat([df1, df2])
+```
+:::
+::: {.column width="50%"}
+**DataFrame + method**: start from the data
+
+```{python}
+#| eval: false
+hotels.head()
+hotels.filter(like="arrival")
+hotels.sort_values("adr")
+```
+:::
+:::
+
+`hotels` was made by pandas, so it **carries pandas' methods with it**.
+
+- No need to say `pd.` again
+
+. . .
+
+R: you'd write `dplyr::filter()` to name the package. 
+
+Python: the **object** decides which method runs. 
+
+- Different kinds of objects have different methods
+
+## `.info()`: pandas' closest thing to `glimpse()`
+
+```{python}
+hotels.info()
+```
+
+::: tip
+**pandas 3:** text columns show as `str`. Older tutorials (and pandas 2) say `object`. Same meaning: "these are strings."
+:::
+
+## `View()` → Positron's Data Explorer
+
+::: columns
+::: {.column width="50%"}
+**R**
+
+```r
+hotels |>
+  filter(hotel == "City Hotel") |>
+  View()
+```
+:::
+::: {.column width="50%"}
+**Python (in the Console)**
+
+```{python}
+#| eval: false
+city = hotels.query('hotel == "City Hotel"')
+%view city
+```
+:::
+:::
+
+- Or click the **table icon** next to any DataFrame in the **Variables** pane
+- Sort, filter, see each column's type, missing count, and a mini summary
+    - Works for pandas and polars
+- No "pipe into `View()`": **save the result to a name first**, then view it
+- Like `View()` in R, it's for the **Console only**
+    - Don't leave `%view` in your `.qmd`; end a chain with `.head()` instead
+
+## Look closer: what did pandas guess?
+
+```{python}
+hotels[["children", "agent", "reservation_status_date"]].dtypes
+```
+
+Four things to check every time you read in data:
+
+- **What counts as missing?** pandas treats `"NULL"`, `"NA"`, `""`, and more as missing
+    - R's `read_csv()` only treats `"NA"` and `""` as missing
+- **Whole numbers with missing values become decimals:** `children` is `float64`
+- **Dates stay text:** pandas doesn't guess dates (Week 12)
+- **IDs can turn into numbers:** `agent` (a travel-agency ID) is `float64`
+    - A mean ID is meaningless
+
+. . .
+
+**Deciding that an ID should be text (or a category) is your job**, in any language.
+
+## DataFrame, Series, Index
+
+::: columns
+::: {.column width="55%"}
+```{python}
+hotels[["hotel", "lead_time", "adr"]].head(3)
+```
+:::
+::: {.column width="45%"}
+- **DataFrame**: the whole table
+- **Series**: one column (a NumPy array with labels)
+- **Index**: the row labels on the left (0, 1, 2, ...)
+    - Look like R's row numbers, but they **stick to their rows**
+    - After sorting or filtering, R renumbers 1, 2, 3; pandas keeps the original labels
+:::
+:::
+
+. . .
+
+Last week's dict of equal-length arrays, with a name and a toolbox.
+
+- `hotels["lead_time"]` works just like `scores["math"]` did
+
+## ⏸ Pause & predict: one bracket or two? (pandas)
+
+::: pause
+What *type* of object does each line return?
+:::
+
+```{python}
+#| eval: false
+hotels["lead_time"]
+hotels[["lead_time"]]
+```
+
+. . .
+
+```{python}
+type(hotels["lead_time"]), type(hotels[["lead_time"]])
+```
+
+- **One** set of brackets with a name → a **Series** (a single column)
+    - Like `pull(lead_time)` or `hotels$lead_time`
+- A **list** of names inside → a **DataFrame**
+    - Like `select(lead_time)`
+    - The inner `[ ]` is just a Python list from Week 10
+
+# Isolating: select, filter, arrange, slice {.section-divider .middle}
+
+## `select()` → brackets with a list
+
+::: demo
+**Demo 2** in Positron
+:::
+
+
+```{python}
+hotels[["hotel", "lead_time"]].head()
+```
+
+| dplyr | pandas |
+|---|---|
+| `select(hotel, lead_time)` | `df[["hotel", "lead_time"]]` |
+| `select(-agent)` | `df.drop(columns="agent")` |
+| `select(hotel:arrival_date_month)` | `df.loc[:, "hotel":"arrival_date_month"]` |
+| `select(contains("arrival"))` | `df.filter(like="arrival")` |
+| `select(starts_with("arrival"))` | `df.filter(regex="^arrival")` |
+| `select(ends_with("type"))` | `df.filter(regex="type$")` |
+
+## Selecting with helpers
+
+```{python}
+hotels.filter(like="arrival").head(3)
+```
+
+```{python}
+hotels.filter(regex="type$").head(3)
+```
+
+::: tip
+**Name clash!** pandas `.filter()` picks **columns** by name. It is *not* dplyr's `filter()`. For rows, use a mask or `.query()` (next).
+:::
+
+## dplyr's `filter()` → a mask, just like NumPy
+
+Week 10: `mass[mass > 3700]`. Same idea, one level up:
+
+```{python}
+hotels[hotels["hotel"] == "City Hotel"].shape
+```
+
+. . .
+
+Read it inside out:
+
+```{python}
+is_city = hotels["hotel"] == "City Hotel"    # a Series of True/False, one per row
+is_city.head()
+```
+
+`hotels[is_city]` keeps the rows where `is_city` is `True`.
+
+## Masks
+
+
+- **New word: mask** = a True/False value for every row, used to keep rows
+    - R calls this logical indexing: `x[x > 3700]`
+    - It's what `filter()` does behind the scenes
+
+- **Validate:** in Week 4, R gave 79,330 City Hotel rows
+    - Does `hotels[is_city].shape` match?
+
+## ⏸ Pause & predict: two conditions
+
+::: pause
+Week 10 told you to "file away" a warning about `and`. What happens here?
+:::
+
+```{python}
+#| eval: false
+hotels[hotels["adults"] == 0 and hotels["children"] >= 1]
+```
+
+. . .
+
+```{python}
+#| error: true
+hotels[hotels["adults"] == 0 and hotels["children"] >= 1]
+```
+
+`and` wants **one** True or False.
+
+- A column has 119,390 of them, so Python doesn't know which to use
+- Hence "Truth value is ambiguous"
+
+## The fix: `&`, `|`, `~`, and parentheses
+
+```{python}
+hotels[(hotels["adults"] == 0) & (hotels["children"] >= 1)].shape
+```
+
+| R (inside `filter()`) | pandas mask |
+|---|---|
+| `x & y` (or a comma) | `(x) & (y)` |
+| `x | y` | `(x) | (y)` |
+| `!x` | `~x` *(same tilde as Week 10)* |
+| `is.na(x)` , `!is.na(x)` | `df["x"].isna()` , `df["x"].notna()` |
+| `x %in% c("a", "b")` | `df["x"].isin(["a", "b"])` |
+
+**Parentheses around every comparison.**
+
+- Without them, Python does the `&` first and you get a confusing error
+
+## `.query()`: write the condition like dplyr
+
+```{python}
+hotels.query("adults == 0 and children >= 1").shape
+```
+
+- The condition is a **string**
+    - Column names are just names (no `hotels[...]`), like inside `filter()`
+- Inside the string, `and` / `or` / `not` work. (pandas reads the string itself.)
+- `%in%` works too, as `in` with a list (and `not in`):
+    - `.query("dest in ['IAH', 'HOU']")`
+- Text values need the *other* kind of quotes: `.query('hotel == "City Hotel"')`
+
+. . .
+
+```{python}
+min_lead = 300
+hotels.query("lead_time > @min_lead").shape    # @ = "a Python variable, not a column"
+```
+
+::: tip
+Masks or `.query()`? Both are fine. `.query()` reads better in a chain; masks work everywhere (and show up in most code online).
+:::
+
+## Why is Python wordier than dplyr?
+
+::: columns
+::: {.column width="50%"}
+**R waits**
+
+- `filter(hotels, lead_time > 365)`
+- R hands `filter()` the expression *before* running it
+- dplyr looks up `lead_time` inside the data
+- Called **data masking**
+:::
+::: {.column width="50%"}
+**Python evaluates right away**
+
+- `lead_time > 365` runs first
+- No variable named `lead_time` → `NameError`
+- pandas never gets a chance to look in the data
+- So: `hotels["lead_time"]`, `pl.col("lead_time")`, or `.query()`
+:::
+:::
+
+. . .
+
+**A trade-off, not a winner:**
+
+- **Exploring data interactively:** bare names read naturally (R's strength)
+- **Writing functions and code others will reuse:** explicit is safer
+    - Is `x` a column or a variable? Python never has to ask
+    - R needs `{{ }}` and `.data$` for this (Week 9)
+
+## ⏸ Pause & predict: which rows?
+
+::: pause
+How many rows does each line keep? (The quiz from Week 4, in pandas.)
+:::
+
+```{python}
+df = pd.DataFrame({"student": ["A", "B", "C", "D"],
+                   "score":   [90, 80, 85, 95]})
+```
+
+```{python}
+#| eval: false
+df[df["score"] > 85]
+df.query("score >= 85 and student != 'D'")
+df[~(df["score"] > 85)]
+```
+
+. . .
+
+```{python}
+print(df[df["score"] > 85]["student"].tolist(),
+      df.query("score >= 85 and student != 'D'")["student"].tolist(),
+      df[~(df["score"] > 85)]["student"].tolist())
+```
+
+## `arrange()` → `.sort_values()`
+
+```{python}
+hotels[["hotel", "lead_time"]].sort_values("lead_time", ascending=False).head()
+```
+
+| dplyr | pandas |
+|---|---|
+| `arrange(babies)` | `.sort_values("babies")` |
+| `arrange(desc(babies))` | `.sort_values("babies", ascending=False)` |
+| `arrange(hotel, market_segment)` | `.sort_values(["hotel", "market_segment"])` |
+
+Look at the **index** on the left: the rows kept their original labels.
+
+- More in a few slides
+
+## `slice()` → `.head()` or `.iloc[]`
+
+```{python}
+hotels.iloc[0:5, 0:4]        # rows 0-4, columns 0-3 (by position)
+```
+
+| dplyr | pandas |
+|---|---|
+| `slice(1:5)` | `.iloc[0:5]` or `.head(5)` |
+| `slice_tail(n = 3)` | `.tail(3)` |
+| `slice_max(lead_time, n = 3)` | `.nlargest(3, "lead_time")` |
+
+`.iloc` = "**i**nteger **loc**ation": positions, 0-based, stop excluded.
+
+- Exactly Week 10's slicing
+
+# The Index, `.loc`, and `.iloc` (pandas) {.section-divider .middle}
+
+## Labels vs. positions
+
+- `.iloc[...]` selects by **position** (0, 1, 2, ... from the top)
+- `.loc[...]` selects by **label**: the index for rows, names for columns
+
+```{python}
+hotels.loc[0:2, ["hotel", "lead_time"]]     # labels 0 through 2: INCLUDES 2!
+```
+
+```{python}
+hotels.iloc[0:2, [0, 2]]                      # positions 0 and 1: stop excluded
+```
+
+`.loc` slices by label **include the stop**.
+
+- Labels aren't fence posts
+- Like `linspace`: an exception to "start in, stop out"
+
+## ⏸ Pause & predict: after sorting
+
+::: pause
+What row does each line return?
+:::
+
+```{python}
+by_lead = hotels.sort_values("lead_time", ascending=False)
+```
+
+```{python}
+#| eval: false
+by_lead.loc[0, "lead_time"]
+by_lead.iloc[0]["lead_time"]
+```
+
+. . .
+
+```{python}
+print(by_lead.loc[0, "lead_time"], by_lead.iloc[0]["lead_time"])
+```
+
+- `.loc[0]` is the row **labeled** 0: the original first booking, wherever it moved to
+- `.iloc[0]` is whatever row is **now** first: the longest lead time
+- Want 0, 1, 2, ... again? `.reset_index(drop=True)`
+
+## `.loc` with a mask: filter and select at once
+
+```{python}
+hotels.loc[hotels["adults"] == 0, ["adults", "children", "babies"]].head()
+```
+
+`df.loc[rows, columns]`: like base R's `df[rows, cols]` from Week 2.
+
+- Rows can be a mask
+
+# Try it: unscramble the code {.section-divider .middle}
+
+## Try it: unscramble the chain
+
+::: your-turn
+**About 10 minutes. Practice file, "Try it."**
+
+- **Everyone does this one in pandas** (reading practice)
+
+:::
+
+## Try it: one solution
+
+```{python}
+(
+    hotels
+    .query('hotel == "City Hotel" and lead_time > 365')
+    .sort_values("lead_time", ascending=False)
+    [["hotel", "lead_time", "country"]]
+    .head(5)
+)
+```
+
+```r
+hotels |>
+  filter(hotel == "City Hotel", lead_time > 365) |>
+  arrange(desc(lead_time)) |>
+  select(hotel, lead_time, country) |>
+  slice(1:5)
+```
+
+# Chaining: Python's pipe {.section-divider .middle}
+
+## A chain reads like a pipe
+
+```{python}
+#| eval: false
+(
+    hotels                                        # take hotels, then
+    .query('hotel == "City Hotel"')               # keep City Hotel rows, then
+    .sort_values("lead_time", ascending=False)    # sort by lead time, then
+    [["hotel", "lead_time"]]                      # keep two columns
+)
+```
+
+- Each method returns a **new** DataFrame, and the next `.method()` acts on it. Like `|>`
+- **Wrap the whole chain in parentheses** so it can span lines
+    - `(` and `)` on their own lines, one step per line in between
+- Week 10: `object.verb()` "reads like a pipe." This is where it pays off
+
+## ⏸ Pause & predict: no parentheses?
+
+::: pause
+What happens if you leave off the outer `( )`?
+:::
+
+```{python}
+#| eval: false
+hotels
+ .query('hotel == "City Hotel"')
+ .head()
+```
+
+. . .
+
+`IndentationError` / `SyntaxError`.
+
+- Without parentheses, Python thinks the statement ended after `hotels`
+    - A line starting with `.` makes no sense
+- Inside `( )`, Python keeps reading until the closing parenthesis
+
+## Debugging a chain: one step at a time
+
+In R, you highlight part of a pipe and run it.
+
+In Python, the `( )` gets in the way. Two fixes:
+
+::: columns
+::: {.column width="50%"}
+**1. Highlight, then finish the `)`**
+
+- Highlight from `(` through the step you want
+- Run it (Cmd/Ctrl + Enter)
+- The Console shows `...` (waiting for the `)`)
+- Type `)` and press Enter
+:::
+::: {.column width="50%"}
+**2. Comment out the end**
+
+```{python}
+(
+    hotels
+    .query('hotel == "City Hotel"')
+    # .sort_values("lead_time", ascending=False)
+    # [["hotel", "lead_time"]]
+    .shape
+)
+```
+
+- Select lines, **Cmd/Ctrl + /** to comment or uncomment
+:::
+:::
+
+- `.shape` at the end is a quick **row-count check**
+    - Did the filter keep what you expected?
+
+::: tip
+This is why `(` and `)` go on their own lines: you can comment out any step without touching the parentheses.
+:::
+
+# Counting and distinct {.section-divider .middle}
+
+## `distinct()` → `.drop_duplicates()`
+
+::: demo
+**Demo 3** in Positron
+:::
+
+
+```{python}
+(
+    hotels[["hotel", "market_segment"]]
+    .drop_duplicates()
+    .sort_values(["hotel", "market_segment"])
+)
+```
+
+- **Validate:** in Week 4, R's `distinct(hotel, market_segment)` gave 14 rows
+    - Does your pandas result have 14 rows too?
+
+For the unique values of **one** column: `hotels["market_segment"].unique()`
+
+## `count()` → `.value_counts()`
+
+```{python}
+hotels["market_segment"].value_counts()
+```
+
+. . .
+
+::: pause
+**⏸ Pause & predict:** R's `count()` sorted alphabetically. What order is this?
+:::
+
+. . .
+
+**Most common first**, like `count(..., sort = TRUE)`.
+
+- pandas sorts by default; R doesn't
+
+## More counting
+
+```{python}
+hotels["market_segment"].value_counts(normalize=True).round(3)   # proportions
+```
+
+```{python}
+hotels.value_counts(["hotel", "market_segment"], sort=False)     # two variables, R's order
+```
+
+| dplyr | pandas |
+|---|---|
+| `count(x)` | `df["x"].value_counts(sort=False)` |
+| `count(x, sort = TRUE)` | `df["x"].value_counts()` |
+| `count(x) |> mutate(prop = n / sum(n))` | `df["x"].value_counts(normalize=True)` |
+| `count(x, y)` | `df.value_counts(["x", "y"])` |
+
+`value_counts()` returns a **Series** labeled by the categories.
+
+- Add `.reset_index()` to turn it into a DataFrame with a `count` column
+- It also **drops** missing values; R's `count()` keeps them
+
+# Deriving: mutate and summarize {.section-divider .middle}
+
+## `mutate()` → `.assign()`
+
+```{python}
+(
+    hotels
+    .assign(little_ones=lambda d: d["children"] + d["babies"])
+    [["children", "babies", "little_ones"]]
+    .sort_values("little_ones", ascending=False)
+    .head()
+)
+```
+
+- `new_name=` on the left, a function on the right
+- `lambda d:` means "**d** = the DataFrame at this point in the chain"
+    - Week 10's anonymous function
+    - Like how `|>` hands the current data to `mutate()`
+
+## `.assign()`: several new columns at once
+
+```{python}
+(
+    hotels
+    .assign(
+        total_nights=lambda d: d["stays_in_weekend_nights"]
+                               + d["stays_in_week_nights"],
+        revenue=lambda d: d["adr"] * d["total_nights"],
+        long_stay=lambda d: d["total_nights"] >= 7,
+    )
+    [["total_nights", "adr", "revenue", "long_stay"]]
+    .head()
+)
+```
+
+- Separate the new columns with commas, like `mutate(a = ..., b = ...)`
+- Later columns can use earlier ones
+    - `revenue` uses `total_nights`, created one line earlier in the same `.assign()`
+- Column math is element-wise (vectorized), like R
+    - A Series is built on a NumPy array
+
+::: tip
+**Style:** Python's convention (PEP 8) is **no spaces** around `=` when it names an argument (`little_ones=...`, `ascending=False`), unlike the tidyverse's `mutate(little_ones = ...)`. Every other `=` and operator still gets spaces. Either way runs; formatters like Ruff apply the convention for you.
+:::
+
+## Why the `lambda`? (pandas)
+
+```{python}
+#| eval: false
+# Works, but refers to the ORIGINAL hotels, not the data at this step:
+hotels.query("adults == 0").assign(little_ones=hotels["children"] + hotels["babies"])
+
+# Always refers to the data flowing through the chain:
+hotels.query("adults == 0").assign(little_ones=lambda d: d["children"] + d["babies"])
+```
+
+The first version only lines up by luck (pandas matches rows by the index).
+
+- If an earlier step *created* `children`, it wouldn't exist in `hotels` yet
+- **Habit: inside a chain, use `lambda d:`**
+
+::: tip
+**pandas 3** adds a shortcut: `.assign(little_ones=pd.col("children") + pd.col("babies"))`. Very dplyr-like. It's new, so most code you find online uses `lambda`.
+:::
+
+## `summarize()` → summary methods
+
+```{python}
+hotels["adr"].mean()                 # summarize(mean_adr = mean(adr))
+```
+
+```{python}
+hotels["adr"].agg(["min", "mean", "median", "max"])
+```
+
+In Week 4, R gave min −6.38, mean 102, median 94.6, max 5400.
+
+- Same data, same answers
+
+. . .
+
+**Next week:** `.groupby().agg()`, Python's `group_by() |> summarize()`
+
+For now, one group at a time:
+
+```{python}
+hotels.query('hotel == "City Hotel"')["adr"].mean()
+```
+
+# Missing values {.section-divider .middle}
+
+## **Demo 4** in Positron
+
+```{python}
+hotels.isna().sum().sort_values(ascending=False).head(4)
+```
+
+Week 10's missing-data audit in one line.
+
+- `company` and `agent` top the list because pandas read their `"NULL"`s as missing
+- In R, the same audit shows only `children`
+
+| R | pandas |
+|---|---|
+| `NA` | `NaN` (shown as `NaN` or `<NA>`) |
+| `sum(is.na(x))` | `df["x"].isna().sum()` |
+| `summarize(across(everything(), ~ sum(is.na(.x))))` | `df.isna().sum()` |
+| `drop_na(children)` | `df.dropna(subset=["children"])` |
+| `filter(!is.na(children))` | `df[df["children"].notna()]` |
+
+
+## ⏸ Pause & predict: `mean()` with missing values
+
+::: pause
+`children` has 4 missing values.
+
+- In R, `mean(hotels$children)` is `NA`. What does pandas give?
+:::
+
+```{python}
+#| eval: false
+hotels["children"].mean()
+```
+
+. . .
+
+```{python}
+hotels["children"].mean()
+```
+
+**A number.** pandas skips missing values by default (`skipna=True`).
+
+- The opposite of R
+- *And* the opposite of NumPy's `np.mean()` from last week
+
+R makes you decide. pandas decides for you. Know which question you're answering.
+
+# Copy-on-Write (pandas) {.section-divider .middle}
+
+## Back to sticky notes
+
+Week 10: `b = a` doesn't copy a list. What about DataFrames?
+
+::: columns
+::: {.column width="50%"}
+**`=` alone: one object, two names**
+
+```{python}
+h2 = hotels
+h2 is hotels
+```
+
+- Change `h2`, and `hotels` changes too
+- Want a separate copy? `h2 = hotels.copy()`
+:::
+::: {.column width="50%"}
+**Subsets make a new object** (pandas 3)
+
+```{python}
+city = hotels[hotels["hotel"] == "City Hotel"]
+city["adr"] = 0        # change the subset
+hotels["adr"].max()    # hotels: untouched
+```
+
+- `=` just names the new DataFrame the filter made
+- Same for selected columns, `.loc`/`.iloc`, and method results
+:::
+:::
+
+. . .
+
+**`=` always works the same way: it puts a name on an object.**
+
+- What matters is whether the right side **makes a new object**
+    - Filters, subsets, and methods do
+- pandas 3: changing a subset never changes the original, like R's copy-on-modify
+
+## Why "Copy-on-Write"?
+
+- Filtering or selecting doesn't copy the data right away
+    - That would be slow for big tables
+- The new object **shares memory** with the original...
+- ...until one of them is **written to** (changed). *Then* pandas makes the copy
+- So: copy *on write*
+    - Separate objects, without paying for copies you never use
+
+. . .
+
+**R does this too**, and calls it **copy-on-modify**
+
+- In R, it applies to everything, even `b <- a`
+    - `b[1] <- 0` copies first, so `a` never changes
+- In pandas 3, it applies to *derived* objects only
+    - `h2 = hotels` is still one object with two names (Week 10's sticky notes)
+
+## ⏸ Pause & predict: chained assignment
+
+::: pause
+You want to set `adr` to 0 for canceled bookings. Does this work?
+:::
+
+```{python}
+#| eval: false
+hotels[hotels["is_canceled"] == 1]["adr"] = 0
+```
+
+. . .
+
+**No. In pandas 3 it never changes `hotels`.**
+
+- You get a `ChainedAssignmentError` warning, and nothing else happens
+
+
+. . .
+
+::: columns
+::: {.column width="50%"}
+**One step with `.loc`** (changes `hotels`)
+
+```{python}
+#| eval: false
+hotels.loc[hotels["is_canceled"] == 1, "adr"] = 0
+```
+:::
+::: {.column width="50%"}
+**Or a new column in a chain**
+
+```{python}
+#| eval: false
+hotels.assign(
+    adr_kept=lambda d:
+        np.where(d["is_canceled"] == 1, 0, d["adr"]))
+```
+:::
+:::
+
+Old StackOverflow answers are full of the first version. Check the pandas version!
+
+# Two styles, one analysis {.section-divider .middle}
+
+## Line by line vs. one chain
+
+::: columns
+::: {.column width="50%"}
+**Line by line** (common online)
+
+```{python}
+step1 = hotels.query("adults == 0")
+step2 = step1.assign(little_ones=lambda d:
+                     d["children"] + d["babies"])
+step3 = step2[step2["little_ones"] >= 1]
+step3["hotel"].value_counts()
+```
+:::
+::: {.column width="50%"}
+**One chain**
+
+```{python}
+(
+    hotels
+    .query("adults == 0")
+    .assign(little_ones=lambda d:
+            d["children"] + d["babies"])
+    .query("little_ones >= 1")
+    ["hotel"]
+    .value_counts()
+)
+```
+:::
+:::
+
+Same answer.
+
+- The chain reads top to bottom, with no leftover `step1`, `step2`, ...
+- Checking a middle step? Highlight through it and finish the `)`
+
+## Validate as you go: `assert`
+
+```{python}
+city = hotels.query('hotel == "City Hotel"')
+assert city.shape[1] == hotels.shape[1]           # filtering shouldn't drop columns
+assert (city["hotel"] == "City Hotel").all()      # every row is a City Hotel booking
+assert city["adr"].notna().all()                  # no missing rates
+```
+
+- `assert condition` does nothing if `condition` is `True`
+    - If not, it stops with an `AssertionError`
+- Like R's `stopifnot()`
+    - A shorter version of Week 10's "fail loudly" (`raise ValueError(...)`)
+    - Turns "I checked it once by eye" into a check that runs every time you render
+
+# Your turn: Verb translation {.section-divider .middle}
+
+# Wrap-up {.section-divider .middle}
+
+## Cheat sheet: dplyr · pandas · polars (1 of 2)
+
+| dplyr | pandas | polars |
+|---|---|---|
+| `read_csv("f.csv")` | `pd.read_csv("f.csv")` | `pl.read_csv("f.csv", null_values=...)` |
+| `glimpse(df)` | `df.info()` | `df.glimpse()` |
+| `select(a, b)` | `df[["a", "b"]]` | `df.select("a", "b")` |
+| `select(-a)` | `df.drop(columns="a")` | `df.drop("a")` |
+| `select(contains("x"))` | `df.filter(like="x")` | `df.select(cs.contains("x"))` |
+| `filter(x > 5, g == "A")` | `.query('x > 5 and g == "A"')` | `.filter(pl.col("x") > 5, pl.col("g") == "A")` |
+| `filter(x > 5, g == "A")` | `df[(df["x"] > 5) & (df["g"] == "A")]` | |
+| `arrange(desc(x))` | `.sort_values("x", ascending=False)` | `.sort("x", descending=True, nulls_last=True)` |
+
+## Cheat sheet: dplyr · pandas · polars (2 of 2)
+
+| dplyr | pandas | polars |
+|---|---|---|
+| `slice(1:5)` | `.iloc[0:5]` | `.slice(0, 5)` |
+| `slice_head(n = 5)` | `.head(5)` | `.head(5)` |
+| `distinct(a, b)` | `df[["a", "b"]].drop_duplicates()` | `df.select("a", "b").unique()` |
+| `count(g, sort = TRUE)` | `df["g"].value_counts()` | `df["g"].value_counts(sort=True)` |
+| `mutate(r = a / b)` | `.assign(r=lambda d: d["a"] / d["b"])` | `.with_columns(r=pl.col("a") / pl.col("b"))` |
+| `if_else(cond, yes, no)` | `np.where(cond, yes, no)` | `pl.when(cond).then(yes).otherwise(no)` |
+| `summarize(m = mean(x))` | `df["x"].mean()` | `df.select(m=pl.col("x").mean())` |
+| `pull(x)` | `df["x"]` | `df["x"]` |
+| `|>` | wrap in `( )` and chain `.method()` | same as pandas |
+
+## Tonight's gotchas
+
+1. `df["x"]` is a Series; `df[["x"]]` is a DataFrame
+2. Combine conditions with `&` / `|` / `~` **and parentheses**, not `and` / `or` / `not`
+    - Except inside `.query()` strings
+3. pandas `.filter()` picks **columns**, not rows
+4. `value_counts()` sorts by frequency and drops `NaN`
+    - Add `sort=False` for R's order
+5. pandas `.mean()` **skips** `NaN` by default (R and NumPy don't)
+6. `.loc` = labels (stop **included**); `.iloc` = positions (stop excluded)
+7. Sorting keeps the old index labels
+8. Chained assignment (`df[mask]["x"] = ...`) does nothing in pandas 3
+    - Use `.loc[mask, "x"] = ...` or `.assign()`
+
+## To do
+
+- **Python HW 01** due **today** (Tue, Nov 10, 6:15pm)
+- **Python HW 02** due next Tuesday, **Nov 17, 6:15pm** (instructions on Brightspace)
+    - pandas, or polars if you're curious
+    - Parts 1 and 4 are pandas for everyone
+
+::: question
+**Next week:** `group_by() |> summarize()`, joins, and pivots in Python.
+:::
+
+# Appendix: the same verbs in polars {.section-divider .middle}
+
+## About this appendix
+
+**Reference, not lecture.** For anyone who wants to try polars on the practice file or HW 02.
+
+- Same verbs, same order as tonight's slides
+- Install once: `%pip install polars` in the Python console, then restart (↻)
+- Everything here has a pandas version earlier in the deck
+- Parts 1 and 4 of HW 02 are pandas for everyone
+
+## Read and inspect in polars
+
+```{python}
+hotels_pl = pl.read_csv("data/hotels.csv",
+                        null_values=["NA", "NULL"],
+                        infer_schema_length=None)
+hotels_pl.shape
+```
+
+| R | polars |
+|---|---|
+| `dim(hotels)` | `hotels_pl.shape` |
+| `names(hotels)` | `hotels_pl.columns` |
+| `glimpse(hotels)` | `hotels_pl.glimpse()` |
+| `head(hotels)` | `hotels_pl.head()` |
+| `summary(hotels)` | `hotels_pl.describe()` |
+
+## Those polars arguments
+
+```{python}
+#| eval: false
+pl.read_csv("data/hotels.csv", null_values=["NA", "NULL"], infer_schema_length=None)
+```
+
+- `null_values=`: by default polars counts only **empty cells** as missing. 
+    - `hotels` has both `NA` and `NULL` for missing values. 
+    - pandas counts both as missing automatically; 
+    - R's `read_csv()` counts only `NA` and empty cells, which is why `agent` was text in Week 4. 
+    - To make R match: `read_csv("data/hotels.csv", na = c("", "NA", "NULL"))`.
+- `infer_schema_length=None`: look at **every** row before guessing each column's type
+    - By default polars guesses from the first 100 rows
+    - It stops with an error if a later row doesn't fit
+
+Three tools, three ideas of what "missing" looks like. **Check what your tool counts as missing.**
+
+## polars has a real `glimpse()`
+
+```{python}
+hotels_pl.glimpse()
+```
+
+Column names, types, and the first few values: exactly R's `glimpse()`.
+
+## What polars guessed
+
+```{python}
+hotels_pl.select("children", "agent", "reservation_status_date").schema
+```
+
+- `children` stays an **integer** with missing values, like R
+    - polars integers can hold missing values; NumPy-style pandas integers can't
+- `agent` is an integer (we told polars `"NULL"` means missing). Dates are text, like pandas
+- polars has DataFrames and Series, but **no Index**: rows are just rows
+    - `hotels_pl["lead_time"]` is a Series
+    - `hotels_pl.select("lead_time")` is a DataFrame
+
+## Selecting in polars
+
+```{python}
+hotels_pl.select(cs.ends_with("type")).head(3)
+```
+
+| dplyr | polars |
+|---|---|
+| `select(hotel, lead_time)` | `df.select("hotel", "lead_time")` |
+| `select(-agent)` | `df.drop("agent")` |
+| `select(hotel:arrival_date_month)` | `df.select(df.columns[0:5])` |
+| `select(contains("arrival"))` | `df.select(cs.contains("arrival"))` |
+| `select(starts_with("arrival"))` | `df.select(cs.starts_with("arrival"))` |
+| `select(ends_with("type"))` | `df.select(cs.ends_with("type"))` |
+
+Helpers live in `import polars.selectors as cs` ("column selectors").
+
+## polars: `filter()` means filter
+
+```{python}
+hotels_pl.filter(pl.col("adults") == 0, pl.col("children") >= 1).shape
+```
+
+```{python}
+hotels_pl.filter(pl.col("hotel") == "City Hotel").shape    # 79,330, same as R
+```
+
+- `pl.col("adults")` = "the `adults` column of the data at this step"
+    - Think of it as the bare column name you'd write inside dplyr's `filter()`
+- **Commas mean "and,"** like dplyr. For "or," use `|` with parentheses
+- No `df[...]` wrapping, no strings to parse, no `@` for variables
+    - `pl.col("lead_time") > min_lead` just works
+
+| R (inside `filter()`) | polars (inside `.filter()`) |
+|---|---|
+| `x & y` (or a comma) | `(x) & (y)` (or a comma) |
+| `x | y` | `(x) | (y)` |
+| `!x` | `~x` |
+| `is.na(x)` / `!is.na(x)` | `pl.col("x").is_null()` / `.is_not_null()` |
+| `x %in% c("a", "b")` | `pl.col("x").is_in(["a", "b"])` |
+
+`and` fails in polars too: use `&` with parentheses (or commas).
+
+## Sorting and slicing in polars
+
+| dplyr | polars |
+|---|---|
+| `arrange(babies)` | `.sort("babies")` |
+| `arrange(desc(babies))` | `.sort("babies", descending=True)` |
+| `arrange(hotel, market_segment)` | `.sort("hotel", "market_segment")` |
+| `slice(1:5)` | `.slice(0, 5)` or `.head(5)` |
+| `slice_max(lead_time, n = 3)` | `.sort("lead_time", descending=True).head(3)` |
+
+- **Missing values:** dplyr and pandas sort them **last**
+    - polars sorts them **first** unless you add `nulls_last=True`
+- `.slice(offset, length)` takes a start and **how many** rows
+
+The unscramble-the-code solution in polars:
+
+```{python}
+#| eval: false
+(
+    hotels_pl
+    .filter(pl.col("hotel") == "City Hotel",
+            pl.col("lead_time") > 365)
+    .sort("lead_time", descending=True)
+    .select("hotel", "lead_time", "country")
+    .head(5)
+)
+```
+
+## Counting in polars
+
+```{python}
+hotels_pl["market_segment"].value_counts(sort=True)
+```
+
+| dplyr | polars |
+|---|---|
+| `count(x)` | `df["x"].value_counts().sort("x")` |
+| `count(x, sort = TRUE)` | `df["x"].value_counts(sort=True)` |
+| `count(x) |> mutate(prop = n / sum(n))` | `df["x"].value_counts(normalize=True)` |
+| `count(x, y)` | `df.group_by("x", "y").len()` |
+| `distinct(a, b)` | `df.select("a", "b").unique()` |
+
+polars `value_counts()`:
+
+- returns a **DataFrame**
+- is **unsorted** unless you ask
+- **counts missing values** as their own row (like R's `count()`; pandas drops them)
+
+## `mutate()` → `.with_columns()` in polars
+
+```{python}
+(
+    hotels_pl
+    .with_columns(little_ones=pl.col("children") + pl.col("babies"))
+    .select("children", "babies", "little_ones")
+    .sort("little_ones", descending=True, nulls_last=True)
+    .head()
+)
+```
+
+- `new_name=` on the left, a `pl.col()` expression on the right
+    - No `lambda` needed: `pl.col()` always means "the data at this step"
+- **Gotcha:** inside **one** `.with_columns()`, new columns can't use each other yet
+    - Use a second `.with_columns()` (next slide)
+
+polars: chain two `.with_columns()`, since `revenue` needs `total_nights` to exist first:
+
+```{python}
+#| eval: false
+(
+    hotels_pl
+    .with_columns(total_nights=pl.col("stays_in_weekend_nights") + pl.col("stays_in_week_nights"))
+    .with_columns(revenue=pl.col("adr") * pl.col("total_nights"),
+                  long_stay=pl.col("total_nights") >= 7)
+    .select("total_nights", "adr", "revenue", "long_stay")
+    .head()
+)
+```
+
+## `summarize()` in polars
+
+```{python}
+hotels_pl.select(min_adr=pl.col("adr").min(), mean_adr=pl.col("adr").mean(),
+                 median_adr=pl.col("adr").median(), max_adr=pl.col("adr").max())
+```
+
+polars' `.select()` with expressions is `summarize()`.
+
+- A one-row DataFrame with the names you choose
+- `hotels_pl["adr"].mean()` also works for a single number
+
+## Missing values in polars
+
+| R | polars |
+|---|---|
+| `NA` | `null` |
+| `sum(is.na(x))` | `df["x"].is_null().sum()` |
+| `summarize(across(everything(), ~ sum(is.na(.x))))` | `df.null_count()` |
+| `drop_na(children)` | `df.drop_nulls(subset="children")` |
+| `filter(!is.na(children))` | `df.filter(pl.col("children").is_not_null())` |
+
+`.mean()` skips missing values, like pandas: `hotels_pl["children"].mean()`.
+
+## No Index, no Copy-on-Write trap
+
+- No Index, no `.loc`, no `.iloc`
+    - Rows are positions only (`hotels_pl.row(0)`, `hotels_pl[0:3]`)
+    - After sorting, the first row is simply the first row
+    - You still need to *read* `.loc`/`.iloc`: they're in almost every pandas example online
+- polars never changes a DataFrame in place, so chained assignment can't happen
+    - Changing values is always a new column (like `if_else()` in dplyr):
+
+```{python}
+#| eval: false
+hotels_pl.with_columns(adr_kept=pl.when(pl.col("is_canceled") == 0)
+                                  .then(pl.col("adr"))
+                                  .otherwise(0))
+```
+
+## polars gotchas
+
+1. Tell `read_csv()` what missing looks like (`null_values=`); only empty cells count by default
+2. Columns inside verbs are `pl.col("x")`
+3. Sorting puts missing values **first** unless `nulls_last=True`
+4. New columns in one `.with_columns()` can't use each other: chain a second one
+5. `value_counts()` returns a DataFrame, is unsorted unless `sort=True`, and counts missing values
+6. `.mean()` skips missing values (like pandas)

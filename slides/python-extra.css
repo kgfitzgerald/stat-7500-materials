@@ -67,3 +67,74 @@
   font-family: "Source Code Pro", monospace;
   padding: 10px 22px;
 }
+
+/* ---- Fit content to the slide width (Nov 7) ---- */
+
+/* Less side padding: use more of the slide */
+.reveal .slides section {
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+/* Let columns shrink instead of pushing content off the right edge */
+.reveal .columns > .column {
+  min-width: 0;
+}
+
+/* Tables: span the slide, slightly smaller text, let code in cells wrap */
+.reveal table {
+  width: 100%;
+  font-size: 0.8em;
+}
+.reveal table code {
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* Code blocks: never wrap mid-expression (one step per line matters).
+   Stay inside the slide; scroll inside the box only as a last resort. */
+.reveal div.sourceCode,
+.reveal pre.sourceCode {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.reveal pre.sourceCode code {
+  white-space: pre;
+}
+
+/* Side-by-side code: slightly smaller so ~50 characters fit per column */
+.reveal .columns pre.sourceCode code {
+  font-size: 1.2em;
+}
+
+/* DataFrame output (pandas/polars HTML tables): compact, not full width,
+   headers lined up with their values */
+.reveal .cell-output-display table,
+.reveal table.dataframe {
+  width: auto;
+  margin-left: 0;
+  font-size: 0.75em;
+}
+.reveal .cell-output-display table th,
+.reveal .cell-output-display table td,
+.reveal table.dataframe th,
+.reveal table.dataframe td {
+  text-align: right;
+  padding: 2px 14px;
+}
+
+/* A little breathing room between code output and whatever follows */
+.reveal .cell-output-display {
+  margin-bottom: 0.6em;
+}
+
+/* "Switch to Positron" cue for live demos */
+.reveal .demo {
+  box-sizing: border-box;
+  background: #a7d5e826;
+  border-left: 5px solid var(--light-blue);
+  color: white;
+  font-size: 0.85em;
+  margin: 6px 0;
+  padding: 3px 10px;
+}
