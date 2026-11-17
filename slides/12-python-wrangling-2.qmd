@@ -1,0 +1,924 @@
+---
+title: "Python Data Wrangling II"
+subtitle: "Split-apply-combine, joins, and reshaping"
+author: "Dr. Katie Fitzgerald, with Claude :)"
+format:
+  revealjs:
+    css: [stat7500-slides.css, python-extra.css]
+    width: 1280
+    height: 720
+    margin: 0.03
+    code-overflow: scroll
+    slide-number: true
+    scrollable: true
+    code-line-numbers: false
+    highlight-style: github
+jupyter: python3
+execute:
+  echo: true
+  warning: false
+---
+
+```{python}
+#| include: false
+# Setup used throughout the deck
+import numpy as np
+import pandas as pd
+pd.set_option("display.max_columns", 8)   # keep wide tables readable on slides
+pd.set_option("display.width", 110)
+
+penguins = pd.read_csv("data/penguins.csv")
+ucbadmit = pd.read_csv("data/ucbadmit.csv")
+```
+
+## Tonight
+
+::: columns
+::: {.column width="50%"}
+**dplyr verbs, in pandas**
+
+- `group_by()` and `summarize()`
+- `group_by()` and `mutate()`
+- `left_join()` and friends
+- `pivot_longer()` and `pivot_wider()`
+:::
+::: {.column width="50%"}
+**New in Python**
+
+- Group names land in the Index
+- `size` vs. `count`
+- `how=`, `indicator=`, and `validate=`
+- A peek at `.str` and `.dt`
+:::
+:::
+
+**Open now:**
+
+- `week_12_practice.qmd`
+- In your `STAT_7500/data` folder:
+    - `penguins.csv`, `ucbadmit.csv`
+    - `flights.csv`, `airlines.csv`, `planes.csv`
+
+**polars:** still optional on the practice file. HW 03 is pandas.
+
+## Why bother with Python?
+
+Honest take: for wrangling, dplyr is nicer. So why learn pandas?
+
+- **Jobs:** many data science roles expect Python, and you'll inherit pandas code
+- **Machine learning and AI:** deep learning, LLM tools, and new methods are Python-first
+- **Getting data:** APIs, scraping, automation, and cloud tools (Week 14)
+- **Reading code you didn't write:** tutorials, coworkers, and AI tools mostly write pandas
+- **Working with engineers:** apps and production systems usually run Python, not R
+
+::: tip
+What you learned in R is the hard part. pandas is new syntax for the same thinking.
+:::
+
+# Warm-up {.section-divider .middle}
+
+## Same question, two languages
+
+What will this code provide us with? Say it in plain English.
+
+```r
+penguins |>
+  group_by(species) |>
+  summarize(mean_mass = mean(body_mass_g, na.rm = TRUE)) |>
+  arrange(desc(mean_mass))
+```
+
+. . .
+
+*"The average body mass of each species, heaviest first."*
+
+. . .
+
+```{python}
+#| eval: false
+(
+    penguins
+    .groupby("species", as_index=False)
+    .agg(mean_mass=("body_mass_g", "mean"))
+    .sort_values("mean_mass", ascending=False)
+)
+```
+
+::: question
+What stayed the same? What changed? Where did `na.rm` go?
+:::
+
+# Split-apply-combine {.section-divider .middle}
+
+## The idea (one more time)
+
+```{=html}
+<div style="display:flex;gap:1.2em;justify-content:center;align-items:center;font-family:'Source Code Pro',monospace;margin:0.6em 0">
+  <div class="obj">whole data</div>
+  <span class="arrow">&#8594;</span>
+  <div style="display:flex;flex-direction:column;gap:0.3em"><span class="sticky">Adelie rows</span><span class="sticky">Chinstrap rows</span><span class="sticky">Gentoo rows</span></div>
+  <span class="arrow">&#8594;</span>
+  <div style="display:flex;flex-direction:column;gap:0.3em"><span class="sticky">mean</span><span class="sticky">mean</span><span class="sticky">mean</span></div>
+  <span class="arrow">&#8594;</span>
+  <div class="obj">one row per group</div>
+</div>
+```
+
+- **Split** the rows into groups
+- **Apply** a summary to each group
+- **Combine** the results into a new table
+
+You've done this all semester with `group_by() |> summarize()`.
+
+## `groupby()` + `agg()`
+
+::: demo
+**Demo 1** in Positron
+:::
+
+::: columns
+::: {.column width="50%"}
+**R**
+
+```r
+penguins |>
+  group_by(species) |>
+  summarize(
+    mean_mass = mean(body_mass_g,
+                     na.rm = TRUE)
+  )
+```
+:::
+::: {.column width="50%"}
+**Python**
+
+```{python}
+(
+    penguins
+    .groupby("species")
+    .agg(mean_mass=("body_mass_g", "mean"))
+)
+```
+:::
+:::
+
+- **Named aggregation:** `new_name=("column", "function")`
+    - Read it as *"mean_mass is the mean of body_mass_g"*
+- pandas skips `NaN` automatically, so there's no `na.rm`
+
+## ⏸ Pause & predict: what is a groupby?
+
+::: pause
+What does this line show?
+
+```python
+penguins.groupby("species")
+```
+:::
+
+. . .
+
+```{python}
+penguins.groupby("species")
+```
+
+- A **DataFrameGroupBy**: the grouping is stored, nothing is computed yet
+    - Like a grouped tibble before `summarize()`
+- Follow it with `.agg()`, `.size()`, or `.transform()`
+
+## Where did `species` go? The Index
+
+In the `.agg()` output, `species` is printed lower and in bold.
+
+- It became the **Index** (the row labels), not a regular column
+
+::: columns
+::: {.column width="50%"}
+**Option 1:** `as_index=False`
+
+```{python}
+(
+    penguins
+    .groupby("species", as_index=False)
+    .agg(mean_mass=("body_mass_g", "mean"))
+)
+```
+:::
+::: {.column width="50%"}
+**Option 2:** `.reset_index()`
+
+```{python}
+(
+    penguins
+    .groupby("species")
+    .agg(mean_mass=("body_mass_g", "mean"))
+    .reset_index()
+)
+```
+:::
+:::
+
+## Best practice: flat by default
+
+**Keep information in columns.** After every `groupby`:
+
+- use `as_index=False` up front, or
+- `.reset_index()` at the end
+
+`.merge()`, `.query()`, plotnine, and CSV files all expect columns.
+
+. . .
+
+::: tip
+The Index is useful *on purpose* for time series and lookups by name. But if you get weird `NaN`s after arithmetic, or `.loc` returns the wrong row, **check the Index first.**
+:::
+
+## Several summaries, several groups
+
+```{python}
+(
+    penguins
+    .groupby(["species", "sex"], as_index=False)
+    .agg(n=("body_mass_g", "size"),
+         mean_mass=("body_mass_g", "mean"),
+         sd_mass=("body_mass_g", "std"))
+)
+```
+
+- Several grouping columns go in a **list**: `["species", "sex"]`
+- Function names go in quotes
+    - `"mean"`, `"median"`, `"std"`, `"min"`, `"max"`, `"sum"`, `"size"`, `"count"`
+- pandas `"std"` divides by $n - 1$, like R's `sd()`
+
+## ⏸ Pause & predict: missing `sex`
+
+::: pause
+`penguins` has 11 rows with missing `sex`.
+
+In R, `group_by(sex)` gives an `NA` group. What does pandas do?
+
+```python
+penguins.groupby("sex").size()
+```
+:::
+
+. . .
+
+::: columns
+::: {.column width="50%"}
+```{python}
+penguins.groupby("sex").size()
+```
+:::
+::: {.column width="50%"}
+```{python}
+(
+    penguins
+    .groupby("sex", dropna=False)
+    .size()
+)
+```
+:::
+:::
+
+**pandas quietly drops missing group labels.**
+
+- 165 + 168 = 333, not 344
+- `dropna=False` keeps them, like R
+- Validate: do your group counts add up to the number of rows?
+
+## `size` vs. `count`
+
+```{python}
+(
+    penguins
+    .groupby("species")
+    .agg(n_rows=("body_mass_g", "size"),
+         n_measured=("body_mass_g", "count"))
+)
+```
+
+| pandas | R | Counts... |
+|---|---|---|
+| `"size"` | `n()` | every row in the group |
+| `"count"` | `sum(!is.na(x))` | rows where *that column* isn't missing |
+
+- Adelie and Gentoo each have one penguin with no measurements
+- R's `count(g)` is still `.value_counts("g")` from Week 11
+
+## `group_by() + mutate()` is `transform()`
+
+- `.agg()` **collapses** each group to one row
+- `.transform()` **keeps every row**
+
+::: columns
+::: {.column width="50%"}
+**R**
+
+```r
+penguins <- penguins |>
+  group_by(species) |>
+  mutate(species_mean =
+           mean(body_mass_g,
+                na.rm = TRUE)) |>
+  ungroup()
+```
+:::
+::: {.column width="50%"}
+**Python**
+
+```{python}
+penguins["species_mean"] = (
+    penguins
+    .groupby("species")["body_mass_g"]
+    .transform("mean")
+)
+penguins[["species", "species_mean"]].head(3)
+```
+:::
+:::
+
+`.transform()` returns one value **per row**.
+
+- Same length in, same length out
+- This adds the column to `penguins`, like `penguins <- ...` in R
+
+## `transform()` in a chain
+
+A grouped object has no `.assign()`, so in a chain, `groupby` goes **inside** the `lambda`:
+
+```{python}
+(
+    penguins
+    .assign(species_mean=lambda d:
+            d.groupby("species")["body_mass_g"].transform("mean"))
+    [["species", "body_mass_g", "species_mean"]]
+    .head(3)
+)
+```
+
+Read the `lambda` as a sentence:
+
+- *"For the data at this step, group by species, take body mass, and give every row its species' mean."*
+
+Same result, but `penguins` itself doesn't change.
+
+- Like `penguins |> mutate(...)` without `<-`
+
+## ⏸ Pause & predict: agg or transform?
+
+::: pause
+How many rows does each produce?
+
+```python
+penguins.groupby("island")["body_mass_g"].agg("mean")         # (a)
+penguins.groupby("island")["body_mass_g"].transform("mean")   # (b)
+```
+:::
+
+. . .
+
+- (a) one row per island: **3**
+- (b) one value per penguin: **344**
+
+**agg = summarize, transform = mutate.**
+
+## Berkeley admissions, again
+
+Remember Simpson's paradox from Week 5? `ucbadmit` has one row per applicant.
+
+```{python}
+ucbadmit.head(3)
+```
+
+. . .
+
+::: columns
+::: {.column width="70%"}
+**Python**
+
+```{python}
+(
+    ucbadmit
+    .groupby(["gender", "admit"], as_index=False)
+    .size()
+    .assign(prop=lambda d: d["size"]
+            / d.groupby("gender")["size"].transform("sum"))
+)
+```
+:::
+::: {.column width="30%"}
+**R**
+
+```r
+ucbadmit |>
+  count(gender, admit) |>
+  group_by(gender) |>
+  mutate(prop = n / sum(n))
+```
+:::
+:::
+
+Same as Week 5: P(Admit | Female) = 0.304, P(Admit | Male) = 0.445.
+
+- We'll come back to departments later. (Spoiler: the story flips.)
+
+## Try it: three summaries
+
+::: your-turn
+**Practice file, "Try it."**
+:::
+
+## Try it: one solution
+
+```{python}
+(
+    penguins
+    .groupby("island", as_index=False)
+    .agg(n=("species", "size"),
+         median_flipper=("flipper_length_mm", "median"))
+)
+```
+
+```{python}
+(
+    penguins
+    .groupby(["species", "year"], as_index=False)
+    .agg(mean_bill=("bill_length_mm", "mean"))
+    .sort_values("mean_bill", ascending=False)
+    .head(3)
+)
+```
+
+```{python}
+(
+    penguins
+    .assign(mass_z=lambda d:
+            (d["body_mass_g"]
+             - d.groupby("species")["body_mass_g"].transform("mean"))
+            / d.groupby("species")["body_mass_g"].transform("std"))
+    [["species", "body_mass_g", "mass_z"]]
+    .head(3)
+)
+```
+
+# Joins {.section-divider .middle}
+
+## Same joins, new name: `merge()`
+
+::: demo
+**Demo 2** in Positron
+:::
+
+```{python}
+purchases = pd.DataFrame({
+    "customer_id": [1, 1, 1, 2, 2, 2],
+    "item": ["bread", "milk", "banana", "milk", "banana", "toilet paper"]})
+prices = pd.DataFrame({
+    "item": ["avocado", "banana", "bread", "milk", "toilet paper"],
+    "price": [0.50, 0.15, 1.00, 0.80, 3.00]})
+```
+
+::: columns
+::: {.column width="50%"}
+**R**
+
+```r
+purchases |>
+  left_join(prices, by = "item") |>
+  group_by(customer_id) |>
+  summarize(revenue = sum(price))
+```
+:::
+::: {.column width="50%"}
+**Python**
+
+```{python}
+(
+    purchases
+    .merge(prices, on="item", how="left")
+    .groupby("customer_id", as_index=False)
+    .agg(revenue=("price", "sum"))
+)
+```
+:::
+:::
+
+*Take purchases, then look up each price, then group by customer, then add up.*
+
+## The `how=` argument
+
+| dplyr | pandas | Keeps |
+|---|---|---|
+| `left_join(x, y)` | `x.merge(y, how="left")` | all rows of `x` |
+| `right_join(x, y)` | `x.merge(y, how="right")` | all rows of `y` |
+| `inner_join(x, y)` | `x.merge(y, how="inner")` | rows with a match in both |
+| `full_join(x, y)` | `x.merge(y, how="outer")` | all rows of both |
+
+Key columns with different names? R: `join_by(item == product)`
+
+```python
+x.merge(y, left_on="item", right_on="product", how="left")
+```
+
+::: tip
+**Always write `how=`.** The default is `"inner"`, which quietly drops unmatched rows. In R, the join's name *is* the choice; pandas lets you forget.
+:::
+
+## Who's missing? `indicator=True`
+
+Week 5's enrollment problem:
+
+```{python}
+enrolment = pd.DataFrame({
+    "id": [1, 2, 3],
+    "name": ["Dave Friday", "Hermine", "Sura Selambarom"]})
+survey = pd.DataFrame({
+    "id": [2, 3, 4],
+    "name": ["Hermine", "Sura Selambarom", "Read Only"]})
+```
+
+```{python}
+enrolment.merge(survey, on="id", how="outer", indicator=True)
+```
+
+- `indicator=True` adds a `_merge` column: a built-in **join report**
+    - `"both"`, `"left_only"`, or `"right_only"`
+- Both tables had `name`, so pandas added `_x` and `_y` (R adds `.x` and `.y`)
+
+## Anti- and semi-joins
+
+**Enrolled, no survey** (R: `anti_join(enrolment, survey)`)
+
+::: columns
+::: {.column width="50%"}
+```{python}
+(
+    enrolment
+    .merge(survey[["id"]], on="id",
+           how="left", indicator=True)
+    .query("_merge == 'left_only'")
+    .drop(columns="_merge")
+)
+```
+:::
+::: {.column width="50%"}
+```{python}
+enrolment[~enrolment["id"].isin(survey["id"])]
+```
+:::
+:::
+
+- `survey[["id"]]` merges only the key, so survey's other columns don't come along (like R)
+
+. . .
+
+**Enrolled, with survey** (R: `semi_join(enrolment, survey)`)
+
+::: columns
+::: {.column width="50%"}
+```{python}
+enrolment.merge(
+    survey[["id"]].drop_duplicates(),
+    on="id", how="inner"
+)
+```
+:::
+::: {.column width="50%"}
+```{python}
+enrolment[enrolment["id"].isin(survey["id"])]
+```
+:::
+:::
+
+- `.isin()` is R's `%in%`; `~` means "not" (Week 11)
+- `.drop_duplicates()`: if an id appeared twice in `survey`, the inner merge would repeat that row
+
+## ⏸ Join detective: predict the rows
+
+::: pause
+`A` has 100 rows and a unique `id`. In `B`:
+
+- 90 of A's ids appear once
+- 5 appear **twice**
+- 5 don't appear at all
+
+How many rows in `A.merge(B, on="id", how="left")`?
+:::
+
+. . .
+
+$$90 \times 1 + 5 \times 2 + 5 \times 1 = 105$$
+
+- Duplicate keys **multiply rows**; no match is kept once, with `NaN`
+- Same as `left_join()` in R
+- **Predict the row count before every join, then check it**
+
+## Make pandas check for you: `validate=`
+
+```{python}
+A = pd.DataFrame({"id": [1, 2, 3], "x": ["a", "b", "c"]})
+B = pd.DataFrame({"id": [1, 2, 2, 4], "y": [10, 20, 21, 40]})
+A.merge(B, on="id", how="left")
+```
+
+. . .
+
+If you *believe* each `id` appears once in `B`, say so:
+
+```{python}
+#| error: true
+A.merge(B, on="id", how="left", validate="many_to_one")
+```
+
+- `"many_to_one"`: keys are unique in the **right** table (a lookup table)
+- `"one_to_one"`: keys are unique in both tables
+- R's version: `left_join(..., relationship = "many-to-one")`
+
+An error now beats a silently doubled total later.
+
+## Real flights
+
+::: demo
+**Demo 3** in Positron
+:::
+
+NYC flights from Week 5. Predict, then check.
+
+```{python}
+flights = pd.read_csv("data/flights.csv")
+airlines = pd.read_csv("data/airlines.csv")
+planes = pd.read_csv("data/planes.csv")
+print(flights.shape, airlines.shape, planes.shape)
+```
+
+```{python}
+with_names = flights.merge(airlines, on="carrier", how="left",
+                           validate="many_to_one")
+len(with_names) == len(flights)      # a lookup join should never add rows
+```
+
+## Flights and planes: two surprises
+
+```{python}
+with_planes = flights.merge(planes, on="tailnum", how="left", indicator=True)
+with_planes["_merge"].value_counts()
+```
+
+. . .
+
+1. **Some flights have no match.**
+    - Their tail number is missing, or not in `planes`
+    - They're kept, with `NaN` plane info
+2. **Both tables have a `year` column.**
+    - `flights`: the year of the flight. `planes`: the year the plane was built
+    - pandas named them `year_x` and `year_y`
+    - Rename first: `planes.rename(columns={"year": "year_built"})`
+
+# Reshaping {.section-divider .middle}
+
+## Wide to long: `melt()` is `pivot_longer()`
+
+::: demo
+**Demo 4** in Positron
+:::
+
+```{python}
+customers = pd.DataFrame({"customer_id": [1, 2],
+                          "item_1": ["bread", "milk"],
+                          "item_2": ["milk", "banana"],
+                          "item_3": ["banana", "toilet paper"]})
+```
+
+::: columns
+::: {.column width="50%"}
+**R**
+
+```r
+customers |>
+  pivot_longer(cols = item_1:item_3,
+               names_to = "item_no",
+               values_to = "item")
+```
+:::
+::: {.column width="50%"}
+**Python**
+
+```{python}
+purchases_long = customers.melt(
+    id_vars="customer_id",
+    var_name="item_no",
+    value_name="item"
+)
+```
+:::
+:::
+
+| `pivot_longer()` | `melt()` | Meaning |
+|---|---|---|
+| (columns *not* in `cols`) | `id_vars=` | columns that stay as they are |
+| `names_to =` | `var_name=` | new column for the old column **names** |
+| `values_to =` | `value_name=` | new column for the **values** |
+
+## ⏸ Pause & predict: what shape?
+
+::: pause
+`customers` is 2 × 4. What shape is `purchases_long`?
+:::
+
+```{python}
+print(customers)
+```
+
+. . .
+
+```{python}
+purchases_long
+```
+
+- 2 customers × 3 item columns = **6 rows**
+- 3 columns: `customer_id`, `item_no`, `item`
+
+## Long to wide: `pivot()` is `pivot_wider()`
+
+::: columns
+::: {.column width="50%"}
+**R**
+
+```r
+purchases_long |>
+  pivot_wider(names_from = item_no,
+              values_from = item)
+```
+:::
+::: {.column width="50%"}
+**Python**
+
+```{python}
+(
+    purchases_long
+    .pivot(index="customer_id",
+           columns="item_no",
+           values="item")
+    .reset_index()
+)
+```
+:::
+:::
+
+- `columns=` is R's `names_from`; `values=` is R's `values_from`
+- `index=` is what identifies a row
+    - It lands in the Index, so `.reset_index()` brings it back as a column
+
+## ⏸ Pause & predict: duplicates
+
+::: pause
+What happens here?
+
+```python
+ucbadmit.pivot(index="gender", columns="dept", values="admit")
+```
+:::
+
+. . .
+
+```{python}
+#| error: true
+ucbadmit.pivot(index="gender", columns="dept", values="admit")
+```
+
+- Hundreds of applicants per gender × department
+    - `pivot()` needs **one** value per cell
+- R's `pivot_wider()` warns and makes list-columns; pandas errors
+- Summarize first, or use `pivot_table()`
+
+## Summarize first, then `pivot()`
+
+Week 5's Simpson's paradox table: admission rate by gender and department.
+
+**Step 1:** summarize to one row per gender × department (12 rows)
+
+```{python}
+rates = (
+    ucbadmit
+    .assign(admitted=lambda d: d["admit"] == "Admitted")
+    .groupby(["gender", "dept"], as_index=False)
+    .agg(rate=("admitted", "mean"))
+)
+rates.head(4)
+```
+
+. . .
+
+**Step 2:** now each cell has exactly one value, so `pivot()` works
+
+```{python}
+rates.pivot(index="gender", columns="dept", values="rate").round(2)
+```
+
+## `pivot_table()`: summarize while you pivot
+
+The same table in one step: `aggfunc=` does the summarizing.
+
+```{python}
+(
+    ucbadmit
+    .assign(admitted=lambda d: d["admit"] == "Admitted")
+    .pivot_table(index="gender", columns="dept",
+                 values="admitted", aggfunc="mean")
+    .round(2)
+)
+```
+
+. . .
+
+::: question
+Overall, men were admitted at a higher rate (0.445 vs. 0.304). Within departments, women's rates are higher in 4 of 6. **How can both be true?** (Hint: which departments did most women apply to?)
+:::
+
+# A peek at `.str` and `.dt` {.section-divider .middle}
+
+## stringr and lubridate, for a column
+
+```{python}
+(
+    penguins
+    .assign(island_upper=lambda d: d["island"].str.upper())
+    [["island", "island_upper"]]
+    .head(2)
+)
+```
+
+::: columns
+::: {.column width="50%"}
+| stringr | pandas |
+|---|---|
+| `str_to_lower(s)` | `s.str.lower()` |
+| `str_detect(s, "x")` | `s.str.contains("x")` |
+| `str_replace_all(s, "a", "b")` | `s.str.replace("a", "b")` |
+:::
+::: {.column width="50%"}
+| lubridate | pandas |
+|---|---|
+| `ymd_hms(x)` | `pd.to_datetime(x)` |
+| `year(x)` | `x.dt.year` |
+| `wday(x, label = TRUE)` | `x.dt.day_name()` |
+:::
+:::
+
+- Week 8's functions live under `.str` and `.dt`
+- They only work on the right type: check `.dtypes` first
+
+# Your turn: Airline delays {.section-divider .middle}
+
+# Wrap-up {.section-divider .middle}
+
+## R → Python cheat sheet (1 of 2)
+
+| tidyverse | pandas |
+|---|---|
+| `group_by(g) |> summarize(m = mean(x))` | `.groupby("g", as_index=False).agg(m=("x", "mean"))` |
+| `n()` | `"size"` |
+| `sum(!is.na(x))` | `"count"` |
+| `count(g)` | `.groupby("g", as_index=False).size()` |
+| `count(g, sort = TRUE)` | `.value_counts("g")` |
+| `group_by(g) |> mutate(m = mean(x))` | `.assign(m=lambda d: d.groupby("g")["x"].transform("mean"))` |
+| `group_by(g)`, keeping `NA` groups | `.groupby("g", dropna=False)` |
+
+## R → Python cheat sheet (2 of 2)
+
+| tidyverse | pandas |
+|---|---|
+| `left_join(y, by = "id")` | `.merge(y, on="id", how="left")` |
+| `join_by(a == b)` | `left_on="a", right_on="b"` |
+| `anti_join(y)` | `x[~x["id"].isin(y["id"])]` |
+| `anti_join(y)` | `.merge(y[["id"]], how="left", indicator=True)`, keep `"left_only"` |
+| `semi_join(y)` | `x[x["id"].isin(y["id"])]` |
+| `semi_join(y)` | `.merge(y[["id"]].drop_duplicates(), how="inner")` |
+| `relationship = "many-to-one"` | `validate="many_to_one"` |
+| `pivot_longer()` | `.melt()` |
+| `pivot_wider()` | `.pivot()` |
+| `pivot_wider()` with a summary | `.pivot_table(aggfunc=...)` |
+
+## Tonight's gotchas
+
+1. `groupby()` puts the groups in the **Index**
+    - Use `as_index=False` or `.reset_index()`
+2. `groupby()` **drops missing group labels** unless `dropna=False`
+3. `"size"` counts rows; `"count"` counts non-missing values
+4. `agg` collapses (summarize); `transform` keeps every row (mutate)
+5. `merge()` defaults to an **inner** join: always write `how=`
+6. Duplicate keys multiply rows: **predict, then check**, or use `validate=`
+7. `pivot()` errors on duplicates: summarize first, or use `pivot_table()`
+
+## To do
+
+- **Python HW 02** due **today** (Tue, Nov 17, 6:15pm)
+- **Python HW 03** due next Tuesday, **Nov 24, 6:15pm** (instructions on Brightspace)
+    - pandas only
+- **Next week is on Zoom** (Thanksgiving week): plotting in Python
+    - Install before class: `%pip install plotnine seaborn`, then restart (↻)
+
+::: question
+**Next week:** ggplot2's grammar of graphics, in Python.
+:::

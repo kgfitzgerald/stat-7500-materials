@@ -76,6 +76,13 @@
   padding-right: 28px;
 }
 
+/* Lists use the full slide width. reveal.js makes ul/ol inline-block,
+   which shrink-wraps bullets and makes them wrap halfway across the slide. */
+.reveal ul,
+.reveal ol {
+  display: block;
+}
+
 /* Let columns shrink instead of pushing content off the right edge */
 .reveal .columns > .column {
   min-width: 0;

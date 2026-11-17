@@ -1,0 +1,203 @@
+---
+title: "Python HW 03 - Group, Join, Reshape"
+subtitle: "Due Tuesday, Nov 24 at 6:15pm"
+format:
+  html:
+    toc: true
+    embed-resources: true
+jupyter: python3
+---
+
+::: {.callout-note appearance="minimal"}
+**Topics:** split-apply-combine · `groupby` / `agg` / `transform` · joins with `merge` · `melt` / `pivot` / `pivot_table`
+:::
+
+# Goals
+
+The goal of this assignment is to practice the second half of the dplyr/tidyr toolkit (group summaries, joins, and reshaping) in pandas. You've answered most of these questions in R already, so you can check your Python answers against what you know.
+
+You will...
+
+- predict the output of `groupby` and `merge` code *before* running it
+- translate R pipelines into pandas method chains and check them against R's output
+- join tables, predict row counts, and use `indicator=` and `validate=` to check your joins
+- reshape data between wide and long formats
+- interpret a famous example of Simpson's paradox
+
+::: callout-important
+**pandas only.** This assignment is pandas for everyone.
+:::
+
+
+# Getting started
+
+1. Open our class GitHub repo and download `Python_HW_03.qmd` (click "Download raw file").
+2. Place it in your `STAT_7500` folder.
+3. Make sure these files are in your `STAT_7500/data` folder:
+    - `hotels.csv` (you have this from Week 4)
+    - `flights.csv` and `ucbadmit.csv` (you have these from class)
+    - `airports.csv` (download from the GitHub repo's `data` folder)
+4. Open the `STAT_7500` folder in **Positron**, select a Python interpreter (top right), and open `Python_HW_03.qmd`.
+5. Change the author name in the YAML to your name and **render** the document. If it renders, you're set up.
+
+Your project should be organized approximately like this:
+
+```
+STAT_7500/
+├── Python_HW_03.qmd
+└── data/
+    ├── hotels.csv
+    ├── flights.csv
+    ├── airports.csv
+    └── ucbadmit.csv
+```
+
+::: callout-important
+**Make every answer visible in your rendered file.** Python only displays the result of the **last line** in a cell. Use the separate cells in the template, or labeled `print()` statements when a part needs several results, e.g. `print("rows:", len(flights))`.
+:::
+
+::: callout-tip
+**Write each answer as one chain** wrapped in parentheses, one step per line, unless the exercise says otherwise. While you're building a chain, comment out the later lines and add `.shape` at the end to check each step.
+:::
+
+# Part 1: Predict, then run
+
+::: callout-note
+## Exercise 1
+
+The snippets below use these small DataFrames:
+
+```{python}
+#| eval: false
+toy = pd.DataFrame({"g": ["a", "a", "b", None, "b"],
+                    "x": [1.0, np.nan, 3.0, 4.0, 5.0]})
+
+left = pd.DataFrame({"id": [1, 2, 3], "v": ["p", "q", "r"]})
+right = pd.DataFrame({"id": [2, 2, 3, 4], "w": [20, 21, 30, 40]})
+```
+
+For each snippet, **first** write your prediction of the output in your `.qmd` (in the text, not the code chunk). **Then** run the code. If your prediction was wrong, explain in one sentence why. If it was right, just write "correct."
+
+Your grade is for making an honest guess and explaining any surprises, not for getting the predictions right.
+:::
+
+```{python}
+#| eval: false
+# (a) How many rows?
+toy.groupby("g").agg(total=("x", "sum"))
+
+# (b) What are n_rows and n_x for group "a"?
+toy.groupby("g").agg(n_rows=("x", "size"), n_x=("x", "count"))
+
+# (c) How many rows? (Notice there's no how= argument.)
+left.merge(right, on="id")
+
+# (d) How many rows?
+left.merge(right, on="id", how="left")
+```
+
+# Part 2: Hotel bookings
+
+In Week 4 you explored these hotel bookings in R. Each row is one booking at one of two hotels in Portugal.
+
+::: callout-note
+## Exercise 2: Translate these R pipelines
+
+Translate each R pipeline into one chain. Then compare your result with the R output given below it (no need to run R). Does it match?
+
+a.
+```r
+hotels |>
+  group_by(hotel) |>
+  summarize(n = n(), mean_adr = mean(adr))
+```
+*R output:* City Hotel 79,330 bookings, mean ADR 105.3; Resort Hotel 40,060 bookings, mean ADR 95.0.
+
+b.
+```r
+hotels |>
+  mutate(little_ones = children + babies) |>
+  count(hotel, little_ones) |>
+  mutate(prop = n / sum(n))
+```
+*R output:* 12 rows, including `City Hotel  NA  4`.
+
+For (b), your first attempt will probably have only **11** rows. Find out why, fix it so you match R, and explain the difference in a sentence.
+
+*Hint:* `.groupby(...).size()` for `count()`; the slides' cheat sheet has the rest.
+:::
+
+::: callout-note
+## Exercise 3: Cancellations and `transform`
+
+`is_canceled` is 1 for a canceled booking and 0 otherwise, so its mean is the cancellation rate.
+
+a. For each hotel **and** `market_segment`, compute the number of bookings and the cancellation rate. Keep only segments with at least 100 bookings (filter *after* summarizing), and sort so the highest cancellation rates are on top.
+b. Using `transform`, add a column `adr_diff`: each booking's `adr` minus the mean `adr` **for its hotel**. Show the hotel, `adr`, and `adr_diff` of the 5 bookings with the largest `adr_diff`.
+c. In 2–3 sentences: which segments have the highest cancellation rates, and does the pattern look the same at both hotels?
+:::
+
+# Part 3: Joins (NYC flights)
+
+::: callout-note
+## Exercise 4: Destination names
+
+`flights` has a `dest` column with airport codes like `"ORD"`. `airports` has those codes in a column called `faa`, along with each airport's `name`.
+
+a. **Before writing any code:** do you expect `faa` to be unique in `airports`? If so, how many rows should `flights` left-joined to `airports` have? Write your prediction.
+b. Left-join `airports` onto `flights` so each flight gets its destination's name. Use `left_on=` / `right_on=` and `validate="many_to_one"`. Check your prediction from (a) with `len()`.
+c. Use `indicator=True` to find the destination codes in `flights` that are **not** in `airports`. List each unmatched code and how many flights went there. Look one up: why might it be missing from this table?
+:::
+
+# Part 4: Reshaping
+
+::: callout-note
+## Exercise 5: R HW 06, in Python
+
+Here are the `scores` and `patients` data from R HW 06:
+
+```{python}
+#| eval: false
+scores = pd.DataFrame({"student_id": ["S1", "S2", "S3", "S4"],
+                       "math": [90, 85, 88, 95],
+                       "english": [92, 80, 85, 74]})
+
+patients = pd.DataFrame({
+    "patient_id": ["P1", "P1", "P1", "P2", "P2"],
+    "measurement_time": ["Morning", "Noon", "Evening", "Morning", "Evening"],
+    "systolic_bp": [120, 115, 123, 118, 121]})
+```
+
+a. Reshape `scores` to one row per student per subject. **Before** running your code, write how many rows and columns you expect.
+b. Reshape `patients` to one row per patient, with one column per measurement time. What does the `NaN` mean?
+:::
+
+::: callout-note
+## Exercise 6: Simpson's paradox, in Python
+
+In Week 5 we saw that, overall, men were admitted to Berkeley graduate programs at a higher rate than women in 1973 (0.445 vs. 0.304), but the picture changed within departments. `ucbadmit` has one row per applicant.
+
+a. Make a table with one row per department and one column per gender, showing the **admission rate**. (*Hint:* the `pivot_table()` example from the slides.)
+b. Make the same shape of table showing the **number of applicants**. (*Hint:* `aggfunc="size"`.)
+c. In 3–4 sentences, explain to someone who hasn't taken this class how men can have a higher overall admission rate even though women have a higher rate in most departments. Use specific numbers from (a) and (b).
+:::
+
+# Part 5: Reflection
+
+::: callout-note
+## Exercise 7
+
+In 2–3 sentences (your own words, no AI for this one): describe one place in this assignment where pandas made a different choice than R, and one place where checking your work (a row count, a match with R's output, `validate=`) caught or would catch a mistake.
+:::
+
+::: callout-important
+**AI acknowledgment.** If AI substantially contributed to your work, briefly note which model you used and what you used it for, at the end of your document (see the course AI policy).
+:::
+
+# Submit
+
+➡️ ✅ Render one last time and open `Python_HW_03.html` in a web browser. Check that your code, output, and written responses are organized and readable.
+
+::: callout-important
+To submit, upload your `Python_HW_03.html` file to the Python HW 03 assignment on Brightspace.
+:::
