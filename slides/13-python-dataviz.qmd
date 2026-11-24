@@ -1,0 +1,564 @@
+---
+title: "Python Data Visualization"
+subtitle: "Same grammar, new syntax"
+author: "Dr. Katie Fitzgerald, with Claude :)"
+format:
+  revealjs:
+    css: [stat7500-slides.css, python-extra.css]
+    width: 1280
+    height: 720
+    margin: 0.03
+    code-overflow: scroll
+    slide-number: true
+    scrollable: true
+    code-line-numbers: false
+    highlight-style: github
+jupyter: python3
+execute:
+  echo: true
+  warning: false
+---
+
+```{python}
+#| include: false
+# Setup used throughout the deck
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from plotnine import *
+
+# Slide-sized plotnine figures (inches)
+theme_set(theme_gray(base_size=12) + theme(figure_size=(7, 3.6)))
+plt.rcParams["figure.figsize"] = (7, 3.6)
+
+penguins = pd.read_csv("data/penguins.csv")
+volleyball = pd.read_csv("data/volleyball_ncaa_div1_2022_23_clean.csv")
+```
+
+## Tonight
+
+::: columns
+::: {.column width="50%"}
+**ggplot2 layers, in plotnine**
+
+- `aes()` and geoms
+- Mapping vs. setting
+- Bar charts with `position="fill"`
+- Scales and themes
+- Saving a plot
+:::
+::: {.column width="50%"}
+**New in Python**
+
+- Column names in quotes
+- Parentheses around the plot
+- `pd.Categorical`, Python's factor
+- matplotlib: Figure and Axes
+- seaborn
+:::
+:::
+
+**Open now:**
+
+- `week_13_practice.qmd`
+- In your `STAT_7500/data` folder:
+    - `penguins.csv`, `ucbadmit.csv`
+    - `volleyball_ncaa_div1_2022_23_clean.csv`
+
+::: tip
+**Packages.** If `from plotnine import *` gives `ModuleNotFoundError`, run `%pip install plotnine seaborn` in the Positron **Python console**, then restart the session (↻).
+:::
+
+::: notes
+Paste the practice-file link and the %pip line in the Zoom chat at 6:10. Chat is for predictions all night; cameras are optional.
+:::
+
+# Quick check: Week 12 {.section-divider .middle}
+
+## Poll 1: groupby
+
+::: pause
+**Zoom poll.** How many rows does this return, and where does `species` end up?
+:::
+
+```{python}
+#| eval: false
+(
+    penguins
+    .groupby("species")
+    .agg(mean_mass=("body_mass_g", "mean"))
+)
+```
+
+A. 344 rows; `species` is a column
+
+B. 3 rows; `species` is a column
+
+C. 3 rows; `species` is the **index** (row labels)
+
+D. 1 row
+
+. . .
+
+**C.** One row per group, and the group labels become the **index**.
+
+- To get `species` back as a column, use `as_index=False` or `.reset_index()`
+- Tonight, plotnine needs `species` as a column to map it to color
+
+## Poll 2: predict the row count
+
+::: pause
+**Zoom poll.** How many rows does each merge return?
+:::
+
+- `orders` has 50 rows
+- `customers` has one row per `customer_id`
+- 45 of the orders have a `customer_id` found in `customers`; 5 don't
+
+```{python}
+#| eval: false
+orders.merge(customers, on="customer_id", how="left")    # (i)
+orders.merge(customers, on="customer_id", how="inner")   # (ii)
+```
+
+A. (i) 50 and (ii) 50
+
+B. (i) 50 and (ii) 45
+
+C. (i) 45 and (ii) 45
+
+D. (i) 95 and (ii) 45
+
+. . .
+
+**B.**
+
+- **(i)** A left join keeps every order; the 5 unmatched ones get `NaN`
+- **(ii)** An inner join keeps only the matches
+- Same logic as `left_join()` and `inner_join()`: **predict, then check with `len()`**
+
+# Warm-up {.section-divider .middle}
+
+## Same question, two languages
+
+What will this code provide us with? Say it in plain English.
+
+```r
+ggplot(volleyball, aes(x = kills_per_set)) +
+  geom_histogram(color = "white", binwidth = 0.5) +
+  facet_wrap(~ region)
+```
+
+. . .
+
+*"A histogram of kills per set, with one panel for each region."*
+
+. . .
+
+```{python}
+#| eval: false
+(
+    ggplot(volleyball, aes(x="kills_per_set"))
+    + geom_histogram(color="white", binwidth=0.5)
+    + facet_wrap("region")
+)
+```
+
+::: question
+**Chat:** What stayed the same? What changed?
+:::
+
+. . .
+
+- Column names are in **quotes**: `"kills_per_set"` and `"region"`
+- The whole plot sits inside **parentheses**
+- `facet_wrap("region")` replaces `facet_wrap(~ region)`
+
+# Block A: plotnine {.section-divider .middle}
+
+## The grammar of graphics, again
+
+**plotnine** is a Python port of ggplot2. Same grammar, same function names:
+
+> data + aesthetic mappings + geoms + facets + scales + labels + theme
+
+```{python}
+#| eval: false
+import pandas as pd
+from plotnine import *          # the one place we use import * to avoid prefix pn.
+
+penguins = pd.read_csv("data/penguins.csv")
+```
+
+. . .
+
+- `import *` means "bring in every plotnine function by its bare name"
+- So you write `ggplot()`, not `p9.ggplot()`: an exception to the Week 10 rule
+- It's like `library(ggplot2)`: a plot uses a dozen functions at once
+
+## Layer by layer
+
+::: demo
+**Demo 1** in Positron
+:::
+
+```{python}
+#| eval: false
+(
+    ggplot(penguins, aes(x="bill_depth_mm", y="bill_length_mm", color="species"))
+    + geom_point()
+    + labs(title="Bill depth and length",
+           x="Bill depth (mm)", y="Bill length (mm)", color="Species")
+    + scale_color_cmap_d("viridis")
+    + theme_minimal()
+)
+```
+
+- `scale_color_cmap_d("viridis")` is R's `scale_colour_viridis_d()`
+- The `_d` means viridis colors for a **d**iscrete variable
+
+## ggplot2 → plotnine
+
+| ggplot2 | plotnine |
+|---|---|
+| `aes(x = bill_depth_mm)` | `aes(x="bill_depth_mm")`: column names are **strings** |
+| `+` at the end of a line | wrap the whole plot in `( )`, then start each layer with `+` |
+| `facet_wrap(~ region)` | `facet_wrap("region")` |
+| `scale_colour_viridis_d()` | `scale_color_cmap_d("viridis")` |
+| `theme(legend.position = "bottom")` | `theme(legend_position="bottom")`: dots → underscores |
+| `ggsave("p.png")` | `p.save("p.png")` |
+
+. . .
+
+The rest is **identical**: geom names, `alpha`, `binwidth`, `position = "fill"`
+
+::: tip
+A plot is an **object**: store it with `p = (...)`, add to it later (`p + theme_bw()`), and save it with `p.save()`. A plot on the **last line** of a cell displays; if nothing appears in Positron's Plots pane, try `p.show()`.
+:::
+
+## ⏸ Predict: will this run?
+
+::: pause
+**Chat:** will this run? Why or why not?
+:::
+
+```{python}
+#| eval: false
+ggplot(penguins, aes(x="bill_depth_mm", y="bill_length_mm")) +
+    geom_point()
+```
+
+. . .
+
+```{python}
+#| error: true
+#| echo: false
+exec('ggplot(penguins, aes(x="bill_depth_mm", y="bill_length_mm")) +\n    geom_point()')
+```
+
+Python ends a statement at the end of a line unless it's inside **open brackets**.
+
+- R keeps reading because the line ends with `+`; Python doesn't
+- Same reason we wrapped pandas method chains in parentheses in Week 11
+
+::: tip
+Style here: `(` and `)` on their own lines, each layer on its own line starting with `+`. Comment out one layer (Cmd + /) to debug, like a line of a pipe.
+:::
+
+## ⏸ Predict: mapping vs. setting
+
+::: pause
+**Chat:** what happens with each? Does either one fail?
+:::
+
+```{python}
+#| eval: false
+# (A)
+(
+    ggplot(penguins, aes(x="flipper_length_mm", y="body_mass_g"))
+    + geom_point(color="navy")
+)
+
+# (B)
+(
+    ggplot(penguins, aes(x="flipper_length_mm", y="body_mass_g", color="navy"))
+    + geom_point()
+)
+```
+
+. . .
+
+- **(A)** every point is navy: **setting** a fixed value, outside `aes()`
+    - No legend, same as R
+- **(B)** is an **error** in plotnine: `aes()` looks for a column called `navy`
+    - In R, the same mistake *runs*: salmon points and a legend that says "navy"
+    - Python fails loudly
+
+**Rule:** inside `aes()`, the value comes from the data. Outside it, one fixed value.
+
+## Bar charts: proportions
+
+::: demo
+**Demo 2** in Positron
+:::
+
+```{python}
+(
+    ggplot(volleyball, aes(x="conference", fill="winning_season"))
+    + geom_bar(position="fill")
+    + coord_flip()
+    + theme(axis_text_y=element_text(size=6))
+    + labs(y="Proportion", x="", fill="Winning season?")
+)
+```
+
+- `coord_flip()` puts the long conference names on the y-axis
+- It's R's `aes(y = conference)` trick
+
+## Proportions as percents
+
+```{python}
+from mizani.labels import label_percent
+
+(
+    ggplot(volleyball, aes(x="conference", fill="winning_season"))
+    + geom_bar(position="fill")
+    + coord_flip()
+    + theme(axis_text_y=element_text(size=6))
+    + scale_y_continuous(labels=label_percent())
+    + labs(y="", x="", fill="Winning season?")
+)
+```
+
+`label_percent()` turns 0.25 into `25%`. It comes from **mizani**, the package behind plotnine's scales.
+
+- In R: `scale_y_continuous(labels = label_percent())`, from the `scales` package
+- Same name, same job
+
+## Ordering categories
+
+::: demo
+**Demo 3** in Positron
+:::
+
+Bars come out **alphabetical**, same as R. Fix the order with a pandas **Categorical**:
+
+```{python}
+conf_order = volleyball["conference"].value_counts().index   # most common first
+
+(
+    volleyball
+    .assign(conference=lambda d: pd.Categorical(d["conference"],
+                                                categories=conf_order[::-1]))
+    .pipe(ggplot, aes(x="conference"))
+    + geom_bar()
+    + coord_flip()
+    + theme(axis_text_y=element_text(size=6))
+)
+```
+
+- `pd.Categorical(..., categories=...)` is `factor(..., levels = ...)`
+- `[::-1]` (Week 10) flips the order, so the biggest bar ends up on top
+- `.pipe(ggplot, ...)` hands the DataFrame to `ggplot()`, like `|>`
+
+# Block B: matplotlib and seaborn {.section-divider .middle}
+
+## Why learn another plotting library?
+
+- **matplotlib** is the foundation of almost all Python plotting
+    - pandas `.plot()`, seaborn, and plotnine all draw *with* matplotlib
+- Most plotting code you'll see (at work, tutorials, AI tools) is matplotlib or seaborn
+- plotnine is great for *thinking*: it's the grammar you know
+- matplotlib is great for **fine control**, and it's what you'll see in the wild
+
+. . .
+
+::: question
+**Our plan:** know plotnine well, and be able to **read and tweak** matplotlib and seaborn code.
+:::
+
+## The Figure/Axes model: canvas and panels
+
+::: demo
+**Demo 4** in Positron
+:::
+
+```{python}
+fig, ax = plt.subplots()          # a Figure (canvas) with one Axes (panel)
+ax.scatter(penguins["flipper_length_mm"], penguins["body_mass_g"])
+ax.set_title("Flipper length and body mass")
+ax.set_xlabel("Flipper length (mm)")
+ax.set_ylabel("Body mass (g)");
+```
+
+- **Figure** = the whole canvas (size, saving)
+- **Axes** = one panel, with its own x- and y-axis
+- `fig, ax = ...` catches **two things** that come back at once, one name for each
+    - `plt.subplots()` returns a Figure and an Axes
+    - Like `for col, values in scores.items()` in Week 10: two things, two names
+- You call **methods on `ax`**, one per step: you say *how* to draw, not *what* to map
+
+::: notes
+The trailing semicolon hides a printed text label (Text(...)) that the last method returns. Mention it when someone asks.
+:::
+
+## color by species?
+
+::: pause
+plotnine used `aes(color="species")`. How does matplotlib do it?
+:::
+
+. . .
+
+```{python}
+fig, ax = plt.subplots()
+for species, d in penguins.groupby("species"):       # (name, sub-DataFrame) pairs
+    ax.scatter(d["flipper_length_mm"], d["body_mass_g"], label=species)
+ax.set(xlabel="Flipper length (mm)", ylabel="Body mass (g)",
+       title="One scatter call per species")
+ax.legend(title="Species");
+```
+
+A **loop**: one `ax.scatter()` per group, each with a `label`, then ask for the legend.
+
+- Looping over a `groupby` hands you `(group name, sub-DataFrame)` pairs
+- Like `.items()` on a dict in Week 10
+
+## seaborn: statistical plots in one line
+
+```{python}
+import seaborn as sns
+
+fig, ax = plt.subplots()
+sns.scatterplot(data=penguins, x="flipper_length_mm", y="body_mass_g",
+                hue="species", ax=ax)
+ax.set(title="seaborn: hue does the grouping for you",
+       xlabel="Flipper length (mm)", ylabel="Body mass (g)");
+```
+
+- `data=`, then column names as strings, like plotnine
+- `hue=` is seaborn's word for "map to color"
+- `ax=ax` draws into **your** panel, so you can keep using matplotlib methods on it
+
+## Two plots, one figure
+
+::: demo
+**Demo 5** in Positron
+:::
+
+```{python}
+fig, axes = plt.subplots(1, 2, figsize=(10, 3.5))
+
+sns.histplot(data=volleyball, x="kills_per_set", binwidth=0.5, ax=axes[0])
+axes[0].set(title="Distribution", xlabel="Kills per set")
+
+sns.boxplot(data=volleyball, x="kills_per_set", y="region", ax=axes[1])
+axes[1].set(title="By region", xlabel="Kills per set", ylabel=None)
+
+fig.tight_layout()
+```
+
+```{python}
+#| eval: false
+fig.savefig("kills.png", dpi=300, bbox_inches="tight")   # like ggsave()
+```
+
+- `axes` holds the panels: `axes[0]` is the **first** one (0-based!)
+- This is the patchwork job from R: two different plots side by side
+
+## Example: the truncated axis
+
+::: pause
+**Chat:** what's misleading about the plot on the left? List everything you notice.
+:::
+
+```{python}
+#| code-fold: true
+means = (
+    penguins
+    .groupby("species", as_index=False)
+    .agg(mean_mass=("body_mass_g", "mean"))
+)
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 3.4))
+axes[0].bar(x = means["species"], height = means["mean_mass"], color=["red", "green", "blue"])
+axes[0].set_ylim(3500, 5200)
+axes[0].set_title("Gentoo penguins are HUGE")
+
+axes[1].bar(x = means["species"], height = means["mean_mass"], color="gray")
+axes[1].set_ylim(0, 5500)
+axes[1].set(title="Gentoo average about 1.4 kg heavier", ylabel="Mean body mass (g)")
+fig.tight_layout()
+```
+
+. . .
+
+- Same three numbers in both plots
+- On the left, the axis starts at 3500: Gentoo's bar looks about 8× as long as Adelie's
+- Gentoo are only about 1.4× heavier
+- Bar **length** should be proportional to the value
+
+## What are the concerns?
+
+::: question
+What would be the concerns if a plot like that were published?
+:::
+
+- Bar charts need a **zero baseline**
+    - Dot plots and line charts don't have to start at zero
+- About 1 in 12 men has red-green color vision deficiency
+    - viridis palettes are designed for this
+- A mean hides the spread: consider a boxplot, or points with the mean on top
+- Perusall readings: *who made this choice, and who does it serve?*
+
+# Your turn: recreate an R plot {.section-divider .middle}
+
+# Wrap-up {.section-divider .middle}
+
+## ggplot2 → Python cheat sheet
+
+| ggplot2 | plotnine | matplotlib | seaborn |
+|---|---|---|---|
+| `geom_point()` | `geom_point()` | `ax.scatter(x, y)` | `sns.scatterplot(ax=ax)` |
+| `aes(color = g)` | `aes(color="g")` | a loop over groups | `hue="g"` |
+| `facet_wrap(~ g)` | `facet_wrap("g")` | `plt.subplots(1, k)` | — |
+| `labs(title = ...)` | `labs(title=...)` | `ax.set_title(...)` | `ax.set(title=...)` |
+| `factor(x, levels = ...)` | `pd.Categorical(x, categories=...)` | same as plotnine | same as plotnine |
+| patchwork | — | `plt.subplots(1, 2)` | `ax=axes[0]` |
+| `ggsave()` | `p.save()` | `fig.savefig()` | `fig.savefig()` |
+
+## Today's gotchas
+
+1. Column names in `aes()` are **strings**: `aes(x="mass")`
+2. Wrap multi-line plots in **parentheses**
+3. A constant inside `aes()`, like `aes(color="navy")`, is an **error** in plotnine
+    - Set it in the geom instead
+4. `theme()` arguments use **underscores**: `legend_position`, `figure_size`
+5. Bars are alphabetical unless you use `pd.Categorical(..., categories=...)`
+6. In matplotlib, `axes[0]` is the **first** panel
+7. Search "plotnine ...", not "python ...", or you'll get matplotlib answers
+
+## Python Data Challenge
+
+- Due **Tue, Dec 15, 6:15pm** (20% of your grade)
+- Data: World Happiness 2023, plus a second table you bring in
+- You choose the question, and write a prediction first
+- Audit and join the data, make 2-4 figures, and check your work
+- Short report (500-750 words) and a brief reflection
+- Instructions are on Brightspace
+
+::: notes
+Less scaffolded than homework. Second table can be scraped (Week 14) or typed by hand.
+:::
+
+## To do
+
+- **Python HW 03** due tonight (Tue 6:15pm)
+- **Python HW 04** due Tuesday, Dec 8, 6:15pm
+- **Next Tue**: quiz on Wrangling II (viz the following week)
+- **Python Data Challenge** posted now, due Tue Dec 15, 11:59pm
+
+::: question
+Happy Thanksgiving! See you in person next week.
+:::

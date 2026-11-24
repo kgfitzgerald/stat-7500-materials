@@ -1,0 +1,88 @@
+---
+title: "Python Data Challenge: Happiness Around the World"
+subtitle: "Due Tuesday, Dec 15 at 6:15pm"
+format:
+  html:
+    toc: true
+    embed-resources: true
+jupyter: python3
+---
+
+This challenge is less scaffolded than a homework: you choose the question, decide how to handle the data, check your work, and explain what you found and what you can't conclude. A focused question answered carefully beats a big one you can't verify.
+
+::: callout-important
+## AI use
+
+The course AI policy applies: AI may help with coding & debugging, but should NOT choose your question, make your decisions, or write your interpretations. It is a good helper for scraping, cleaning, and name-matching code, but check anything it drafts (such as a name-fix dictionary) against your own merge report. At the end of your document, say whether and how you used it, which tools you used, and at least one example of how you checked its help.
+:::
+
+
+# The data
+
+**World Happiness 2023** (`World Happiness 2023.xlsx`, on the course Github) has one row per country per year, 2005-2023. The main variable, `happiness`, is a country's average answer (0-10) to Gallup's "ladder" question about how good your life is. Read it with `pd.read_excel()`, which needs `openpyxl` (`%pip install openpyxl`, then restart).
+
+**A second table of your choice** (population, region, income group, ...), joined by country. Get it from the web (`pd.read_html()` or an API, both Week 14) or type a small one with `pd.DataFrame()`. Cite the source and date accessed, and save your cleaned copy in `data/`. If you prefer, you may fetch and tidy this one table in R (for example with `rvest`); submit your R script, and do everything else, including the join and fixing name mismatches, in Python.
+
+::: {.callout-note collapse="true"}
+## What the happiness columns mean
+
+| Column | Meaning |
+|---|---|
+| `country` | Country name |
+| `year` | 2005-2023 |
+| `happiness` | Average answer to the 0-10 ladder question (10 = best possible life) |
+| `logGDPpc` | Natural log of GDP per person (e.g., 11 means about 60,000) |
+| `social_support` | Share who have someone to count on in times of trouble |
+| `life_exp` | Life expectancy, in years, of a healthy child at birth |
+| `freedom_choices` | Share satisfied with their freedom to choose what to do with their life |
+| `freedom_choices_cat` | `freedom_choices` grouped as low, med, or high |
+| `generosity` | How much more (or less) people donate than expected for the country's income (0 = as expected) |
+| `corruption` | Share who say corruption is widespread in government or business |
+| `affect_pos` | Share who felt happiness, laughter, or enjoyment yesterday |
+| `affect_neg` | Share who felt worry, sadness, or anger yesterday |
+:::
+
+# What to do
+
+**1. Question and prediction.** Choose a question about happiness that needs *both* tables. For example: Did the COVID years (2020-21) hit some regions harder than others? Is the typical *person* happier than the typical *country*? Which countries are much happier or less happy than their income predicts? Before looking at results, write what you expect and why. You're graded on a thoughtful articulation about what you expected versus what you found, not on being right.
+
+**2. Audit and join.** Does every country appear in every year? Which columns you plan to use have missing values, and what will you do about them? Country names rarely match across sources: use `indicator=` or `validate=` to report what matched and what didn't, and decide what to do about the rest. Before you merge, predict how many rows the result should have, then check. This is your workflow check.
+
+**3. Build and plot.** Create the variables and at least one grouped summary (as a method chain) that your question needs, and explain any choice that affects the answer (e.g., definitions, exclusions, weights). Make 2-4 figures that work together to answer your question(s), each with a title, labeled axes, and a one-sentence caption on what story the visualization highlights. These figures are the evidence for your write-up (part 5).
+
+**4. Check your work.** Your join in part 2 counts as your workflow check. Add one *verification*: recompute one number you report in a different way (e.g., a direct filter-and-mean instead of a grouped summary). Write each check as **Expected → Found → Changed?** A good check is one that could have caught a plausible error.
+
+**5. Write-up.** In 300-500 words (not counting code, tables, or captions), tell a colleague who knows statistics but hasn't seen your code what you asked, what you found, and how far they should trust it. Cover your question and prediction, your key choices, your findings (with your figures in the text, where they support your argument), and the limitations: countries are not people, association is not causation, and what was dropped or didn't match. The write-up should be **clean**, not raw output: show only the figures and small tables that support your story, and hide everything else (e.g., `#| output: false`, `#| warning: false`).
+
+**6. Reflection and AI statement.** In about 150 words: 
+
++ What was the hardest data problem, and how did you know your fix worked? 
++ Where might someone reasonably have chosen differently? 
+
+Then add your AI statement (see the AI box at the top).
+
+# Submit
+
+Upload these files to Brightspace:
+
+1. Your `.qmd` file
+2. Your rendered `.html` file (keep `embed-resources: true` in your YAML so it's one self-contained file)
+3. The file for your second table, if you saved one in `data/` (e.g., a CSV of your cleaned table)
+4. Your R script, only if you fetched or tidied the 2nd dataset in R
+
+Do **not** upload `World Happiness 2023.xlsx`.
+
+Before you submit, use relative paths, put imports at the top, add `code-fold: true` to your YAML, restart the kernel, render, and read your HTML.
+
+# Grading
+
+| Component | Points |
+|---|---|
+| Question and prediction | 10 |
+| Audit and join | 20 |
+| Variables and summaries | 10 |
+| Figures | 25 |
+| Checks | 10 |
+| Write-up and limitations | 15 |
+| Reflection and AI statement | 5 |
+| Reproducibility and code quality | 5 |

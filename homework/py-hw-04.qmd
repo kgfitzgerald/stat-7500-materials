@@ -1,0 +1,146 @@
+---
+title: "Python HW 04 - Data Visualization"
+subtitle: "Due Tuesday, Dec 8 at 6:15pm"
+format:
+  html:
+    toc: true
+    embed-resources: true
+jupyter: python3
+---
+
+::: {.callout-note appearance="minimal"}
+**Topics:** plotnine · ordering categories · percent labels · matplotlib Figure/Axes · seaborn · plot critique
+:::
+
+# Goals
+
+This is a shorter assignment for Thanksgiving week. The goal is to make the same kinds of plots you made with ggplot2 in Weeks 2–3, now in Python.
+
+You will...
+
+- translate ggplot2 code into plotnine
+- check your data *before* you plot it, and justify any rows you drop
+- control the order of categories with `pd.Categorical`
+- build a multi-panel figure with matplotlib and seaborn
+- critique a misleading plot and fix it
+
+There is one optional **Experienced lane** task. It is not required.
+
+# Getting started
+
+1. Download `Python_HW_04.qmd` from our class GitHub repo and place it in your `STAT_7500` folder.
+2. Make sure `data/mpg.csv` and `data/hotels.csv` are in your `data/` folder. (`hotels.csv` is the Week 4 file; `mpg.csv` is posted with the Python files.)
+3. Open the folder in **Positron**, select your Python interpreter, and open `Python_HW_04.qmd`.
+4. Change the author name in the YAML to your name and **render** the document.
+
+::: callout-important
+**Make every answer visible in your rendered file.** Python only displays the **last line** of a cell, and that includes plots: put **one plot per cell** (the template already gives you separate cells). Use labeled `print()` statements when a part needs several numbers.
+:::
+
+::: callout-tip
+If `from plotnine import *` fails, run `%pip install plotnine seaborn` in Positron's **Python console** (not in the `.qmd`), then restart the session (↻). Still stuck? Check the **Troubleshooting** table in the Python Setup instructions, post on the HELP Forum, and come to student hours.
+:::
+
+These are loaded at the top of your template:
+
+```{python}
+#| eval: false
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from plotnine import *
+from mizani.labels import label_percent
+
+mpg = pd.read_csv("data/mpg.csv")
+hotels = pd.read_csv("data/hotels.csv")
+```
+
+**Plot expectations.** Every plot needs an informative title, axis labels with units where relevant, and a clear legend when there is one. Use color-blind-friendly colors (`scale_color_cmap_d("viridis")`, `scale_fill_cmap_d("viridis")`, or seaborn's `palette="viridis"`) unless you have a reason not to. Your written answers should interpret the plot **in context**, not restate the axes.
+
+# Part 1: Translate ggplot2 to plotnine
+
+The `mpg` data (from ggplot2) has fuel economy data for 234 cars. `displ` is engine size in liters, `hwy` is highway miles per gallon, `drv` is the drive train (`f` = front-wheel, `r` = rear-wheel, `4` = 4-wheel), and `class` is the type of car.
+
+::: callout-note
+## Exercise 1
+
+Translate each ggplot into plotnine. Your plots should look the same as the R versions would.
+
+a.
+```r
+ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_viridis_d() +
+  labs(x = "Engine displacement (L)", y = "Highway fuel economy (mpg)",
+       color = "Drive train",
+       title = "Bigger engines, lower highway mileage") +
+  theme_minimal()
+```
+
+b.
+```r
+mpg |>
+  mutate(class = fct_reorder(class, hwy, .fun = median)) |>
+  ggplot(aes(x = hwy, y = class)) +
+  geom_boxplot() +
+  labs(x = "Highway fuel economy (mpg)", y = NULL,
+       title = "Highway mileage by type of car")
+```
+*Hint for (b):* there's no `fct_reorder()` in pandas. Compute each class's median `hwy` with `groupby()`, sort it, and use the sorted index as the `categories=` of a `pd.Categorical` (like we ordered conferences and departments in class). If horizontal boxplots give you trouble, use `aes(x="class", y="hwy")` and `coord_flip()`.
+:::
+
+# Part 2: Hotel bookings
+
+The `hotels` data from Week 4 has 119,390 bookings at a city hotel and a resort hotel. `adr` is the **average daily rate** (price per night, in euros), `is_canceled` is 1 if the booking was canceled, and `arrival_date_month` is the month of arrival.
+
+::: callout-note
+## Exercise 2: check before you plot
+
+a. Use `.describe()` on `adr`. What are the minimum and maximum? Do any values look impossible or suspicious for a nightly room rate? Then count the bookings with `adr` **less than or equal to 0**, and with `adr` **greater than 1,000**, using `.query()` and `len()`.
+b. Decide which bookings to exclude from a plot of room prices, and **justify** your choice in 1–2 sentences. (There's no single right answer. A rate of 0 could be a complimentary room, for example.) Save the result as `hotels_rates`.
+c. Using `hotels_rates`, make a plot that compares the distribution of `adr` for the two hotels, then say in 1–2 sentences how prices at the two hotels compare (center, spread, shape).
+:::
+
+::: callout-note
+## Exercise 3: wrangle, then plot
+
+a. Create a DataFrame `cancel_rates` with one row per hotel per month and a column `prop_canceled`, the proportion of bookings that were canceled. Keep the months in calendar order. Before you run it, **predict** how many rows it should have, and check with `.shape`.
+b. Plot `prop_canceled` against month as lines with points (`geom_line()` + `geom_point()`), one color per hotel, with the y-axis shown as percents. In 2–3 sentences, describe what the plot shows, and give one reason, based on what you know about the data, that could explain the difference between the two hotels.
+:::
+
+*Hint for 3a:* by default the months sort alphabetically. Convert `arrival_date_month` to a `pd.Categorical` with the months in calendar order. You can type the 12 month names in a list, or build it with `pd.date_range("2024-01-01", periods=12, freq="MS").month_name()`.
+
+*Hint for 3b:* with a categorical x-axis, `geom_line()` needs to know which points to connect: map `group="hotel"` as well as `color="hotel"` (same as in R). For percent labels, run `from mizani.labels import label_percent`, then add `scale_y_continuous(labels=label_percent())`.
+
+**Experienced lane:** make an interactive version of Exercise 3b with Plotly Express (`px.line(..., markers=True, hover_data=...)`) or Altair. Include it with `#| eval: false` if your render environment doesn't have the package.
+
+# Part 3: matplotlib and seaborn
+
+::: callout-note
+## Exercise 4
+
+Recreate your comparison from **Exercise 2c** as a **two-panel** matplotlib figure, using seaborn for the plots:
+
+- **Left panel:** `sns.histplot()` of `adr` with `hue="hotel"`
+- **Right panel:** `sns.boxplot()` of `adr` by hotel
+- Give each panel a title and axis labels, give the whole figure a title with `fig.suptitle()`, and call `fig.tight_layout()`
+- Save the figure as `adr-by-hotel.png` with `fig.savefig()`
+
+Then, in 1–2 sentences: which would you reach for first for a homework plot, plotnine or matplotlib/seaborn, and why?
+:::
+
+
+
+::: callout-important
+**AI acknowledgment.** If AI substantially contributed to your work, briefly note which model you used and what you used it for, at the end of your document (see the course AI policy).
+:::
+
+# Submit
+
+➡️ ✅ Render one last time and open `Python_HW_04.html` in a web browser. Check that every plot and written response appears and is readable.
+
+::: callout-important
+To submit, upload your `Python_HW_04.html` file to the Python HW 04 assignment on Brightspace.
+:::
